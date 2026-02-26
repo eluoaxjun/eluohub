@@ -9,7 +9,7 @@ Claude Code 플러그인 시스템 기반으로, 프로젝트에 필요한 단�
 | 플러그인 | 설명 | 필수 |
 |----------|------|------|
 | **core** | 공통 규칙, PM Router | O |
-| **planning** | 기획 산출물 자동 생성 (QST, REQ, FN, IA, WBS, Dashboard) | |
+| **planning** | 기획 산출물 자동 생성 (QST, REQ, FN, IA, WBS, SB, Dashboard) | |
 | **design** | 벤치마킹, HTML 시안 A/B/C 생성, 스타일가이드 | |
 | **publish** | 시맨틱 HTML, CSS Custom Properties, 바닐라 JS 퍼블리싱 | |
 | **qa** | 기능/접근성/성능 테스트, WCAG 2.1 AA, Core Web Vitals | |
@@ -65,6 +65,7 @@ core는 필수, 나머지는 필요한 것만 선택 설치합니다.
 | `/planning:req` | 요구사항정의서 |
 | `/planning:fn` | 기능정의서 |
 | `/planning:wbs` | 작업분해구조 |
+| `/planning:sb` | 화면설계서 자동 생성 |
 | `/planning:dashboard` | 대시보드 |
 
 ### Design

@@ -1,0 +1,127 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "화면설계서 데이터",
+  "description": "KT 운영 표준 양식 화면설계서 생성을 위한 JSON 스키마",
+  "type": "object",
+  "required": ["project", "history", "assignment", "interfaces", "screens"],
+  "properties": {
+    "project": {
+      "type": "object",
+      "required": ["jiraNo", "srNo", "title", "serviceName", "version", "date", "writer", "companyName", "requestor"],
+      "properties": {
+        "jiraNo": { "type": "string", "description": "Jira 티켓 번호" },
+        "srNo": { "type": "string", "description": "SR 번호" },
+        "title": { "type": "string", "description": "과제명" },
+        "serviceName": { "type": "string", "description": "서비스명" },
+        "version": { "type": "string", "description": "버전" },
+        "date": { "type": "string", "description": "작성일 (YYYY-MM-DD)" },
+        "writer": { "type": "string", "description": "작성자" },
+        "companyName": { "type": "string", "description": "회사명" },
+        "requestor": { "type": "string", "description": "요청자 (HTML 허용)" }
+      }
+    },
+    "history": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["version", "date", "detail", "writer"],
+        "properties": {
+          "version": { "type": "string" },
+          "date": { "type": "string" },
+          "detail": { "type": "string" },
+          "page": { "type": "string" },
+          "writer": { "type": "string" },
+          "remarkers": { "type": "string" }
+        }
+      }
+    },
+    "assignment": {
+      "type": "object",
+      "required": ["detail", "dividerSub", "dividerMain", "dividerBullets"],
+      "properties": {
+        "detail": { "type": "string", "description": "요청사항 상세 (HTML 허용)" },
+        "dividerSub": { "type": "string", "description": "디바이더 부제" },
+        "dividerMain": { "type": "string", "description": "디바이더 메인 제목" },
+        "dividerBullets": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "디바이더 불릿 목록"
+        }
+      }
+    },
+    "interfaces": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["office", "channel", "depth1", "depth2", "depth3", "depth4", "interfaceType", "workType"],
+        "properties": {
+          "office": { "type": "string", "enum": ["Front Office", "Back Office"] },
+          "channel": { "type": "string" },
+          "depth1": { "type": "string" },
+          "depth2": { "type": "string" },
+          "depth3": { "type": "string" },
+          "depth4": { "type": "string" },
+          "interfaceType": { "type": "string", "enum": ["Page", "Popup", "Layer"] },
+          "workType": { "type": "string", "enum": ["신규", "수정", "삭제"] },
+          "pageId": { "type": "string" }
+        }
+      }
+    },
+    "screens": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["viewportType", "interfaceName", "location", "hasDivider", "descriptions"],
+        "properties": {
+          "viewportType": { "type": "string", "enum": ["Mobile", "PC", "Tablet"] },
+          "interfaceName": { "type": "string" },
+          "interfaceId": { "type": "string" },
+          "location": { "type": "string", "description": "메뉴 경로" },
+          "pageName": { "type": "string" },
+          "uiImagePath": { "type": "string", "description": "UI 캡처 이미지 경로" },
+          "hasDivider": { "type": "boolean" },
+          "divider": {
+            "type": "object",
+            "properties": {
+              "sub": { "type": "string" },
+              "main": { "type": "string" },
+              "bullets": { "type": "array", "items": { "type": "string" } }
+            }
+          },
+          "descriptions": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["marker", "label", "before", "after"],
+              "properties": {
+                "marker": { "type": "integer", "minimum": 1 },
+                "label": { "type": "string", "description": "영역명" },
+                "before": { "type": "string", "description": "수정 전 내용" },
+                "after": { "type": "string", "description": "수정 후 내용" },
+                "details": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "상세 불릿 목록"
+                },
+                "overlay": {
+                  "type": "object",
+                  "properties": {
+                    "top": { "type": "string" },
+                    "left": { "type": "string" },
+                    "width": { "type": "string" },
+                    "height": { "type": "string" }
+                  },
+                  "description": "마커 오버레이 위치 (CSS 단위)"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

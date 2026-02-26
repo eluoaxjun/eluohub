@@ -3,5 +3,5 @@
   "description": "기획 산출물 자동 생성 (QST→REQ→FN→IA→WBS→Dashboard)",
   "version": "1.0.0",
   "author": { "name": "Eluo Digital Agency" },
-  "keywords": ["planning", "requirements", "functional-spec", "wbs"]
+  "keywords": ["planning", "requirements", "functional-spec", "wbs", "screen-blueprint"]
 }

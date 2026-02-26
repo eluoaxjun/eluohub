@@ -1,0 +1,83 @@
+{
+  "project": {
+    "jiraNo": "KMVNO-5628",
+    "srNo": "DR-2025-43146",
+    "title": "[마이알뜰폰] 바로배송유심 안내 문구 수정",
+    "serviceName": "MVNO - 마이알뜰폰 온라인 서비스 채널",
+    "version": "0.1",
+    "date": "2025-07-31",
+    "writer": "ELUO",
+    "companyName": "kt 마이알뜰폰",
+    "requestor": "VNO 채널개발팀<br>이정학 과장님"
+  },
+  "history": [
+    {
+      "version": "ver 0.1",
+      "date": "2025-07-31",
+      "detail": "[KMVNO-5628]_[DR-2025-43146] [마이알뜰폰] 바로배송유심 안내문구 수정",
+      "page": "-",
+      "writer": "ELUO",
+      "remarkers": "출처. 이정학 과장님 / 메일 / RE: [검토/요청] 마이알뜰폰 바로배송유심 안내 문구 관련 수정 검토) / 2025. 7. 31. (목) 13:10"
+    }
+  ],
+  "assignment": {
+    "detail": "#요청사항<br>NFC 유심 리뉴얼에 따른 안내문구 수정 건",
+    "dividerSub": "Assignment Definition for Operational",
+    "dividerMain": "01. Assignment Properties",
+    "dividerBullets": ["Assignment Detail", "Target Interface"]
+  },
+  "interfaces": [
+    {
+      "office": "Front Office",
+      "channel": "PC/MO",
+      "depth1": "유심/eSIM",
+      "depth2": "유심구매",
+      "depth3": "바로배송유심 주문",
+      "depth4": "-",
+      "interfaceType": "Page",
+      "workType": "수정",
+      "pageId": "(None)"
+    }
+  ],
+  "screens": [
+    {
+      "viewportType": "Mobile",
+      "interfaceName": "바로배송유심 주문",
+      "interfaceId": "(None)",
+      "location": "유심/eSIM → 유심 구매 → 바로배송유심 주문",
+      "pageName": "",
+      "uiImagePath": "",
+      "hasDivider": true,
+      "divider": {
+        "sub": "Assignment Definition for Operational",
+        "main": "02. Assignment Execute / Planning",
+        "bullets": ["바로배송유심 주문 (Mo/PC)"]
+      },
+      "descriptions": [
+        {
+          "marker": 1,
+          "label": "바로배송유심 안내 문구",
+          "before": "NFC 유심 리뉴얼 전 안내 문구",
+          "after": "NFC 유심 리뉴얼 후 변경된 안내 문구"
+        }
+      ]
+    },
+    {
+      "viewportType": "PC",
+      "interfaceName": "바로배송유심 주문",
+      "interfaceId": "(None)",
+      "location": "유심/eSIM → 유심 구매 → 바로배송유심 주문",
+      "pageName": "",
+      "uiImagePath": "",
+      "hasDivider": false,
+      "descriptions": [
+        {
+          "marker": 1,
+          "label": "바로배송유심 안내 문구",
+          "before": "NFC 유심 리뉴얼 전 안내 문구",
+          "after": "NFC 유심 리뉴얼 후 변경된 안내 문구"
+        }
+      ]
+    }
+  ]
+}
