@@ -1,0 +1,71 @@
+{
+  "enabled": true,
+  "auth": {
+    "token": "{NOTION_TOKEN}",
+    "notion_version": "2022-06-28"
+  },
+  "pages": {
+    "ops_hub": {
+      "id": "{OPS_HUB_PAGE_ID}",
+      "url": ""
+    }
+  },
+  "databases": {},
+  "tasks_schema": {
+    "properties": {
+      "Name": "title",
+      "Ticket": "rich_text",
+      "Task #": "number",
+      "Type": "select",
+      "Status": "select",
+      "Priority": "select",
+      "Target Pages": "rich_text",
+      "Detail": "rich_text",
+      "Plan": "rich_text",
+      "Result": "rich_text",
+      "AS_IS": "rich_text",
+      "TO_BE": "rich_text",
+      "Verified": "checkbox",
+      "Blocker": "rich_text"
+    },
+    "type_options": [
+      {"name": "TXT", "color": "gray"},
+      {"name": "IMG", "color": "blue"},
+      {"name": "FNC", "color": "orange"},
+      {"name": "NEW", "color": "green"},
+      {"name": "STR", "color": "purple"},
+      {"name": "ETC", "color": "default"}
+    ],
+    "status_options": [
+      {"name": "대기", "color": "default"},
+      {"name": "진행중", "color": "orange"},
+      {"name": "완료", "color": "green"},
+      {"name": "확인필요", "color": "yellow"},
+      {"name": "블로커", "color": "red"},
+      {"name": "보류", "color": "gray"}
+    ],
+    "priority_options": [
+      {"name": "긴급", "color": "red"},
+      {"name": "높음", "color": "orange"},
+      {"name": "보통", "color": "yellow"},
+      {"name": "낮음", "color": "gray"}
+    ]
+  },
+  "email": {
+    "enabled": false,
+    "imap_host": "imap.worksmobile.com",
+    "imap_port": 993,
+    "address": "{EMAIL_ADDRESS}",
+    "password": "{EMAIL_PASSWORD}",
+    "filter": {
+      "skip_domains": ["email.figma.com"],
+      "skip_subjects": [],
+      "sender_project_map": {}
+    }
+  },
+  "ops": {
+    "hub_path": "{HUB_PATH}",
+    "ticket_prefix": "OPS",
+    "projects": {}
+  }
+}

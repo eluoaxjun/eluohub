@@ -1,0 +1,7 @@
+{
+  "name": "publish",
+  "description": "시맨틱 HTML, CSS Custom Properties, 바닐라 JS 퍼블리싱",
+  "version": "1.0.0",
+  "author": { "name": "Eluo Digital Agency" },
+  "keywords": ["publish", "html", "css", "javascript", "semantic"]
+}

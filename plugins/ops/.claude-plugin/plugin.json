@@ -1,0 +1,7 @@
+{
+  "name": "ops",
+  "description": "유지운영 요청접수, 티켓관리, Notion 동기화",
+  "version": "1.0.0",
+  "author": { "name": "Eluo Digital Agency" },
+  "keywords": ["ops", "maintenance", "notion", "ticket"]
+}

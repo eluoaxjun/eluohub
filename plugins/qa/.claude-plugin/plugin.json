@@ -1,0 +1,7 @@
+{
+  "name": "qa",
+  "description": "기능/접근성/성능 테스트, WCAG 2.1 AA, Core Web Vitals",
+  "version": "1.0.0",
+  "author": { "name": "Eluo Digital Agency" },
+  "keywords": ["qa", "testing", "accessibility", "performance", "wcag"]
+}

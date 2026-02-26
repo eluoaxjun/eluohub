@@ -1,0 +1,7 @@
+{
+  "name": "core",
+  "description": "공통 규칙, PM Router (필수)",
+  "version": "1.0.0",
+  "author": { "name": "Eluo Digital Agency" },
+  "keywords": ["core", "rules", "router", "pm"]
+}

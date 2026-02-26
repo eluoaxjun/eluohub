@@ -1,0 +1,53 @@
+{
+  "name": "eluo-hub",
+  "owner": { "name": "Eluo Digital Agency" },
+  "metadata": {
+    "description": "웹 에이전시 기획-디자인-퍼블리싱-QA-운영 자동화",
+    "version": "1.0.0",
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "core",
+      "source": "./plugins/core",
+      "description": "공통 규칙, PM Router (필수)",
+      "version": "1.0.0",
+      "tags": ["core", "rules", "router"]
+    },
+    {
+      "name": "planning",
+      "source": "./plugins/planning",
+      "description": "기획 산출물 자동 생성 (QST, REQ, FN, IA, WBS, Dashboard)",
+      "version": "1.0.0",
+      "tags": ["planning", "requirements", "functional-spec"]
+    },
+    {
+      "name": "design",
+      "source": "./plugins/design",
+      "description": "벤치마킹, HTML 시안 A/B/C 생성, 스타일가이드",
+      "version": "1.0.0",
+      "tags": ["design", "benchmark", "html-mockup"]
+    },
+    {
+      "name": "publish",
+      "source": "./plugins/publish",
+      "description": "시맨틱 HTML, CSS Custom Properties, 바닐라 JS",
+      "version": "1.0.0",
+      "tags": ["publish", "html", "css", "javascript"]
+    },
+    {
+      "name": "qa",
+      "source": "./plugins/qa",
+      "description": "기능/접근성/성능 테스트, WCAG 2.1 AA, Core Web Vitals",
+      "version": "1.0.0",
+      "tags": ["qa", "testing", "accessibility", "performance"]
+    },
+    {
+      "name": "ops",
+      "source": "./plugins/ops",
+      "description": "유지운영 요청접수, 티켓관리, Notion 동기화",
+      "version": "1.0.0",
+      "tags": ["ops", "maintenance", "notion"]
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "name": "design",
+  "description": "벤치마킹, HTML 시안 A/B/C 생성, 스타일가이드",
+  "version": "1.0.0",
+  "author": { "name": "Eluo Digital Agency" },
+  "keywords": ["design", "benchmark", "html-mockup", "style-guide"]
+}
