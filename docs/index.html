@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eluo Hub — 웹 에이전시 자동화 플러그인 마켓플레이스</title>
+  <meta name="description" content="Claude Code 플러그인으로 기획-디자인-퍼블리싱-QA-운영을 자동화합니다. 필요한 단계만 선택 설치하세요.">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+  <!-- ═══ GNB ═══ -->
+  <header class="gnb">
+    <div class="container">
+      <div class="gnb__inner">
+        <a href="index.html" class="gnb__logo">
+          <span class="gnb__logo-mark"></span>
+          Eluo Hub
+        </a>
+        <nav class="gnb__nav">
+          <a href="#plugins" class="gnb__link">플러그인</a>
+          <a href="#configurator" class="gnb__link">설정 생성기</a>
+          <a href="#commands" class="gnb__link">커맨드</a>
+          <a href="#install" class="gnb__link">설치 가이드</a>
+          <a href="guide.html" class="gnb__link">상세 가이드</a>
+        </nav>
+        <div class="gnb__actions">
+          <a href="https://github.com/eluoaxjun/eluohub" class="btn btn--sm btn--navy" target="_blank" rel="noopener">GitHub</a>
+          <button class="gnb__toggle" aria-label="메뉴 열기/닫기">
+            <span class="gnb__toggle-icon"><span></span><span></span><span></span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <nav class="mobile-nav">
+      <a href="#plugins" class="mobile-nav__link">플러그인</a>
+      <a href="#configurator" class="mobile-nav__link">설정 생성기</a>
+      <a href="#commands" class="mobile-nav__link">커맨드</a>
+      <a href="#install" class="mobile-nav__link">설치 가이드</a>
+      <a href="guide.html" class="mobile-nav__link">상세 가이드</a>
+    </nav>
+  </header>
+
+  <!-- ═══ 1. Hero ═══ -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero__inner">
+        <div class="hero__badge">
+          <span>v1.0.0</span>
+          <span>Claude Code Plugin</span>
+        </div>
+        <h1 class="hero__title">
+          웹 에이전시<br>
+          <span class="hero__title-accent">자동화 허브</span>
+        </h1>
+        <p class="hero__desc">
+          기획부터 디자인, 퍼블리싱, QA, 운영까지.
+          필요한 단계만 선택 설치하여 프로젝트를 자동화합니다.
+        </p>
+        <div class="hero__stats">
+          <div class="hero__stat"><strong>6</strong> 플러그인</div>
+          <div class="hero__stat"><strong>21</strong> 스킬</div>
+          <div class="hero__stat"><strong>13</strong> 커맨드</div>
+          <div class="hero__stat"><strong>9</strong> 에이전트</div>
+        </div>
+        <div class="hero__actions">
+          <a href="#configurator" class="btn btn--primary btn--lg">설정 생성하기</a>
+          <a href="#plugins" class="btn btn--outline btn--lg" style="border-color: rgba(255,255,255,0.3); color: #fff;">플러그인 둘러보기</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 2. Pipeline ═══ -->
+  <section class="section pipeline-section fade-in" id="pipeline">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-header__title">자동화 파이프라인</h2>
+        <p class="section-header__subtitle">프로젝트 단계별로 필요한 플러그인을 조합합니다</p>
+      </div>
+      <div class="pipeline-visual">
+        <div class="pipeline-node">
+          <div class="pipeline-node__icon" style="background-color: #3B82F6;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+          </div>
+          <span class="pipeline-node__name">Planning</span>
+          <span class="pipeline-node__desc">기획 산출물 자동 생성</span>
+        </div>
+        <div class="pipeline-connector">&rarr;</div>
+        <div class="pipeline-node">
+          <div class="pipeline-node__icon" style="background-color: #8B5CF6;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          </div>
+          <span class="pipeline-node__name">Design</span>
+          <span class="pipeline-node__desc">벤치마킹 + HTML 시안</span>
+        </div>
+        <div class="pipeline-connector">&rarr;</div>
+        <div class="pipeline-node">
+          <div class="pipeline-node__icon" style="background-color: #10B981;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/></svg>
+          </div>
+          <span class="pipeline-node__name">Publish</span>
+          <span class="pipeline-node__desc">프로덕션 코드 변환</span>
+        </div>
+        <div class="pipeline-connector">&rarr;</div>
+        <div class="pipeline-node">
+          <div class="pipeline-node__icon" style="background-color: #F59E0B;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          </div>
+          <span class="pipeline-node__name">QA</span>
+          <span class="pipeline-node__desc">기능/접근성/성능 테스트</span>
+        </div>
+        <div class="pipeline-connector" style="opacity: 0.4;">|</div>
+        <div class="pipeline-branch">
+          <div class="pipeline-branch__line"></div>
+          <div class="pipeline-node">
+            <div class="pipeline-node__icon" style="background-color: #EF4444;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9"/></svg>
+            </div>
+            <span class="pipeline-node__name">Ops</span>
+            <span class="pipeline-node__desc">유지운영 자동화</span>
+          </div>
+        </div>
+      </div>
+      <p class="text-center text-sm text-secondary" style="margin-top: var(--space-4);">
+        모든 플러그인은 <strong>Core</strong> 플러그인을 기반으로 동작합니다
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══ 3. Plugin Catalog ═══ -->
+  <section class="section section--alt fade-in" id="plugins">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-header__title">플러그인 카탈로그</h2>
+        <p class="section-header__subtitle">프로젝트에 필요한 단계만 골라서 설치하세요</p>
+      </div>
+      <div class="card-grid" id="plugin-grid">
+
+        <!-- Core -->
+        <div class="card">
+          <div class="card__icon" style="background-color: rgba(107,114,128,0.1);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          </div>
+          <h3 class="card__title">Core <span class="tag tag--version">v1.0.0</span></h3>
+          <p class="card__desc">공통 규칙과 PM Router를 포함하는 필수 패키지. 모든 플러그인의 기반입니다.</p>
+          <div class="card__footer">
+            <div class="tags">
+              <span class="tag">필수</span>
+              <span class="tag">1 스킬</span>
+            </div>
+            <a href="plugin/core.html" class="card__link">상세보기</a>
+          </div>
+        </div>
+
+        <!-- Planning -->
+        <div class="card">
+          <div class="card__icon" style="background-color: rgba(59,130,246,0.1);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+          </div>
+          <h3 class="card__title">Planning <span class="tag tag--version">v1.0.0</span></h3>
+          <p class="card__desc">QST, REQ, FN, IA, WBS, SB, Dashboard까지 기획 산출물을 자동 생성합니다.</p>
+          <div class="card__footer">
+            <div class="tags">
+              <span class="tag">8 스킬</span>
+              <span class="tag">7 커맨드</span>
+              <span class="tag">2 에이전트</span>
+            </div>
+            <a href="plugin/planning.html" class="card__link">상세보기</a>
+          </div>
+        </div>
+
+        <!-- Design -->
+        <div class="card">
+          <div class="card__icon" style="background-color: rgba(139,92,246,0.1);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          </div>
+          <h3 class="card__title">Design <span class="tag tag--version">v1.0.0</span></h3>
+          <p class="card__desc">경쟁사 벤치마킹과 HTML 기반 디자인 시안(A/B/C)을 자동 생성합니다.</p>
+          <div class="card__footer">
+            <div class="tags">
+              <span class="tag">2 스킬</span>
+              <span class="tag">2 커맨드</span>
+              <span class="tag">2 에이전트</span>
+            </div>
+            <a href="plugin/design.html" class="card__link">상세보기</a>
+          </div>
+        </div>
+
+        <!-- Publish -->
+        <div class="card">
+          <div class="card__icon" style="background-color: rgba(16,185,129,0.1);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/></svg>
+          </div>
+          <h3 class="card__title">Publish <span class="tag tag--version">v1.0.0</span></h3>
+          <p class="card__desc">디자인 시안을 시맨틱 HTML + CSS + 바닐라 JS로 변환합니다.</p>
+          <div class="card__footer">
+            <div class="tags">
+              <span class="tag">4 스킬</span>
+              <span class="tag">1 커맨드</span>
+              <span class="tag">2 에이전트</span>
+            </div>
+            <a href="plugin/publish.html" class="card__link">상세보기</a>
+          </div>
+        </div>
+
+        <!-- QA -->
+        <div class="card">
+          <div class="card__icon" style="background-color: rgba(245,158,11,0.1);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          </div>
+          <h3 class="card__title">QA <span class="tag tag--version">v1.0.0</span></h3>
+          <p class="card__desc">기능/접근성/성능 테스트를 통합 실행합니다. WCAG 2.1 AA, Core Web Vitals.</p>
+          <div class="card__footer">
+            <div class="tags">
+              <span class="tag">4 스킬</span>
+              <span class="tag">2 커맨드</span>
+              <span class="tag">2 에이전트</span>
+            </div>
+            <a href="plugin/qa.html" class="card__link">상세보기</a>
+          </div>
+        </div>
+
+        <!-- Ops -->
+        <div class="card">
+          <div class="card__icon" style="background-color: rgba(239,68,68,0.1);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9"/></svg>
+          </div>
+          <h3 class="card__title">Ops <span class="tag tag--version">v1.0.0</span></h3>
+          <p class="card__desc">유지운영 요청을 접수하고, 티켓으로 관리하며, Notion과 동기화합니다.</p>
+          <div class="card__footer">
+            <div class="tags">
+              <span class="tag">2 스킬</span>
+              <span class="tag">1 커맨드</span>
+              <span class="tag">1 에이전트</span>
+            </div>
+            <a href="plugin/ops.html" class="card__link">상세보기</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 4. Configurator ═══ -->
+  <section class="section fade-in" id="configurator">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-header__title">설정 생성기</h2>
+        <p class="section-header__subtitle">필요한 플러그인을 선택하면 settings.json과 설치 커맨드가 자동 생성됩니다</p>
+      </div>
+
+      <div style="text-align:center; margin-bottom: var(--space-8);">
+        <div class="preset-group" style="justify-content:center;">
+          <button class="preset-btn is-active" data-preset="all">전체 설치</button>
+          <button class="preset-btn" data-preset="build">구축 모드</button>
+          <button class="preset-btn" data-preset="ops">운영 모드</button>
+        </div>
+      </div>
+
+      <div class="configurator" id="configurator-form">
+        <!-- 좌: 플러그인 선택 -->
+        <div class="configurator__panel">
+          <div class="configurator__title">
+            플러그인 선택
+            <span class="configurator__title-count">(<span id="selected-count">6</span>/6)</span>
+          </div>
+          <div class="configurator__plugins">
+            <label class="checkbox">
+              <input type="checkbox" data-plugin="core" checked disabled>
+              <div>
+                <div class="checkbox__label">Core <span class="tag tag--primary" style="margin-left:4px;">필수</span></div>
+                <div class="checkbox__desc">공통 규칙, PM Router</div>
+              </div>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" data-plugin="planning" checked>
+              <div>
+                <div class="checkbox__label">Planning</div>
+                <div class="checkbox__desc">기획 산출물 자동 생성 (QST, REQ, FN, IA, WBS, SB, Dashboard)</div>
+              </div>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" data-plugin="design" checked>
+              <div>
+                <div class="checkbox__label">Design</div>
+                <div class="checkbox__desc">벤치마킹, HTML 시안 A/B/C 생성, 스타일가이드</div>
+              </div>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" data-plugin="publish" checked>
+              <div>
+                <div class="checkbox__label">Publish</div>
+                <div class="checkbox__desc">시맨틱 HTML, CSS Custom Properties, 바닐라 JS</div>
+              </div>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" data-plugin="qa" checked>
+              <div>
+                <div class="checkbox__label">QA</div>
+                <div class="checkbox__desc">기능/접근성/성능 테스트, WCAG 2.1 AA</div>
+              </div>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" data-plugin="ops" checked>
+              <div>
+                <div class="checkbox__label">Ops</div>
+                <div class="checkbox__desc">유지운영 요청접수, 티켓관리, Notion 동기화</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- 우: 출력 -->
+        <div style="display:flex; flex-direction:column; gap:var(--space-6);">
+          <!-- settings.json -->
+          <div class="code-block">
+            <div class="code-block__header">
+              <span class="code-block__label">.claude/settings.json</span>
+              <button class="btn-copy" data-copy-target="settings-output">
+                <svg class="btn-copy__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                복사
+              </button>
+            </div>
+            <div class="code-block__body">
+              <pre id="settings-output"></pre>
+            </div>
+          </div>
+
+          <!-- 설치 커맨드 -->
+          <div class="code-block">
+            <div class="code-block__header">
+              <span class="code-block__label">설치 커맨드</span>
+              <button class="btn-copy" data-copy-target="commands-output">
+                <svg class="btn-copy__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                복사
+              </button>
+            </div>
+            <div class="code-block__body">
+              <pre id="commands-output"></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 5. Command Reference ═══ -->
+  <section class="section section--alt fade-in" id="commands">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-header__title">커맨드 레퍼런스</h2>
+        <p class="section-header__subtitle">각 플러그인이 제공하는 슬래시 커맨드 목록</p>
+      </div>
+
+      <div data-tabs>
+        <div class="tabs">
+          <button class="tabs__item is-active" data-tab="tab-planning">Planning (7)</button>
+          <button class="tabs__item" data-tab="tab-design">Design (2)</button>
+          <button class="tabs__item" data-tab="tab-publish">Publish (1)</button>
+          <button class="tabs__item" data-tab="tab-qa">QA (2)</button>
+          <button class="tabs__item" data-tab="tab-ops">Ops (1)</button>
+        </div>
+
+        <div class="tab-panel is-active" data-panel="tab-planning">
+          <div class="table-wrap">
+            <table class="table cmd-table">
+              <thead><tr><th>커맨드</th><th>설명</th></tr></thead>
+              <tbody>
+                <tr><td><code>/planning:plan</code></td><td>기획 전체 파이프라인 (QST → REQ → FN → IA → WBS)</td></tr>
+                <tr><td><code>/planning:qst</code></td><td>고객질의서 생성</td></tr>
+                <tr><td><code>/planning:req</code></td><td>요구사항정의서 생성</td></tr>
+                <tr><td><code>/planning:fn</code></td><td>기능정의서 생성</td></tr>
+                <tr><td><code>/planning:sb</code></td><td>화면설계서 자동 생성</td></tr>
+                <tr><td><code>/planning:wbs</code></td><td>작업분해구조 생성</td></tr>
+                <tr><td><code>/planning:dashboard</code></td><td>프로젝트 대시보드</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-panel="tab-design">
+          <div class="table-wrap">
+            <table class="table cmd-table">
+              <thead><tr><th>커맨드</th><th>설명</th></tr></thead>
+              <tbody>
+                <tr><td><code>/design:design</code></td><td>디자인 전체 파이프라인 (벤치마킹 → DK → 레이아웃 → HTML 시안)</td></tr>
+                <tr><td><code>/design:benchmark</code></td><td>경쟁사/레퍼런스 벤치마킹 분석</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-panel="tab-publish">
+          <div class="table-wrap">
+            <table class="table cmd-table">
+              <thead><tr><th>커맨드</th><th>설명</th></tr></thead>
+              <tbody>
+                <tr><td><code>/publish:publish</code></td><td>퍼블리싱 전체 (Markup → Style → Interaction)</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-panel="tab-qa">
+          <div class="table-wrap">
+            <table class="table cmd-table">
+              <thead><tr><th>커맨드</th><th>설명</th></tr></thead>
+              <tbody>
+                <tr><td><code>/qa:qa-run</code></td><td>QA 전체 실행 (기능 + 접근성 + 성능)</td></tr>
+                <tr><td><code>/qa:qa</code></td><td>테스트계획서 생성</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tab-panel" data-panel="tab-ops">
+          <div class="table-wrap">
+            <table class="table cmd-table">
+              <thead><tr><th>커맨드</th><th>설명</th></tr></thead>
+              <tbody>
+                <tr><td><code>/ops:maintenance</code></td><td>유지운영 요청 접수 + 티켓 관리</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 6. Install Guide ═══ -->
+  <section class="section fade-in" id="install">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-header__title">설치 가이드</h2>
+        <p class="section-header__subtitle">3단계로 시작하세요</p>
+      </div>
+
+      <div class="guide-steps" style="margin: 0 auto;">
+        <div class="steps">
+          <div class="step">
+            <div class="step__number">1</div>
+            <div class="step__content">
+              <div class="step__title">마켓플레이스 등록</div>
+              <p class="step__desc">Claude Code에서 Eluo Hub 마켓플레이스를 등록합니다.</p>
+              <div class="code-block" style="margin-top: var(--space-3);">
+                <div class="code-block__header">
+                  <span class="code-block__label">Claude Code</span>
+                  <button class="btn-copy"><svg class="btn-copy__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> 복사</button>
+                </div>
+                <div class="code-block__body"><pre>/plugin marketplace add eluoaxjun/eluohub</pre></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step__number">2</div>
+            <div class="step__content">
+              <div class="step__title">플러그인 설치</div>
+              <p class="step__desc">core는 필수, 나머지는 필요한 것만 선택 설치합니다.</p>
+              <div class="code-block" style="margin-top: var(--space-3);">
+                <div class="code-block__header">
+                  <span class="code-block__label">Claude Code</span>
+                  <button class="btn-copy"><svg class="btn-copy__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> 복사</button>
+                </div>
+                <div class="code-block__body"><pre>/plugin install core@eluo-hub
+/plugin install planning@eluo-hub</pre></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step__number">3</div>
+            <div class="step__content">
+              <div class="step__title">프로젝트 설정 (선택)</div>
+              <p class="step__desc">팀원 자동 안내를 위해 프로젝트 settings.json에 추가합니다. 위 <a href="#configurator" style="color:var(--color-navy); text-decoration:underline;">설정 생성기</a>에서 복사할 수 있습니다.</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:center; margin-top:var(--space-8);">
+          <a href="guide.html" class="btn btn--outline">상세 설치 가이드 보기</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 7. Footer ═══ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div class="footer__logo">Eluo Hub</div>
+        <p style="color: var(--color-gray-400); font-size: var(--font-sm); max-width: 480px;">
+          웹 에이전시 기획-디자인-퍼블리싱-QA-운영 자동화 플러그인 마켓플레이스
+        </p>
+        <div class="footer__links">
+          <a href="https://github.com/eluoaxjun/eluohub" class="footer__link" target="_blank" rel="noopener">GitHub</a>
+          <a href="guide.html" class="footer__link">설치 가이드</a>
+          <a href="changelog.html" class="footer__link">변경 이력</a>
+        </div>
+        <p class="footer__copy">
+          v1.0.0 &middot; Eluo Digital Agency &middot; 내부 사용
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Scripts -->
+  <script src="js/plugin-data.js"></script>
+  <script src="js/clipboard.js"></script>
+  <script src="js/configurator.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>설치 가이드 — Eluo Hub</title>
+  <meta name="description" content="Eluo Hub 플러그인 마켓플레이스 설치 가이드. 마켓플레이스 등록부터 프로젝트 설정까지 3단계로 안내합니다.">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+  <!-- GNB -->
+  <header class="gnb">
+    <div class="container">
+      <div class="gnb__inner">
+        <a href="index.html" class="gnb__logo">
+          <span class="gnb__logo-mark"></span>
+          Eluo Hub
+        </a>
+        <nav class="gnb__nav">
+          <a href="index.html#plugins" class="gnb__link">플러그인</a>
+          <a href="index.html#configurator" class="gnb__link">설정 생성기</a>
+          <a href="index.html#commands" class="gnb__link">커맨드</a>
+          <a href="guide.html" class="gnb__link gnb__link--active">설치 가이드</a>
+        </nav>
+        <div class="gnb__actions">
+          <a href="https://github.com/eluoaxjun/eluohub" class="btn btn--sm btn--navy" target="_blank" rel="noopener">GitHub</a>
+          <button class="gnb__toggle" aria-label="메뉴 열기/닫기">
+            <span class="gnb__toggle-icon"><span></span><span></span><span></span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <nav class="mobile-nav">
+      <a href="index.html#plugins" class="mobile-nav__link">플러그인</a>
+      <a href="index.html#configurator" class="mobile-nav__link">설정 생성기</a>
+      <a href="index.html#commands" class="mobile-nav__link">커맨드</a>
+      <a href="guide.html" class="mobile-nav__link">설치 가이드</a>
+    </nav>
+  </header>
+
+  <!-- Guide -->
+  <section class="section">
+    <div class="container container--narrow">
+
+      <h1 style="font-size: var(--font-3xl); margin-bottom: var(--space-2);">설치 가이드</h1>
+      <p style="font-size: var(--font-lg); color: var(--color-text-secondary); margin-bottom: var(--space-10);">
+        3단계만 따라하면 팀 전체가 Eluo Hub 플러그인을 사용할 수 있습니다.
+      </p>
+
+      <!-- Requirements -->
+      <div style="background: var(--color-gray-50); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-5); margin-bottom: var(--space-10);">
+        <h3 style="font-size: var(--font-base); margin-bottom: var(--space-2);">사전 요구사항</h3>
+        <ul style="margin: 0; padding-left: var(--space-5); color: var(--color-text-secondary); font-size: var(--font-sm);">
+          <li>Claude Code <strong>v1.0.33</strong> 이상</li>
+          <li><code>/plugin</code> 커맨드 지원 버전</li>
+          <li>인터넷 연결 (GitHub 접근)</li>
+        </ul>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="guide-steps">
+
+        <div class="step" style="margin-bottom: var(--space-10);">
+          <div class="step__header">
+            <span class="step__number">1</span>
+            <div>
+              <h2 class="step__title">마켓플레이스 등록</h2>
+              <p class="step__desc">Eluo Hub 마켓플레이스를 Claude Code에 등록합니다. 최초 1회만 실행하면 됩니다.</p>
+            </div>
+          </div>
+
+          <div class="code-block" style="margin-top: var(--space-4);">
+            <div class="code-block__header">
+              <span class="code-block__label">Claude Code</span>
+              <button class="btn-copy"><svg class="btn-copy__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> 복사</button>
+            </div>
+            <div class="code-block__body"><pre>/plugin marketplace add eluoaxjun/eluohub</pre></div>
+          </div>
+
+          <p style="font-size: var(--font-sm); color: var(--color-text-secondary); margin-top: var(--space-3);">
+            실행 후 <code>eluo-hub</code> 마켓플레이스가 등록되었다는 메시지가 표시됩니다.
+          </p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step" style="margin-bottom: var(--space-10);">
+          <div class="step__header">
+            <span class="step__number">2</span>
+            <div>
+              <h2 class="step__title">플러그인 설치</h2>
+              <p class="step__desc">필요한 플러그인을 선택하여 설치합니다. <strong>Core</strong>는 모든 플러그인의 기반이므로 반드시 먼저 설치합니다.</p>
+            </div>
+          </div>
+
+          <div class="code-block" style="margin-top: var(--space-4);">
+            <div class="code-block__header">
+              <span class="code-block__label">필수</span>
+              <button class="btn-copy"><svg class="btn-copy__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> 복사</button>
+            </div>
+            <div class="code-block__body"><pre>/plugin install core@eluo-hub</pre></div>
+          </div>
+
+          <div class="code-block" style="margin-top: var(--space-3);">
+            <div class="code-block__header">
+              <span class="code-block__label">선택 — 필요한 것만 설치</span>
+              <button class="btn-copy"><svg class="btn-copy__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> 복사</button>
+            </div>
+            <div class="code-block__body"><pre>/plugin install planning@eluo-hub
+/plugin install design@eluo-hub
+/plugin install publish@eluo-hub
+/plugin install qa@eluo-hub
+/plugin install ops@eluo-hub</pre></div>
+          </div>
+
+          <h3 style="font-size: var(--font-base); margin-top: var(--space-6); margin-bottom: var(--space-3);">추천 조합</h3>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr><th>용도</th><th>플러그인 조합</th><th>설명</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="tag tag--primary">구축</span></td>
+                  <td>Core + Planning + Design + Publish + QA</td>
+                  <td>신규 사이트 구축. 기획부터 QA까지 전체 파이프라인</td>
+                </tr>
+                <tr>
+                  <td><span class="tag">운영</span></td>
+                  <td>Core + Planning + Publish + Ops</td>
+                  <td>기존 사이트 유지운영. 요청 접수 + 수정 + 배포</td>
+                </tr>
+                <tr>
+                  <td><span class="tag tag--version">전체</span></td>
+                  <td>6개 전체</td>
+                  <td>구축과 운영을 모두 커버</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p style="font-size: var(--font-sm); color: var(--color-text-secondary); margin-top: var(--space-3);">
+            어떤 조합이 좋을지 모르겠다면 <a href="index.html#configurator">설정 생성기</a>에서 프리셋을 선택해 보세요.
+          </p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step" style="margin-bottom: var(--space-10);">
+          <div class="step__header">
+            <span class="step__number">3</span>
+            <div>
+              <h2 class="step__title">프로젝트 설정 (선택)</h2>
+              <p class="step__desc">팀 프로젝트라면 <code>.claude/settings.json</code>에 설정을 추가하여 팀원이 자동으로 플러그인을 안내받도록 합니다.</p>
+            </div>
+          </div>
+
+          <div class="code-block" style="margin-top: var(--space-4);">
+            <div class="code-block__header">
+              <span class="code-block__label">.claude/settings.json</span>
+              <button class="btn-copy"><svg class="btn-copy__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> 복사</button>
+            </div>
+            <div class="code-block__body"><pre>{
+  "extraKnownMarketplaces": {
+    "eluo-hub": {
+      "source": { "source": "github", "repo": "eluoaxjun/eluohub" }
+    }
+  },
+  "enabledPlugins": {
+    "core@eluo-hub": true,
+    "planning@eluo-hub": true,
+    "design@eluo-hub": true,
+    "publish@eluo-hub": true,
+    "qa@eluo-hub": true,
+    "ops@eluo-hub": true
+  }
+}</pre></div>
+          </div>
+
+          <p style="font-size: var(--font-sm); color: var(--color-text-secondary); margin-top: var(--space-3);">
+            이 설정을 Git에 커밋하면, 팀원이 프로젝트를 열 때 자동으로 플러그인 설치 안내를 받습니다.
+            <a href="index.html#configurator">설정 생성기</a>에서 원하는 플러그인을 선택하면 이 JSON을 자동으로 생성해 줍니다.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Usage -->
+      <h2 style="margin-top: var(--space-10); margin-bottom: var(--space-4);">사용법</h2>
+
+      <p style="margin-bottom: var(--space-4); color: var(--color-text-secondary);">
+        설치 후 Claude Code에서 슬래시 커맨드로 각 기능을 실행합니다.
+      </p>
+
+      <div class="code-block" style="margin-bottom: var(--space-4);">
+        <div class="code-block__header">
+          <span class="code-block__label">기획 파이프라인</span>
+        </div>
+        <div class="code-block__body"><pre>/planning:plan       ← 기획 전체 (QST → REQ → FN → IA → WBS)
+/planning:qst        ← 고객질의서 단독 실행
+/planning:req        ← 요구사항정의서 단독 실행</pre></div>
+      </div>
+
+      <div class="code-block" style="margin-bottom: var(--space-4);">
+        <div class="code-block__header">
+          <span class="code-block__label">디자인 → 퍼블리싱 → QA</span>
+        </div>
+        <div class="code-block__body"><pre>/design:design       ← 디자인 전체 (벤치마킹 → 시안)
+/publish:publish     ← 퍼블리싱 (Markup → Style → Interaction)
+/qa:qa-run           ← QA 전체 (기능 + 접근성 + 성능)</pre></div>
+      </div>
+
+      <div class="code-block" style="margin-bottom: var(--space-4);">
+        <div class="code-block__header">
+          <span class="code-block__label">유지운영</span>
+        </div>
+        <div class="code-block__body"><pre>/ops:maintenance     ← 운영 요청 접수 + 티켓 생성 + Notion 동기화</pre></div>
+      </div>
+
+      <p style="font-size: var(--font-sm); color: var(--color-text-secondary); margin-bottom: var(--space-6);">
+        전체 커맨드 목록은 <a href="index.html#commands">커맨드 레퍼런스</a>를 참조하세요.
+      </p>
+
+      <!-- Auto Routing -->
+      <h2 style="margin-top: var(--space-8); margin-bottom: var(--space-4);">자동 라우팅</h2>
+
+      <p style="margin-bottom: var(--space-4); color: var(--color-text-secondary);">
+        Core 플러그인에 포함된 <strong>PM Router</strong>가 자연어 요청을 분석하여 적절한 파이프라인으로 자동 분기합니다.
+        슬래시 커맨드를 외우지 않아도 됩니다.
+      </p>
+
+      <div class="code-block" style="margin-bottom: var(--space-8);">
+        <div class="code-block__header">
+          <span class="code-block__label">자연어 예시</span>
+        </div>
+        <div class="code-block__body"><pre>"이 사이트 기획해줘"        → Planning 오케스트레이터
+"홈페이지 디자인 해주세요"     → Design 오케스트레이터
+"배너 이미지 교체해주세요"     → Ops 오케스트레이터 (운영)
+"QA 돌려줘"                  → QA 오케스트레이터</pre></div>
+      </div>
+
+      <!-- FAQ -->
+      <h2 style="margin-top: var(--space-8); margin-bottom: var(--space-4);">FAQ</h2>
+
+      <div style="margin-bottom: var(--space-6);">
+        <h3 style="font-size: var(--font-base); margin-bottom: var(--space-2);">Q. 플러그인을 제거하려면?</h3>
+        <div class="code-block" style="margin-bottom: var(--space-2);">
+          <div class="code-block__body"><pre>/plugin uninstall planning@eluo-hub</pre></div>
+        </div>
+        <p style="font-size: var(--font-sm); color: var(--color-text-secondary);">
+          Core를 제거하면 다른 플러그인이 정상 작동하지 않습니다. Core는 항상 유지하세요.
+        </p>
+      </div>
+
+      <div style="margin-bottom: var(--space-6);">
+        <h3 style="font-size: var(--font-base); margin-bottom: var(--space-2);">Q. 업데이트는 어떻게?</h3>
+        <p style="font-size: var(--font-sm); color: var(--color-text-secondary);">
+          동일한 <code>/plugin install</code> 커맨드를 다시 실행하면 최신 버전으로 업데이트됩니다.
+        </p>
+      </div>
+
+      <div style="margin-bottom: var(--space-6);">
+        <h3 style="font-size: var(--font-base); margin-bottom: var(--space-2);">Q. 팀원마다 다른 플러그인을 쓸 수 있나요?</h3>
+        <p style="font-size: var(--font-sm); color: var(--color-text-secondary);">
+          네. <code>.claude/settings.json</code>은 프로젝트 단위 설정이지만, 개인 환경에서 추가 플러그인을 설치해도 충돌하지 않습니다.
+        </p>
+      </div>
+
+      <div style="margin-bottom: var(--space-6);">
+        <h3 style="font-size: var(--font-base); margin-bottom: var(--space-2);">Q. 오프라인에서도 사용 가능한가요?</h3>
+        <p style="font-size: var(--font-sm); color: var(--color-text-secondary);">
+          최초 설치 시 GitHub 접근이 필요하지만, 설치된 플러그인은 로컬에 캐싱되어 이후에는 오프라인에서도 동작합니다.
+        </p>
+      </div>
+
+      <!-- Back -->
+      <div style="text-align: center; margin-top: var(--space-10); padding-top: var(--space-6); border-top: 1px solid var(--color-border);">
+        <a href="index.html" class="btn btn--outline">&larr; 홈으로</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div class="footer__logo">Eluo Hub</div>
+        <div class="footer__links">
+          <a href="https://github.com/eluoaxjun/eluohub" class="footer__link" target="_blank" rel="noopener">GitHub</a>
+          <a href="guide.html" class="footer__link">설치 가이드</a>
+          <a href="changelog.html" class="footer__link">변경 이력</a>
+        </div>
+        <p class="footer__copy">v1.0.0 &middot; Eluo Digital Agency &middot; 내부 사용</p>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+  <script src="js/clipboard.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

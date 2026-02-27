@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>변경 이력 — Eluo Hub</title>
+  <meta name="description" content="Eluo Hub 플러그인 마켓플레이스 버전별 변경 이력.">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+  <!-- GNB -->
+  <header class="gnb">
+    <div class="container">
+      <div class="gnb__inner">
+        <a href="index.html" class="gnb__logo">
+          <span class="gnb__logo-mark"></span>
+          Eluo Hub
+        </a>
+        <nav class="gnb__nav">
+          <a href="index.html#plugins" class="gnb__link">플러그인</a>
+          <a href="index.html#configurator" class="gnb__link">설정 생성기</a>
+          <a href="index.html#commands" class="gnb__link">커맨드</a>
+          <a href="guide.html" class="gnb__link">설치 가이드</a>
+        </nav>
+        <div class="gnb__actions">
+          <a href="https://github.com/eluoaxjun/eluohub" class="btn btn--sm btn--navy" target="_blank" rel="noopener">GitHub</a>
+          <button class="gnb__toggle" aria-label="메뉴 열기/닫기">
+            <span class="gnb__toggle-icon"><span></span><span></span><span></span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <nav class="mobile-nav">
+      <a href="index.html#plugins" class="mobile-nav__link">플러그인</a>
+      <a href="index.html#configurator" class="mobile-nav__link">설정 생성기</a>
+      <a href="index.html#commands" class="mobile-nav__link">커맨드</a>
+      <a href="guide.html" class="mobile-nav__link">설치 가이드</a>
+    </nav>
+  </header>
+
+  <!-- Changelog -->
+  <section class="section">
+    <div class="container container--narrow">
+
+      <h1 style="font-size: var(--font-3xl); margin-bottom: var(--space-2);">변경 이력</h1>
+      <p style="font-size: var(--font-lg); color: var(--color-text-secondary); margin-bottom: var(--space-10);">
+        Eluo Hub 플러그인 마켓플레이스의 버전별 변경사항을 기록합니다.
+      </p>
+
+      <!-- v1.0.0 -->
+      <div style="margin-bottom: var(--space-10);">
+        <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4);">
+          <h2 style="margin: 0;">v1.0.0</h2>
+          <span class="tag tag--primary">최신</span>
+          <span style="font-size: var(--font-sm); color: var(--color-text-secondary);">2026-02-27</span>
+        </div>
+
+        <p style="margin-bottom: var(--space-4); color: var(--color-text-secondary);">
+          Eluo Hub 마켓플레이스 초기 릴리스. 6개 플러그인 패키지와 웹 포털을 포함합니다.
+        </p>
+
+        <h3 style="font-size: var(--font-base); margin-bottom: var(--space-3);">플러그인</h3>
+        <div class="table-wrap" style="margin-bottom: var(--space-6);">
+          <table class="table">
+            <thead><tr><th>플러그인</th><th>버전</th><th>내용</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><a href="plugin/core.html">Core</a></td>
+                <td><code>v1.0.0</code></td>
+                <td>공통 규칙 5개 + PM Router 스킬. 모든 플러그인의 필수 기반</td>
+              </tr>
+              <tr>
+                <td><a href="plugin/planning.html">Planning</a></td>
+                <td><code>v1.0.0</code></td>
+                <td>기획 산출물 자동 생성 — QST, REQ, FN, IA, WBS, SB, Dashboard (스킬 8, 커맨드 7, 에이전트 2)</td>
+              </tr>
+              <tr>
+                <td><a href="plugin/design.html">Design</a></td>
+                <td><code>v1.0.0</code></td>
+                <td>벤치마킹 + HTML 시안 A/B/C 생성 (스킬 2, 커맨드 2, 에이전트 2)</td>
+              </tr>
+              <tr>
+                <td><a href="plugin/publish.html">Publish</a></td>
+                <td><code>v1.0.0</code></td>
+                <td>시맨틱 HTML + CSS Custom Properties + 바닐라 JS (스킬 4, 커맨드 1, 에이전트 2)</td>
+              </tr>
+              <tr>
+                <td><a href="plugin/qa.html">QA</a></td>
+                <td><code>v1.0.0</code></td>
+                <td>기능/접근성/성능 테스트 + WCAG 2.1 AA (스킬 4, 커맨드 2, 에이전트 2)</td>
+              </tr>
+              <tr>
+                <td><a href="plugin/ops.html">Ops</a></td>
+                <td><code>v1.0.0</code></td>
+                <td>유지운영 요청접수 + 티켓관리 + Notion 동기화 (스킬 2, 커맨드 1, 에이전트 1)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style="font-size: var(--font-base); margin-bottom: var(--space-3);">자산 총계</h3>
+        <div style="display: flex; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-6);">
+          <div style="background: var(--color-gray-50); border-radius: var(--radius-md); padding: var(--space-3) var(--space-5); text-align: center;">
+            <div style="font-size: var(--font-2xl); font-weight: var(--weight-bold); color: var(--color-navy);">6</div>
+            <div style="font-size: var(--font-xs); color: var(--color-text-secondary);">플러그인</div>
+          </div>
+          <div style="background: var(--color-gray-50); border-radius: var(--radius-md); padding: var(--space-3) var(--space-5); text-align: center;">
+            <div style="font-size: var(--font-2xl); font-weight: var(--weight-bold); color: var(--color-navy);">21</div>
+            <div style="font-size: var(--font-xs); color: var(--color-text-secondary);">스킬</div>
+          </div>
+          <div style="background: var(--color-gray-50); border-radius: var(--radius-md); padding: var(--space-3) var(--space-5); text-align: center;">
+            <div style="font-size: var(--font-2xl); font-weight: var(--weight-bold); color: var(--color-navy);">13</div>
+            <div style="font-size: var(--font-xs); color: var(--color-text-secondary);">커맨드</div>
+          </div>
+          <div style="background: var(--color-gray-50); border-radius: var(--radius-md); padding: var(--space-3) var(--space-5); text-align: center;">
+            <div style="font-size: var(--font-2xl); font-weight: var(--weight-bold); color: var(--color-navy);">9</div>
+            <div style="font-size: var(--font-xs); color: var(--color-text-secondary);">에이전트</div>
+          </div>
+        </div>
+
+        <h3 style="font-size: var(--font-base); margin-bottom: var(--space-3);">웹 포털</h3>
+        <ul style="margin: 0; padding-left: var(--space-5); color: var(--color-text-secondary); font-size: var(--font-sm);">
+          <li>플러그인 카탈로그 — 6개 플러그인 카드 그리드 + 상세 페이지</li>
+          <li>설정 생성기 — 체크박스 선택 → settings.json + 설치 커맨드 자동 생성</li>
+          <li>3개 프리셋 (전체 / 구축 / 운영)</li>
+          <li>커맨드 레퍼런스 — 탭 UI로 13개 커맨드 분류</li>
+          <li>파이프라인 시각화 — Planning → Design → Publish → QA + Ops 분기</li>
+          <li>설치 가이드 — 3단계 step-by-step</li>
+          <li>반응형 디자인 — 375px / 768px / 1440px</li>
+        </ul>
+      </div>
+
+      <!-- Placeholder for future versions -->
+      <div style="text-align: center; padding: var(--space-8) 0; border-top: 1px solid var(--color-border); color: var(--color-text-secondary); font-size: var(--font-sm);">
+        이전 버전 없음 — v1.0.0이 최초 릴리스입니다.
+      </div>
+
+      <!-- Back -->
+      <div style="text-align: center; margin-top: var(--space-6);">
+        <a href="index.html" class="btn btn--outline">&larr; 홈으로</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div class="footer__logo">Eluo Hub</div>
+        <div class="footer__links">
+          <a href="https://github.com/eluoaxjun/eluohub" class="footer__link" target="_blank" rel="noopener">GitHub</a>
+          <a href="guide.html" class="footer__link">설치 가이드</a>
+          <a href="changelog.html" class="footer__link">변경 이력</a>
+        </div>
+        <p class="footer__copy">v1.0.0 &middot; Eluo Digital Agency &middot; 내부 사용</p>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+  <script src="js/clipboard.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
