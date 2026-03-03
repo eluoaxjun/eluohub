@@ -3,6 +3,10 @@ name: plan-fn
 description: >
   기능정의서(FN) 생성 스킬. REQ 기반으로 상세 기능을 정의합니다.
   복잡도별 분기(4-탭/처리+에러/서술), 검증 3단계(정상/예외/에러), 의존관계 맵을 포함합니다.
+  "기능정의", "기능 명세", "FN", "기능 설계", "기능 상세",
+  "기능을 정의", "기능 분해", "기능정의서", "기능 목록 작성",
+  "기능 스펙", "어떤 기능이 필요한지", "기능별 상세" 등
+  기능을 상세하게 정의하거나 명세하는 맥락에서 자동 호출.
 argument-hint: "[REQ 파일경로 또는 기능 요구사항 텍스트]"
 allowed-tools: Read, Grep, Glob, Write, Edit
 ---
@@ -26,6 +30,27 @@ allowed-tools: Read, Grep, Glob, Write, Edit
 
 - **연계 모드**: REQ 파일의 FR-### ID를 FN에 매핑, 추적성 매트릭스 작성
 - **독립 모드**: 사용자 프롬프트에서 기능 도출, FR-### 역참조 생략, 추적성 매트릭스 생략
+
+### Step 0-A: 전방위 스캔
+
+Step 0 완료 후, `output/planning/` 디렉토리를 전체 스캔하여 형제 산출물의 존재 여부를 파악합니다.
+
+| 스캔 대상 | 경로 패턴 | 역할 |
+|-----------|----------|------|
+| REQ | `output/planning/REQ_*.md` | **직접 선행 (매핑 근거)** — FR→FN 매핑 |
+| QST | `output/planning/QST_*.md` | 보조 참조 — 업종/타겟/비즈니스 목표 참고 |
+| IA | `output/planning/IA_*.md` 또는 `IA-*.md` | 보조 참조 — 페이지 수/구조 참고 (FN-IA 매핑 힌트) |
+| WBS | `output/planning/WBS_*.md` | 보조 참조 — 일정 제약 참고 |
+| _context | `output/planning/_context.md` | 누적 컨텍스트 — 프로젝트명, FR 수, 우선순위 분포, NFR 목록 |
+
+**전방위 스캔 출력 (필수)**:
+```
+[전방위 스캔] REQ:{n} QST:{n} IA:{n} WBS:{n} _context:{존재/미존재}
+```
+
+- **직접 선행** 발견 시: Step 0의 연계 모드로 전환 (기존 로직)
+- **보조 참조** 발견 시: 프로젝트명·업종·우선순위 등을 추출하여 FN 작성 시 일관성 유지
+- **_context.md** 존재 시: 프로젝트명, FR 수/우선순위 분포, NFR 목록을 로드 → 복잡도 판단 및 기능 분해 시 활용
 
 ## 전제조건
 
@@ -188,11 +213,106 @@ allowed-tools: Read, Grep, Glob, Write, Edit
 ═══════════════════════════════════
 ```
 
+## 컨텍스트 전파
+
+### _context.md 읽기 (Step 0에서 수행)
+
+`output/planning/_context.md`가 존재하면 아래 필드를 로드하여 FN 작성에 활용합니다.
+
+| 필드 | 활용 |
+|------|------|
+| 프로젝트명 | FN 헤더에 동일 프로젝트명 사용 |
+| 업종 | 공통 FN 패턴 누락 검증 시 업종 참조 |
+| REQ FR 수/우선순위 | FR→FN 매핑 범위 확인, 복잡도 사전 추정 |
+| REQ 핵심 FR (High) | High FR 우선 작성 순서 결정 |
+
+### _context.md 기록 (완료 시 필수)
+
+산출물 생성 완료 후 `output/planning/_context.md`에 아래 블록을 **추가(append)** 합니다.
+
+```markdown
+## FN 요약
+- 생성일: {YYYY-MM-DD}
+- 총 기능: {n}개
+- 복잡도: 높음 {n} / 중간 {n} / 낮음 {n}
+- 의존관계 수: {n}건
+- 핵심 기능 (높음): {FN-### 목록}
+```
+
+### Mini-PM 자가 점검 (3문항)
+
+| ID | 점검 문항 | 판정 기준 |
+|----|----------|----------|
+| PM-1 | REQ의 모든 FR이 최소 1개 FN에 매핑되었는가? (연계 모드) / 프롬프트 기능이 모두 FN화되었는가? (독립 모드) | orphan FR 0건 = Pass |
+| PM-2 | _context.md의 프로젝트명·업종과 FN 헤더가 일치하는가? | 불일치 0건 = Pass |
+| PM-3 | _context.md의 FR 수 대비 FN 수가 합리적 범위인가? (FN ≥ FR) | FN < FR이면 Fail |
+
+```
+[Mini-PM] PM-1: {Pass/Fail} | PM-2: {Pass/Fail} | PM-3: {Pass/Fail}
+```
+
 ## 출력 형식
 - 파일명: `FN_{프로젝트코드}_{버전}.md`
 - 저장 경로: `output/planning/`
 
-## 품질 체크
-작성 완료 시 체크리스트: [checklist.md](checklist.md) 참조
+## 품질 체크 (Self-Check)
+
+산출물 생성 완료 후 아래 검증을 자동 수행합니다.
+
+### 입력 검증
+
+| ID | 검증 항목 | 유형 | 수준 | 판정 기준 |
+|----|----------|------|------|----------|
+| V1 | REQ 존재 + FR-### 유효성 | E+R | 연계 필수 | output/planning/REQ_*.md 존재 + FR-### ID 전수 파싱 가능. 연계 모드: FAIL 시 생성 중단 / 독립 모드: N/A (프롬프트 기반 진행) |
+
+### 내부 구조 검증
+
+| # | 검증 항목 | 판정 기준 |
+|---|----------|----------|
+| 1 | FN-ID 연속성 | FN-001부터 빈번호 없음 |
+| 2 | FR→FN 매핑 | orphan FR 0건 (모든 FR이 최소 1 FN에 매핑) `[연계 모드 전용]` |
+| 3 | 복잡도별 명세 충족 | 높음=4탭(입력/처리/출력/에러), 중간=처리+에러, 낮음=서술 |
+| 4 | 검증 기준 3단계 | 복잡도 중간 이상: 정상/예외/에러 시나리오 정의 |
+| 5 | AC 전파 | FR의 AC → FN 검증기준에 반영 `[연계 모드 전용]` |
+| 6 | META 복잡도 정합성 | META JSON의 high/medium/low 합산 = fn_count. 본문 FN 카드 복잡도와 META 수치 1:1 대조 |
+
+### 교차 검증 (Cross-Validation)
+
+| # | 검증 항목 | 판정 기준 |
+|---|----------|----------|
+| X1 | 프로젝트명 일관성 | _context.md의 프로젝트명과 FN 헤더 프로젝트명 일치. _context.md 미존재 시 N/A |
+| X2 | FR↔FN 수량 정합성 | _context.md의 FR 수 ≤ FN 수 (FN ≥ FR 원칙). _context.md 미존재 시 N/A |
+| X3 | High FR→높음 FN 매핑 | _context.md의 핵심 FR(High)이 FN에서 복잡도 '높음'으로 매핑되었는가. _context.md 미존재 시 N/A |
+
+### Self-Check 출력
+
+```
+═══════════════════════════════════
+[Self-Check] plan-fn
+═══════════════════════════════════
+▶ 입력 검증
+| V1 | REQ 존재 + FR-### 유효 | 연계 필수 | {Pass/Fail/N/A} |
+▶ 내부 구조 검증
+| 1 | FN-ID 연속성         | {Pass/Fail} |
+| 2 | FR→FN 매핑           | {Pass/Fail/N/A} |
+| 3 | 복잡도별 명세         | {Pass/Fail} |
+| 4 | 검증 기준 3단계       | {Pass/Fail} |
+| 5 | AC 전파              | {Pass/Fail/N/A} |
+| 6 | META 복잡도 정합성    | {Pass/Fail — high:n/medium:n/low:n} |
+▶ 교차 검증
+| X1 | 프로젝트명 일관성    | {Pass/N/A} |
+| X2 | FR↔FN 수량 정합성    | {Pass/Fail/N/A} |
+| X3 | High FR→높음 매핑    | {Pass/Fail/N/A} |
+───────────────────────────────────
+판정: {PASS — 10/10} 또는 {FAIL — n/10}
+═══════════════════════════════════
+```
+
+- V1: 연계 모드 Fail 시 "REQ 산출물이 필요합니다. /plan-req 를 먼저 실행하세요." + 즉시 중단. 독립 모드 시 N/A 처리
+- `[연계 모드 전용]` 항목: REQ 미존재(독립 모드) 시 N/A 처리
+- 항목 6 Fail 시: 불일치 FN-### 목록 + "본문: {복잡도} ↔ META: {복잡도}" 상세 출력
+
+### 상세 체크리스트
+전체 항목: [checklist.md](checklist.md) 참조 (reviewer 검수 시 사용)
 
 $ARGUMENTS
