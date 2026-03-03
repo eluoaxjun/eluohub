@@ -73,9 +73,29 @@ Step 0 완료 후, `output/planning/` 디렉토리를 전체 스캔하여 형제
 - 우선순위별 작성 순서 결정 (High → Medium → Low)
 
 ### 2. 기능 분해
+
+#### 기본 모드 (FN 15개 미만)
 - FR의 "설명"을 화면 단위 기능으로 분해
 - 목록-상세 패턴 식별 (목록 FN + 상세 FN 분리)
 - 횡단 기능 식별 (다국어, 공통 헤더/푸터, 검색 등)
+
+#### 대규모 모드 (FN 15개 이상, 선택적 활성화)
+
+FR 분해 결과 FN이 15개 이상이면 3계층 구조 전환을 **권고**합니다.
+
+| 계층 | ID 형식 | 설명 | 예시 |
+|------|---------|------|------|
+| Epic | EP-XXX | 비즈니스 목표 단위 | EP-001 회원 시스템 |
+| Feature | FT-XXX-NN | 사용자 기능 단위 | FT-001-01 회원가입 |
+| Story | ST-XXX-NN-NN | 구현 태스크 | ST-001-01-01 이메일 인증 |
+
+- Epic: 비즈니스 목표 1개 = Epic 1개 (최대 7개 권장)
+- Feature: Epic 내 사용자 기능 (INVEST 원칙 적용)
+- Story: Feature 내 구현 가능 단위
+
+> 대규모 모드 사용 시 기존 FN-### ID는 Feature 레벨에 매핑.
+> 기존 추적 체인(FR→FN→UI→TC)은 FR→FT→UI→TC로 자연 전환.
+> 사용자가 기본 모드 유지를 선택하면 FN-### 플랫 리스트로 진행.
 
 ### 3. 상세 정의 — 복잡도별 분기
 
@@ -275,6 +295,7 @@ Step 0 완료 후, `output/planning/` 디렉토리를 전체 스캔하여 형제
 | 4 | 검증 기준 3단계 | 복잡도 중간 이상: 정상/예외/에러 시나리오 정의 |
 | 5 | AC 전파 | FR의 AC → FN 검증기준에 반영 `[연계 모드 전용]` |
 | 6 | META 복잡도 정합성 | META JSON의 high/medium/low 합산 = fn_count. 본문 FN 카드 복잡도와 META 수치 1:1 대조 |
+| 7 | 대규모 모드 권고 | FN 15개 이상 시 대규모 모드(Epic→Feature→Story) 전환 권고 메시지 출력 `[권장]` |
 
 ### 교차 검증 (Cross-Validation)
 
@@ -299,6 +320,7 @@ Step 0 완료 후, `output/planning/` 디렉토리를 전체 스캔하여 형제
 | 4 | 검증 기준 3단계       | {Pass/Fail} |
 | 5 | AC 전파              | {Pass/Fail/N/A} |
 | 6 | META 복잡도 정합성    | {Pass/Fail — high:n/medium:n/low:n} |
+| 7 | 대규모 모드 권고      | {Pass/N/A} |
 ▶ 교차 검증
 | X1 | 프로젝트명 일관성    | {Pass/N/A} |
 | X2 | FR↔FN 수량 정합성    | {Pass/Fail/N/A} |
