@@ -1,0 +1,12 @@
+{
+  "name": "eluo-hub",
+  "version": "1.1.0",
+  "description": "웹 에이전시 기획 자동화 플러그인",
+  "author": {
+    "name": "Eluo Digital Agency"
+  },
+  "repository": "https://github.com/eluoaxjun/eluohub",
+  "license": "MIT",
+  "skills": "./plugins/",
+  "hooks": "./hooks/hooks.json"
+}
