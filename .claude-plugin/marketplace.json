@@ -1,25 +1,14 @@
 {
   "name": "eluo-hub",
   "owner": { "name": "Eluo Digital Agency" },
-  "metadata": {
-    "description": "웹 에이전시 기획 자동화",
-    "version": "1.1.0",
-    "pluginRoot": "./plugins"
-  },
   "plugins": [
     {
-      "name": "core",
-      "source": "./plugins/core",
-      "description": "공통 규칙, PM Router (필수)",
-      "version": "1.0.0",
-      "tags": ["core", "rules", "router"]
-    },
-    {
-      "name": "planning",
-      "source": "./plugins/planning",
-      "description": "기획 산출물 자동 생성 (QST, REQ, FN, IA, WBS, Dashboard)",
-      "version": "1.0.0",
-      "tags": ["planning", "requirements", "functional-spec"]
+      "name": "eluo-hub",
+      "source": "./plugin",
+      "description": "웹 에이전시 기획 자동화 (Core + Planning + Hooks)",
+      "version": "1.1.0",
+      "author": { "name": "Eluo Digital Agency" },
+      "tags": ["planning", "requirements", "functional-spec", "automation"]
     }
   ]
 }

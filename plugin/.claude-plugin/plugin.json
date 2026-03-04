@@ -7,6 +7,5 @@
   },
   "repository": "https://github.com/eluoaxjun/eluohub",
   "license": "MIT",
-  "skills": "./plugins/",
-  "hooks": "./hooks/hooks.json"
+  "skills": "./skills/"
 }
