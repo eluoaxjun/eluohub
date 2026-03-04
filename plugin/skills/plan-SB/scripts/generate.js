@@ -1,32 +1,22 @@
 #!/usr/bin/env node
 /**
- * 화면설계서 자동 생성기
- * Usage: node generate.js [data-file.json] [--output-dir path]
+ * 화면설계서 자동 생성기 v2
+ * Usage: node generate-screen-design.js [data-file.json]
  *
- * JSON 데이터 → HTML 렌더링 → PDF 내보내기
+ * JSON 데이터 → 스키마 정규화 → 테마 로드 → HTML 렌더링 → PDF 내보내기
  */
 
 const fs = require('fs');
 const path = require('path');
-const { generateHTML } = require('./template');
+const { normalizeSchema } = require('./lib/schema');
+const { loadTheme } = require('./lib/theme');
+const { generateHTML } = require('./screen-design-template');
 
 async function main() {
-  const args = process.argv.slice(2);
-  const flags = {};
-  const positional = [];
-
-  for (let i = 0; i < args.length; i++) {
-    if (args[i] === '--output-dir' && args[i + 1]) {
-      flags.outputDir = args[++i];
-    } else if (!args[i].startsWith('--')) {
-      positional.push(args[i]);
-    }
-  }
-
-  const dataFile = positional[0];
+  const dataFile = process.argv[2];
   if (!dataFile) {
-    console.error('Usage: node generate.js <data-file.json> [--output-dir path]');
-    console.error('Example: node generate.js data/KMVNO-5628.json');
+    console.error('Usage: node generate-screen-design.js <data-file.json>');
+    console.error('Example: node generate-screen-design.js data/KMVNO-5628.json');
     process.exit(1);
   }
 
@@ -36,16 +26,21 @@ async function main() {
     process.exit(1);
   }
 
-  const data = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
-  const jiraNo = data.project.jiraNo;
+  // 0. config.json 디폴트 로드 → JSON 병합 → 스키마 정규화 → 테마 로드
+  const configPath = path.join(__dirname, 'config.json');
+  let config = { defaults: {} };
+  if (fs.existsSync(configPath)) {
+    try { config = JSON.parse(fs.readFileSync(configPath, 'utf-8')); } catch {}
+  }
+  const raw = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
+  const data = normalizeSchema(raw, config.defaults);
+  const theme = loadTheme(data);
 
-  // output 디렉토리: --output-dir 또는 데이터 파일 기준 ../output/
-  const outputDir = flags.outputDir
-    ? path.resolve(flags.outputDir)
-    : path.join(path.dirname(dataPath), '..', 'output');
+  const outputPrefix = data.project.outputPrefix || data.project.id || 'output';
+  console.log(`[SCHEMA] ${raw.$schema ? 'v2' : 'v1'} → normalized (preset: ${theme.preset || 'default'})`);
 
-  // input/ 폴더 이미지 우선 체크
-  const inputDir = path.join(path.dirname(dataPath), '..', 'input');
+  // 1. input/ 폴더 이미지 우선 체크
+  const inputDir = path.join(__dirname, 'input');
   if (data.screens) {
     for (const screen of data.screens) {
       if (!screen.uiImagePath) continue;
@@ -60,15 +55,16 @@ async function main() {
     }
   }
 
-  // 1. HTML 생성
-  const html = generateHTML(data);
+  // 2. HTML 생성
+  const html = generateHTML(data, theme);
+  const outputDir = path.join(__dirname, 'output');
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
-  const htmlPath = path.join(outputDir, `${jiraNo}.html`);
+  const htmlPath = path.join(outputDir, `${outputPrefix}.html`);
   fs.writeFileSync(htmlPath, html, 'utf-8');
   console.log(`[OK] HTML: ${htmlPath}`);
 
-  // 2. PDF 생성 (Playwright)
+  // 3. PDF 생성 (Playwright)
   let playwright;
   try {
     playwright = require('playwright');
@@ -84,32 +80,26 @@ async function main() {
   const fileUrl = 'file:///' + htmlPath.replace(/\\/g, '/');
   await page.goto(fileUrl, { waitUntil: 'networkidle' });
 
-  const pdfPath = path.join(outputDir, `${jiraNo}.pdf`);
+  // 프레임별 실제 높이 측정 → 최대 높이로 PDF 페이지 사이즈 결정
+  const frameHeights = await page.evaluate(() => {
+    const frames = document.querySelectorAll('.frame');
+    return Array.from(frames).map(f => f.scrollHeight);
+  });
+  const maxFrameHeight = Math.max(theme.frame.minHeight, ...frameHeights);
+  const pdfHeight = maxFrameHeight + 20; // 여유 마진
+  console.log(`[PDF] 프레임 ${frameHeights.length}개, 최대 높이: ${maxFrameHeight}px → 페이지: ${pdfHeight}px`);
+
+  const pdfPath = path.join(outputDir, `${outputPrefix}.pdf`);
   await page.pdf({
     path: pdfPath,
-    width: '1200px',
-    height: '800px',
+    width: `${theme.frame.width}px`,
+    height: `${pdfHeight}px`,
     printBackground: true,
     margin: { top: '0', right: '0', bottom: '0', left: '0' }
   });
 
   console.log(`[OK] PDF: ${pdfPath}`);
   await browser.close();
-
-  // 결과 요약
-  const frameCount = (html.match(/class="frame"/g) || []).length;
-  console.log(`\n${'='.repeat(48)}`);
-  console.log('[화면설계서 생성 결과]');
-  console.log('='.repeat(48));
-  console.log(`과제번호: ${jiraNo}`);
-  console.log(`SR번호: ${data.project.srNo}`);
-  console.log(`과제명: ${data.project.title}`);
-  console.log('-'.repeat(48));
-  console.log(`총 프레임: ${frameCount}개`);
-  console.log('-'.repeat(48));
-  console.log(`HTML: ${htmlPath}`);
-  console.log(`PDF: ${pdfPath}`);
-  console.log('='.repeat(48));
 }
 
 main().catch(err => {

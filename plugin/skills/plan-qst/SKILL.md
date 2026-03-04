@@ -51,15 +51,15 @@ allowed-tools: Read, Grep, Glob, Write, Edit
 
 ### Step 0-A: 전방위 스캔
 
-Step 0 완료 후, `output/planning/` 디렉토리를 전체 스캔하여 형제 산출물의 존재 여부를 파악합니다.
+Step 0 완료 후, `output/{프로젝트명}/` 디렉토리를 전체 스캔하여 형제 산출물의 존재 여부를 파악합니다.
 
 | 스캔 대상 | 경로 패턴 | 역할 |
 |-----------|----------|------|
-| REQ | `output/planning/*_REQ_*.md` | 보조 참조 — 이전 버전 REQ가 있으면 FR 수/우선순위 참고 |
-| FN | `output/planning/*_FN_*.md` | 보조 참조 — 기능 수/복잡도 분포 참고 |
-| IA | `output/planning/*_IA_*.md` | 보조 참조 — 페이지 수/구조 참고 |
-| WBS | `output/planning/*_WBS_*.md` | 보조 참조 — 일정/작업 규모 참고 |
-| _context | `output/planning/_context.md` | 누적 컨텍스트 — 프로젝트명, 업종, 이전 스킬 요약 |
+| REQ | `output/{프로젝트명}/*_REQ_*.md` | 보조 참조 — 이전 버전 REQ가 있으면 FR 수/우선순위 참고 |
+| FN | `output/{프로젝트명}/*_FN_*.md` | 보조 참조 — 기능 수/복잡도 분포 참고 |
+| IA | `output/{프로젝트명}/*_IA_*.md` | 보조 참조 — 페이지 수/구조 참고 |
+| WBS | `output/{프로젝트명}/*_WBS_*.md` | 보조 참조 — 일정/작업 규모 참고 |
+| _context | `output/{프로젝트명}/_context.md` | 누적 컨텍스트 — 프로젝트명, 업종, 이전 스킬 요약 |
 
 > QST는 파이프라인 최상위이므로 직접 선행 산출물이 없습니다. 보조 참조는 이전 버전 또는 타 스킬 산출물이 존재할 때만 활용합니다.
 
@@ -255,7 +255,7 @@ QST-###: {영향 범위} — {대응 방안}
 
 ### _context.md 기록 (완료 시 필수)
 
-산출물 생성 완료 후 `output/planning/_context.md`에 아래 블록을 **추가(append)** 합니다. 파일이 없으면 신규 생성합니다.
+산출물 생성 완료 후 `output/{프로젝트명}/_context.md`에 아래 블록을 **추가(append)** 합니다. 파일이 없으면 신규 생성합니다.
 
 ```markdown
 ## QST 요약
@@ -289,17 +289,17 @@ QST-###: {영향 범위} — {대응 방안}
 ```
 1. PROJECT.md 존재 여부로 프로젝트 루트 결정 (미존재 → CWD)
 2. input/ 디렉토리 → 없으면 생성
-3. output/planning/ 디렉토리 → 없으면 생성
+3. output/{프로젝트명}/ 디렉토리 → 없으면 생성
 ```
 
 **출력 (필수)**:
 ```
-[폴더 보장] input/: {존재/생성} | output/planning/: {존재/생성}
+[폴더 보장] input/: {존재/생성} | output/{프로젝트명}/: {존재/생성}
 ```
 
 ## 출력 형식
-- 파일명: `{프로젝트코드}_QST_{YYYYMMDD}_{버전}.md`
-- 저장 경로: `output/planning/`
+- 파일명: `{프로젝트명}_QST_{YYYYMMDD}_{버전}.md`
+- 저장 경로: `output/{프로젝트명}/`
 - 예시: `비짓강남_QST_20260304_v1.0.md`
 
 ## 품질 체크 (Self-Check)

@@ -1,0 +1,11 @@
+{
+  "defaults": {
+    "project": {
+      "company": { "name": "ELUO" },
+      "writer": "ELUO"
+    },
+    "theme": {
+      "preset": "default"
+    }
+  }
+}

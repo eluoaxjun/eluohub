@@ -22,7 +22,7 @@ allowed-tools: Read, Grep, Glob, Write, Edit
 ## 작성 절차
 
 ### 1. 산출물 스캔
-- `output/planning/` 디렉토리 스캔
+- `output/{프로젝트명}/` 디렉토리 스캔
 - 파일 존재 여부 + 버전 확인
 - 각 산출물에서 핵심 지표 자동 추출:
 
@@ -88,17 +88,17 @@ allowed-tools: Read, Grep, Glob, Write, Edit
 ```
 1. PROJECT.md 존재 여부로 프로젝트 루트 결정 (미존재 → CWD)
 2. input/ 디렉토리 → 없으면 생성
-3. output/planning/ 디렉토리 → 없으면 생성
+3. output/{프로젝트명}/ 디렉토리 → 없으면 생성
 ```
 
 **출력 (필수)**:
 ```
-[폴더 보장] input/: {존재/생성} | output/planning/: {존재/생성}
+[폴더 보장] input/: {존재/생성} | output/{프로젝트명}/: {존재/생성}
 ```
 
 ## 출력 형식
-- 파일명: `{프로젝트코드}_Dashboard_{YYYYMMDD}_{버전}.html`
-- 저장 경로: `output/planning/`
+- 파일명: `{프로젝트명}_Dashboard_{YYYYMMDD}_{버전}.html`
+- 저장 경로: `output/{프로젝트명}/`
 - 예시: `비짓강남_Dashboard_20260304_v1.0.html`
 
 ### HTML 가이드라인
@@ -119,7 +119,7 @@ allowed-tools: Read, Grep, Glob, Write, Edit
 
 | ID | 검증 항목 | 유형 | 수준 | 판정 기준 |
 |----|----------|------|------|----------|
-| V1 | REQ/FN 파일 존재 | E | 필수 | output/planning/에 *_REQ_*.md + *_FN_*.md 존재. FAIL 시 생성 중단 |
+| V1 | REQ/FN 파일 존재 | E | 필수 | output/{프로젝트명}/에 *_REQ_*.md + *_FN_*.md 존재. FAIL 시 생성 중단 |
 
 ### 내부 구조 검증
 
