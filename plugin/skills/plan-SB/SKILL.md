@@ -25,7 +25,7 @@ JSON 데이터 파일을 입력받아 KT 운영 표준 양식의 화면설계서
 | 검색 대상 | 경로 패턴 | 발견 시 | 미발견 시 |
 |-----------|----------|---------|----------|
 | JSON 데이터 | `data/*.json`, `input/*.json` | 바로 생성 실행 | 대화형 데이터 수집 |
-| FN 산출물 | `output/planning/FN_*.md` | FN 기반 screens 자동 구성 | - |
+| FN 산출물 | `output/planning/*_FN_*.md` | FN 기반 screens 자동 구성 | - |
 | 이미지 | `input/*.png`, `input/pages/*.png` | uiImagePath 자동 매핑 | 빈 영역 표시 |
 
 **모드 판정 출력 (필수)**:

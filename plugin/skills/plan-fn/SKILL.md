@@ -21,7 +21,7 @@ allowed-tools: Read, Grep, Glob, Write, Edit
 
 | 검색 대상 | 경로 패턴 | 발견 시 (연계 모드) | 미발견 시 (독립 모드) |
 |-----------|----------|-------------------|--------------------|
-| REQ | `output/planning/REQ_*.md` | FR→FN 매핑, FR 근거 표기 | 프롬프트 텍스트 기반 FN 도출 |
+| REQ | `output/planning/*_REQ_*.md` | FR→FN 매핑, FR 근거 표기 | 프롬프트 텍스트 기반 FN 도출 |
 
 **모드 판정 출력 (필수)**:
 ```
@@ -37,10 +37,10 @@ Step 0 완료 후, `output/planning/` 디렉토리를 전체 스캔하여 형제
 
 | 스캔 대상 | 경로 패턴 | 역할 |
 |-----------|----------|------|
-| REQ | `output/planning/REQ_*.md` | **직접 선행 (매핑 근거)** — FR→FN 매핑 |
-| QST | `output/planning/QST_*.md` | 보조 참조 — 업종/타겟/비즈니스 목표 참고 |
-| IA | `output/planning/IA_*.md` 또는 `IA-*.md` | 보조 참조 — 페이지 수/구조 참고 (FN-IA 매핑 힌트) |
-| WBS | `output/planning/WBS_*.md` | 보조 참조 — 일정 제약 참고 |
+| REQ | `output/planning/*_REQ_*.md` | **직접 선행 (매핑 근거)** — FR→FN 매핑 |
+| QST | `output/planning/*_QST_*.md` | 보조 참조 — 업종/타겟/비즈니스 목표 참고 |
+| IA | `output/planning/*_IA_*.md` | 보조 참조 — 페이지 수/구조 참고 (FN-IA 매핑 힌트) |
+| WBS | `output/planning/*_WBS_*.md` | 보조 참조 — 일정 제약 참고 |
 | _context | `output/planning/_context.md` | 누적 컨텍스트 — 프로젝트명, FR 수, 우선순위 분포, NFR 목록 |
 
 **전방위 스캔 출력 (필수)**:
@@ -330,9 +330,25 @@ FR 분해 결과 FN이 15개 이상이면 3계층 구조 전환을 **권고**합
 [Mini-PM] PM-1: {Pass/Fail} | PM-2: {Pass/Fail} | PM-3: {Pass/Fail}
 ```
 
+## Step 0-F: 폴더 보장 (독립/파이프라인 공통)
+
+산출물 저장 전에 아래 폴더 구조를 확인하고, 없으면 자동 생성합니다.
+
+```
+1. PROJECT.md 존재 여부로 프로젝트 루트 결정 (미존재 → CWD)
+2. input/ 디렉토리 → 없으면 생성
+3. output/planning/ 디렉토리 → 없으면 생성
+```
+
+**출력 (필수)**:
+```
+[폴더 보장] input/: {존재/생성} | output/planning/: {존재/생성}
+```
+
 ## 출력 형식
-- 파일명: `FN_{프로젝트코드}_{버전}.md`
+- 파일명: `{프로젝트코드}_FN_{YYYYMMDD}_{버전}.md`
 - 저장 경로: `output/planning/`
+- 예시: `NOVITA_FN_20260304_v1.0.md`
 
 ## 품질 체크 (Self-Check)
 
@@ -342,7 +358,7 @@ FR 분해 결과 FN이 15개 이상이면 3계층 구조 전환을 **권고**합
 
 | ID | 검증 항목 | 유형 | 수준 | 판정 기준 |
 |----|----------|------|------|----------|
-| V1 | REQ 존재 + FR-### 유효성 | E+R | 연계 필수 | output/planning/REQ_*.md 존재 + FR-### ID 전수 파싱 가능. 연계 모드: FAIL 시 생성 중단 / 독립 모드: N/A (프롬프트 기반 진행) |
+| V1 | REQ 존재 + FR-### 유효성 | E+R | 연계 필수 | output/planning/*_REQ_*.md 존재 + FR-### ID 전수 파싱 가능. 연계 모드: FAIL 시 생성 중단 / 독립 모드: N/A (프롬프트 기반 진행) |
 
 ### 내부 구조 검증
 

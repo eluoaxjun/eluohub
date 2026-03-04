@@ -21,7 +21,7 @@ allowed-tools: Read, Grep, Glob, Write, Edit
 
 | 검색 대상 | 경로 패턴 | 발견 시 (연계 모드) | 미발견 시 (독립 모드) |
 |-----------|----------|-------------------|--------------------|
-| QST | `output/planning/QST_*.md` | Q→FR 매핑, QST 근거 표기 | 프롬프트 텍스트 기반 FR 도출 |
+| QST | `output/planning/*_QST_*.md` | Q→FR 매핑, QST 근거 표기 | 프롬프트 텍스트 기반 FR 도출 |
 
 **모드 판정 출력 (필수)**:
 ```
@@ -37,10 +37,10 @@ Step 0 완료 후, `output/planning/` 디렉토리를 전체 스캔하여 형제
 
 | 스캔 대상 | 경로 패턴 | 역할 |
 |-----------|----------|------|
-| QST | `output/planning/QST_*.md` | **직접 선행 (매핑 근거)** — Q→FR 매핑 |
-| FN | `output/planning/FN_*.md` | 보조 참조 — 이전 버전 FN이 있으면 기능 수/복잡도 참고 |
-| IA | `output/planning/IA_*.md` 또는 `IA-*.md` | 보조 참조 — 페이지 수/구조 참고 |
-| WBS | `output/planning/WBS_*.md` | 보조 참조 — 일정/작업 규모 참고 |
+| QST | `output/planning/*_QST_*.md` | **직접 선행 (매핑 근거)** — Q→FR 매핑 |
+| FN | `output/planning/*_FN_*.md` | 보조 참조 — 이전 버전 FN이 있으면 기능 수/복잡도 참고 |
+| IA | `output/planning/*_IA_*.md` | 보조 참조 — 페이지 수/구조 참고 |
+| WBS | `output/planning/*_WBS_*.md` | 보조 참조 — 일정/작업 규모 참고 |
 | _context | `output/planning/_context.md` | 누적 컨텍스트 — 프로젝트명, 업종, 이전 스킬 요약 |
 
 **전방위 스캔 출력 (필수)**:
@@ -327,9 +327,25 @@ QST→FR 매핑률: {n}% ({매핑된 QST}/{전체 QST}) [연계 모드만]
 [Mini-PM] PM-1: {Pass/Fail} | PM-2: {Pass/Fail} | PM-3: {Pass/Fail}
 ```
 
+## Step 0-F: 폴더 보장 (독립/파이프라인 공통)
+
+산출물 저장 전에 아래 폴더 구조를 확인하고, 없으면 자동 생성합니다.
+
+```
+1. PROJECT.md 존재 여부로 프로젝트 루트 결정 (미존재 → CWD)
+2. input/ 디렉토리 → 없으면 생성
+3. output/planning/ 디렉토리 → 없으면 생성
+```
+
+**출력 (필수)**:
+```
+[폴더 보장] input/: {존재/생성} | output/planning/: {존재/생성}
+```
+
 ## 출력 형식
-- 파일명: `REQ_{프로젝트코드}_{버전}.md`
+- 파일명: `{프로젝트코드}_REQ_{YYYYMMDD}_{버전}.md`
 - 저장 경로: `output/planning/`
+- 예시: `비짓강남_REQ_20260304_v1.0.md`
 
 ## 품질 체크 (Self-Check)
 
@@ -339,7 +355,7 @@ QST→FR 매핑률: {n}% ({매핑된 QST}/{전체 QST}) [연계 모드만]
 
 | ID | 검증 항목 | 유형 | 수준 | 판정 기준 |
 |----|----------|------|------|----------|
-| V1 | QST 파일 존재 | E | 권장 | output/planning/QST_*.md 존재 확인. 미존재 시 WARN 후 계속 |
+| V1 | QST 파일 존재 | E | 권장 | output/planning/*_QST_*.md 존재 확인. 미존재 시 WARN 후 계속 |
 | V2 | AC 금지 표현 검증 | R | 필수 | "적절히", "필요에 따라", "가능한", "효과적으로", "충분히", "합리적", "적시에" 사용 시 FAIL |
 | V3 | 범위 경계 정의 존재 | E | 구축 필수 | 구축/전환 모드: 범위 경계 테이블 존재 + 15항목 이상 + Nego 항목에 조건 기재. 운영 모드: N/A |
 | V4 | CR 변경 관리 존재 | E | 운영 필수 | 운영 모드: CR 템플릿 존재 + 영향 분석 6항목 기재. 구축/전환 모드: N/A |

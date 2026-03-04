@@ -136,43 +136,74 @@ Planning ──→ Design ──→ Publish ──→ QA
 ### 산출물 파일
 
 ```
-{산출물}-{프로젝트명}-{버전}.md
+{프로젝트명}_{산출물}_{날짜}_{버전}.md
 ```
 
 | 항목 | 규칙 | 예시 |
 |------|------|------|
-| 산출물 | 대문자 시작 | QST, REQ, FN, IA, Benchmark, UI, STYLE |
-| 프로젝트명 | 한글/영문, 공백 없음 | 비짓강남, Samsung-Mall |
+| 프로젝트명 | 한글/영문, 공백 없음 (프로젝트 코드 사용) | NOVITA, 비짓강남, Samsung-Mall |
+| 산출물 | 대문자 | QST, REQ, FN, IA, WBS, Dashboard, Benchmark, UI, STYLE |
+| 날짜 | YYYYMMDD (생성일) | 20260304 |
 | 버전 | v + 숫자 | v1.0, v1.1, v2.0 |
 | 확장자 | .md (기본) 또는 .html (시각화) | |
 
-**예시**: `REQ-비짓강남-v1.0.md`, `UI-비짓강남-v1.0.md`, `Benchmark-비짓강남-v1.0.md`
+**예시**: `비짓강남_REQ_20260304_v1.0.md`, `NOVITA_FN_20260304_v1.0.md`, `비짓강남_Dashboard_20260304_v1.0.html`
 
 ### 검수 리포트
 
 ```
-review-{프로젝트명}-{버전}-{날짜}.md
+{프로젝트명}_review_{날짜}_{버전}.md
 ```
 
-**예시**: `review-비짓강남-v1.0-20260218.md`
+**예시**: `비짓강남_review_20260304_v1.0.md`
 
 ---
 
-## 6. 산출물 경로
+## 6. 폴더 구조 보장 (독립/파이프라인 공통)
+
+**모든 스킬은 산출물 저장 전에 아래 폴더 구조가 존재하는지 확인하고, 없으면 자동 생성합니다.**
+
+이 규칙은 파이프라인 모드(orchestrator 경유)든 독립 모드(스킬 직접 호출)든 동일하게 적용됩니다.
+
+### 보장 폴더 구조
 
 ```
-{프로젝트}/output/
-├── planning/          ← QST, REQ, FN, WBS, Dashboard, _handoff.md
-├── ia/                ← IA (사이트맵, 네비, 콘텐츠 인벤토리)
-├── design/            ← Benchmark, HTML 시안 (A/B/C), Style Guide
-│   ├── ref/           ← 벤치마크 스크린샷, 참조 이미지
-│   │   └── screenshots/
-│   └── review-logs/   ← 디자인 검수 리포트
-├── publish/           ← HTML, CSS, JS
-│   ├── css/
-│   ├── js/
-│   └── images/
-└── qa/                ← QA 리포트 (기능, 접근성, 성능)
+{프로젝트 루트}/
+├── input/                 ← 참조 자료, 고객 제공물 (항상 생성)
+├── output/
+│   ├── planning/          ← QST, REQ, FN, IA, WBS, Dashboard, _handoff.md
+│   ├── design/            ← Benchmark, HTML 시안 (A/B/C), Style Guide
+│   │   ├── ref/           ← 벤치마크 스크린샷, 참조 이미지
+│   │   │   └── screenshots/
+│   │   └── review-logs/   ← 디자인 검수 리포트
+│   ├── publish/           ← HTML, CSS, JS
+│   │   ├── css/
+│   │   ├── js/
+│   │   └── images/
+│   └── qa/                ← QA 리포트 (기능, 접근성, 성능)
+└── .claude/
+    └── CLAUDE.md          ← 프로젝트 설정 (pm-router가 생성)
+```
+
+### 폴더 보장 로직 (Step 0-F)
+
+각 스킬은 Step 0 완료 직후, 산출물 저장 전에 아래 로직을 실행합니다:
+
+```
+1. CWD 기준 프로젝트 루트 결정
+   - PROJECT.md 존재 → 해당 디렉토리가 프로젝트 루트
+   - 미존재 → CWD를 프로젝트 루트로 사용
+2. input/ 디렉토리 존재 확인 → 없으면 생성
+3. output/{해당 패키지}/ 디렉토리 존재 확인 → 없으면 생성
+   - planning 스킬 → output/planning/
+   - design 스킬 → output/design/
+   - publish 스킬 → output/publish/
+   - qa 스킬 → output/qa/
+```
+
+**출력 (필수)**:
+```
+[폴더 보장] input/: {존재/생성} | output/{패키지}/: {존재/생성}
 ```
 
 ---
