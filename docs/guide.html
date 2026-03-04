@@ -112,41 +112,11 @@
               <span class="code-block__label">선택 — 필요한 것만 설치</span>
               <button class="btn-copy"><svg class="btn-copy__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> 복사</button>
             </div>
-            <div class="code-block__body"><pre>/plugin install planning@eluo-hub
-/plugin install design@eluo-hub
-/plugin install publish@eluo-hub
-/plugin install qa@eluo-hub
-/plugin install ops@eluo-hub</pre></div>
-          </div>
-
-          <h3 style="font-size: var(--font-base); margin-top: var(--space-6); margin-bottom: var(--space-3);">추천 조합</h3>
-          <div class="table-wrap">
-            <table class="table">
-              <thead>
-                <tr><th>용도</th><th>플러그인 조합</th><th>설명</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><span class="tag tag--primary">구축</span></td>
-                  <td>Core + Planning + Design + Publish + QA</td>
-                  <td>신규 사이트 구축. 기획부터 QA까지 전체 파이프라인</td>
-                </tr>
-                <tr>
-                  <td><span class="tag">운영</span></td>
-                  <td>Core + Planning + Publish + Ops</td>
-                  <td>기존 사이트 유지운영. 요청 접수 + 수정 + 배포</td>
-                </tr>
-                <tr>
-                  <td><span class="tag tag--version">전체</span></td>
-                  <td>6개 전체</td>
-                  <td>구축과 운영을 모두 커버</td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="code-block__body"><pre>/plugin install planning@eluo-hub</pre></div>
           </div>
 
           <p style="font-size: var(--font-sm); color: var(--color-text-secondary); margin-top: var(--space-3);">
-            어떤 조합이 좋을지 모르겠다면 <a href="index.html#configurator">설정 생성기</a>에서 프리셋을 선택해 보세요.
+            Core + Planning을 함께 설치하면 기획 산출물 자동 생성 기능을 사용할 수 있습니다.
           </p>
         </div>
 
@@ -173,11 +143,7 @@
   },
   "enabledPlugins": {
     "core@eluo-hub": true,
-    "planning@eluo-hub": true,
-    "design@eluo-hub": true,
-    "publish@eluo-hub": true,
-    "qa@eluo-hub": true,
-    "ops@eluo-hub": true
+    "planning@eluo-hub": true
   }
 }</pre></div>
           </div>
@@ -206,21 +172,6 @@
 /planning:req        ← 요구사항정의서 단독 실행</pre></div>
       </div>
 
-      <div class="code-block" style="margin-bottom: var(--space-4);">
-        <div class="code-block__header">
-          <span class="code-block__label">디자인 → 퍼블리싱 → QA</span>
-        </div>
-        <div class="code-block__body"><pre>/design:design       ← 디자인 전체 (벤치마킹 → 시안)
-/publish:publish     ← 퍼블리싱 (Markup → Style → Interaction)
-/qa:qa-run           ← QA 전체 (기능 + 접근성 + 성능)</pre></div>
-      </div>
-
-      <div class="code-block" style="margin-bottom: var(--space-4);">
-        <div class="code-block__header">
-          <span class="code-block__label">유지운영</span>
-        </div>
-        <div class="code-block__body"><pre>/ops:maintenance     ← 운영 요청 접수 + 티켓 생성 + Notion 동기화</pre></div>
-      </div>
 
       <p style="font-size: var(--font-sm); color: var(--color-text-secondary); margin-bottom: var(--space-6);">
         전체 커맨드 목록은 <a href="index.html#commands">커맨드 레퍼런스</a>를 참조하세요.
@@ -239,9 +190,8 @@
           <span class="code-block__label">자연어 예시</span>
         </div>
         <div class="code-block__body"><pre>"이 사이트 기획해줘"        → Planning 오케스트레이터
-"홈페이지 디자인 해주세요"     → Design 오케스트레이터
-"배너 이미지 교체해주세요"     → Ops 오케스트레이터 (운영)
-"QA 돌려줘"                  → QA 오케스트레이터</pre></div>
+"요구사항 정리해줘"           → REQ 스킬 자동 호출
+"기능 정의해줘"              → FN 스킬 자동 호출</pre></div>
       </div>
 
       <!-- FAQ -->
