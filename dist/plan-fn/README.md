@@ -7,24 +7,17 @@ REQ 기반으로 상세 기능을 정의합니다.
 
 ## 사전 준비
 
-1. Claude Code CLI 설치
-2. **Core 패키지 설치 (필수)** — `core/` 폴더의 rules/ 5개 파일을 먼저 설치
-3. 이 스킬 폴더의 파일을 `~/.claude/` 또는 `{프로젝트}/.claude/`에 복사
+1. Claude Code CLI 설치 (v2.1 이상)
+2. 이 폴더에서 Claude Code 실행
 
 ## 폴더 구조
 
-복사 후 최종 구조:
-
 ```
-~/.claude/  (또는 {프로젝트}/.claude/)
-├── skills/
-│   └── plan-fn/
-│       ├── SKILL.md
-│       ├── checklist.md
-│       └── template.md
-├── agents/
-│   └── planning-reviewer.md
-└── AGENTS.md
+plan-fn/                     ← 이 폴더에서 Claude Code 실행
+├── .claude/                 ← 스킬 설정 (자동 인식, 수정 불필요)
+├── README.md
+├── input/                   ← 참고 자료 (제안서, 시안, RFP 등)
+└── output/                  ← 산출물이 여기에 생성됩니다
 ```
 
 ## 사용 방법
@@ -46,13 +39,13 @@ REQ 기반으로 상세 기능을 정의합니다.
 - FR 역참조 생략, 추적성 매트릭스 생략
 
 ### 연계 모드
-- `output/planning/REQ_*.md` 존재 시 자동 활성화
+- 산출물 디렉토리에 `REQ_*.md` 존재 시 자동 활성화
 - FR→FN 매핑, AC 전파, 추적성 매트릭스 생성
 
 ## 산출물
 
 - **파일명**: `FN_{프로젝트코드}_{버전}.md`
-- **저장 경로**: `output/planning/`
+- **저장 경로**: `output/{프로젝트명}/{YYYYMMDD}/`
 - **포함 내용**: 기능 카드(복잡도별), 검증 기준, 의존관계 맵, 기술 노트
 
 ## 품질 검증

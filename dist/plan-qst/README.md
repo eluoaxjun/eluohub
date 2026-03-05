@@ -7,25 +7,17 @@
 
 ## 사전 준비
 
-1. Claude Code CLI 설치
-2. **Core 패키지 설치 (필수)** — `core/` 폴더의 rules/ 5개 파일을 먼저 설치
-3. 이 스킬 폴더의 파일을 `~/.claude/` 또는 `{프로젝트}/.claude/`에 복사
+1. Claude Code CLI 설치 (v2.1 이상)
+2. 이 폴더에서 Claude Code 실행
 
 ## 폴더 구조
 
-복사 후 최종 구조:
-
 ```
-~/.claude/  (또는 {프로젝트}/.claude/)
-├── skills/
-│   └── plan-qst/
-│       ├── SKILL.md
-│       ├── checklist.md
-│       ├── question-patterns.md
-│       └── template.md
-├── agents/
-│   └── planning-reviewer.md
-└── AGENTS.md
+plan-qst/                    ← 이 폴더에서 Claude Code 실행
+├── .claude/                 ← 스킬 설정 (자동 인식, 수정 불필요)
+├── README.md
+├── input/                   ← 참고 자료 (제안서, 시안, RFP 등)
+└── output/                  ← 산출물이 여기에 생성됩니다
 ```
 
 ## 사용 방법
@@ -46,13 +38,13 @@
 - 예: "이커머스 쇼핑몰 프로젝트의 고객질의서 만들어줘"
 
 ### 연계 모드
-- `output/planning/`에 다른 산출물이 있으면 보조 참조로 활용
+- 산출물 디렉토리에 다른 산출물이 있으면 보조 참조로 활용
 - QST는 파이프라인 최상위이므로 직접 선행 산출물은 없음
 
 ## 산출물
 
 - **파일명**: `QST_{프로젝트코드}_{버전}.md`
-- **저장 경로**: `output/planning/`
+- **저장 경로**: `output/{프로젝트명}/{YYYYMMDD}/`
 - **포함 내용**: 프로젝트 개요, 비즈니스 목표, 기능 요구사항, 기술 환경, 일정/예산 등 구조화 질의
 
 ## 품질 검증
