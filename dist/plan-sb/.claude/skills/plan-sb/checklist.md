@@ -29,11 +29,16 @@
 
 ## PDF 출력
 - [ ] HTML 파일 정상 생성
-- [ ] PDF 파일 정상 생성 (Playwright 설치 시)
+- [ ] PDF 파일 정상 생성 (Playwright 미설치 시 자동 설치)
 - [ ] 페이지 사이즈 1200x800px 준수
 - [ ] 배경 인쇄 포함 (printBackground: true)
 - [ ] 프레임 간 페이지 구분 정상
 
-## 검증
-- [ ] verify.js 실행 시 프레임별 스크린샷 생성
-- [ ] 스크린샷 수 = 프레임 수 일치
+## 검증 (Claude — MCP Playwright)
+- [ ] browser_navigate로 HTML 파일 열기 성공
+- [ ] browser_evaluate로 .frame 수 = 예상 프레임 수 일치
+- [ ] browser_take_screenshot으로 시각 확인 완료
+
+## 검증 (사용자 독립 실행 — verify.js)
+- [ ] `node verify.js output/{파일명}.html` 실행 성공
+- [ ] 스크린샷 수 = 프레임 수 일치 (output/verify/{파일명}-page{n}.png)

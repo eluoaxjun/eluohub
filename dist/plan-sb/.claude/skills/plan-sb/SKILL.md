@@ -214,14 +214,26 @@ node {skill-path}/scripts/generate.js <data-file.json>
 - 페이지 너비: 테마 `frame.width` (기본 1200px)
 - 페이지 높이: 프레임별 실제 scrollHeight 측정 → 최대값 + 20px (동적)
 - 배경 인쇄 포함 (printBackground: true)
-- Playwright 미설치 시 HTML만 생성 (graceful fallback)
+- Playwright 미설치 시 자동 설치 후 PDF 생성 (`npm install playwright` + `npx playwright install chromium`)
 
 ### 4. 검증
+
+**Claude (MCP Playwright)** — 스킬 실행 중 시각 확인:
+
+> **주의**: MCP Playwright는 `file://` URL을 차단합니다. 로컬 HTTP 서버를 경유해야 합니다.
+
+1. (Bash) `python -m http.server 9988 --directory {output_디렉토리}` — 백그라운드 실행
+2. `browser_navigate` — `http://localhost:9988/{파일명}.html` 열기
+3. `browser_evaluate` — `.frame` 요소 수 집계 → 예상 프레임 수 대조
+4. `browser_take_screenshot` — 전체 화면 시각 확인
+5. (Bash) HTTP 서버 종료
+
+**사용자 독립 실행** — 프레임별 PNG 파일로 저장:
 ```bash
-node {skill-path}/scripts/verify.js <output.html>
+node {skill-path}/scripts/verify.js output/{파일명}.html
+# → output/verify/{파일명}-page1.png, page2.png ... 생성
+# Playwright 미설치 시 자동 설치 후 실행
 ```
-- 각 .frame 요소를 개별 스크린샷으로 캡처
-- 프레임 수 = 예상값 일치 확인
 
 ### 5. 결과 출력
 

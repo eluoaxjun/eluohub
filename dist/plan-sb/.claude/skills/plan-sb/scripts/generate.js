@@ -10,7 +10,7 @@ const fs = require('fs');
 const path = require('path');
 const { normalizeSchema } = require('./lib/schema');
 const { loadTheme } = require('./lib/theme');
-const { generateHTML } = require('./screen-design-template');
+const { generateHTML } = require('./template');
 
 async function main() {
   const dataFile = process.argv[2];
@@ -69,9 +69,12 @@ async function main() {
   try {
     playwright = require('playwright');
   } catch {
-    console.log('[SKIP] Playwright not installed. HTML only.');
-    console.log('  Install: npm install playwright');
-    return;
+    console.log('[INFO] Playwright not found. 자동 설치 중...');
+    const { execSync } = require('child_process');
+    const installDir = path.join(__dirname, '..');
+    execSync('npm install playwright --no-save', { stdio: 'inherit', cwd: installDir });
+    execSync('npx playwright install chromium', { stdio: 'inherit', cwd: installDir });
+    playwright = require('playwright');
   }
 
   const browser = await playwright.chromium.launch({ headless: true });

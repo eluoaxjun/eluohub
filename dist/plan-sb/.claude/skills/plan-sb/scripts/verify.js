@@ -45,9 +45,12 @@ async function main() {
   try {
     playwright = require('playwright');
   } catch {
-    console.error('[ERROR] Playwright not installed.');
-    console.error('  Install: npm install playwright');
-    process.exit(1);
+    console.log('[INFO] Playwright not found. 자동 설치 중...');
+    const { execSync } = require('child_process');
+    const installDir = path.join(__dirname, '..');
+    execSync('npm install playwright --no-save', { stdio: 'inherit', cwd: installDir });
+    execSync('npx playwright install chromium', { stdio: 'inherit', cwd: installDir });
+    playwright = require('playwright');
   }
 
   const browser = await playwright.chromium.launch({ headless: true });
