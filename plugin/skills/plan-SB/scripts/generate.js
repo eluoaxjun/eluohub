@@ -10,7 +10,7 @@ const fs = require('fs');
 const path = require('path');
 const { normalizeSchema } = require('./lib/schema');
 const { loadTheme } = require('./lib/theme');
-const { generateHTML } = require('./screen-design-template');
+const { generateHTML } = require('./template');
 
 async function main() {
   const dataFile = process.argv[2];
@@ -40,7 +40,7 @@ async function main() {
   console.log(`[SCHEMA] ${raw.$schema ? 'v2' : 'v1'} → normalized (preset: ${theme.preset || 'default'})`);
 
   // 1. input/ 폴더 이미지 우선 체크
-  const inputDir = path.join(__dirname, 'input');
+  const inputDir = path.join(process.cwd(), 'input');
   if (data.screens) {
     for (const screen of data.screens) {
       if (!screen.uiImagePath) continue;
@@ -57,7 +57,7 @@ async function main() {
 
   // 2. HTML 생성
   const html = generateHTML(data, theme);
-  const outputDir = path.join(__dirname, 'output');
+  const outputDir = path.join(process.cwd(), 'output');
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
   const htmlPath = path.join(outputDir, `${outputPrefix}.html`);
@@ -69,9 +69,12 @@ async function main() {
   try {
     playwright = require('playwright');
   } catch {
-    console.log('[SKIP] Playwright not installed. HTML only.');
-    console.log('  Install: npm install playwright');
-    return;
+    console.log('[INFO] Playwright not found. 자동 설치 중...');
+    const { execSync } = require('child_process');
+    const installDir = path.join(__dirname, '..');
+    execSync('npm install playwright --no-save', { stdio: 'inherit', cwd: installDir });
+    execSync('npx playwright install chromium', { stdio: 'inherit', cwd: installDir });
+    playwright = require('playwright');
   }
 
   const browser = await playwright.chromium.launch({ headless: true });

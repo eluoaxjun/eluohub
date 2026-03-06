@@ -235,6 +235,11 @@ node {skill-path}/scripts/verify.js output/{파일명}.html
 # Playwright 미설치 시 자동 설치 후 실행
 ```
 
+**운영 프로젝트 기존 사이트 확인**:
+- `browser_navigate` — 현행 사이트 URL 접속
+- `browser_snapshot` — DOM/메뉴 구조 파악
+- `browser_take_screenshot` — 현행 화면 캡처
+
 ### 5. 결과 출력
 
 ```
