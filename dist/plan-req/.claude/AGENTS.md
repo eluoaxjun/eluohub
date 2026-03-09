@@ -2,6 +2,11 @@
 
 ## 에이전트
 
+### planning-orchestrator (Sonnet)
+- 역할: 요구사항정의서 생성 조율 (pm-router 초기화 → plan-req 실행 → 검수 제안)
+- 호출: 요구사항 관련 키워드 감지 시 자동
+- 파일: `agents/planning-orchestrator.md`
+
 ### planning-reviewer (Sonnet)
 - 역할: 기획 산출물 검수
 - 모드: unit (단독 스킬 실행 시 Critical P/F 판정)

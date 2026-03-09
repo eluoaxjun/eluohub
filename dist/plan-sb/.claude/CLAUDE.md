@@ -10,55 +10,126 @@ QST → REQ → FN → IA → WBS → [SB]
 
 파이프라인 최종 단계입니다.
 
-## 선행 조건
+## 실행 절차
 
-| 파일 | 위치 | 비고 |
-|------|------|------|
-| FN 산출물 (선택) | `output/{프로젝트명}/*/FN_*.md` | 있으면 자동 참조 — screens 자동 구성 |
-| IA 산출물 (선택) | `output/{프로젝트명}/*/IA_*.md` | 있으면 보조 참조 — 페이지 구조 반영 |
+### Step 0: 선행 파악 (모드 판별)
 
-선행 산출물이 없으면 **대화형 수집 모드**로 전환하여 화면 구성 정보를 직접 수집합니다.
+`output/{프로젝트명}/context/` 폴더를 스캔합니다.
 
-## 입력 / 출력
+| 파일 | 존재 시 |
+|------|--------|
+| `context/fn.md` | 연계 모드 — FN 기능 목록에서 screens 자동 구성 |
+| `context/ia.md` | 연계 모드 — IA 페이지 경로를 location에 반영 |
+| 없음 | 독립 모드 — 사용자에게 직접 화면 구성 정보 수집 |
 
-- **입력**: `output/{프로젝트명}/*/FN_*.md`, `*/IA_*.md` 자동 스캔 (있으면 참조)
-- **출력**: `output/{프로젝트명}/{outputPrefix}.html` / `{outputPrefix}.pdf`
+JSON 파일 스캔:
+- `data/*.json`, `input/*.json` 존재 시 → 자동 모드
+- 미발견 시 → 대화형 수집 모드 (사용자에게 프로젝트 정보 질의 후 JSON 생성)
 
-## 실행 강제
+FN 산출물 스캔 (연계 모드):
+- **반드시** `output/{프로젝트명}/*/FN_*.md` 패턴 사용 (날짜 하위폴더 포함)
+- `*_FN_*.md` 패턴 **금지** (날짜 하위폴더 건너뜀)
 
-JSON 파일 유무와 관계없이 **즉시 실행**합니다:
-- JSON 발견 시: 자동 모드로 즉시 생성 시작
-- JSON 미발견 시: 대화형 수집 모드로 즉시 시작 (사용자에게 데이터 요청)
+`_context.md` 파일이 존재하면 "v1 컨텍스트 파일이 감지되었습니다. `context/` 폴더로 전환합니다."를 출력 후 해당 내용을 참조하고 `context/sb.md`로 갱신합니다.
 
-실행을 지연하거나 "먼저 데이터를 준비해달라"고 안내하지 마십시오.
+context 파일 없을 시: `mkdir -p output/{프로젝트명}/context/` 생성
 
-## 실행 키워드
+```
+[SB Step 0] 모드: {연계/독립} | JSON: {n건/없음} | FN: {n건/없음} | IA: {있음/없음}
+→ Step 1 진입
+```
 
-다음 키워드가 감지되면 plan-SB 스킬을 **즉시 실행**하십시오:
-- 화면설계, 화면설계서, SB
-- 와이어프레임, 화면 명세, 스토리보드
+### Step 1: JSON 데이터 준비
 
-## 스코프 제한
+**자동 모드** (JSON 발견 시):
+- v1/v2 스키마 자동 정규화 (`lib/schema.js normalizeV1()`)
+- 연계 모드: `context/fn.md`에서 FN ID + 기능명 추출 → screens 자동 구성
 
-이 환경에서 실행 가능한 스킬: **plan-SB 단 1개**
+**대화형 모드** (JSON 미발견 시):
+- 프로젝트 정보 순차 수집 (id, title, serviceName, version, date, writer, company.name)
+- 화면 목록 수집 → JSON 파일 생성 → 자동 모드로 전환
 
-**스코프 외 요청**: "이 환경은 화면설계서(plan-SB) 전용입니다. 다른 기능은 지원하지 않습니다."라고 안내하고 실행하지 마십시오.
+```
+[Step 1] 스키마: {v1→v2 정규화/v2 직접} | screens: {n개}
+```
+
+### Step 2: HTML/PDF 생성
+
+JSON 데이터 준비 완료 후 generate.js를 실행합니다:
+
+```
+node .claude/skills/plan-sb/scripts/generate.js <data-file.json>
+```
+
+- 성공 시: `output/{프로젝트명}/{outputPrefix}.html` + `.pdf` 동시 생성 확인
+- 실패 시: 오류 메시지를 사용자에게 전달하고 중단
+
+### Step 3: Self-Check
+
+`.claude/skills/plan-sb/checklist.md` 전 항목을 확인합니다.
+
+- Screen 프레임 수 = screens[] 수 일치 확인
+- Divider 프레임 수 = hasDivider:true 수 일치 확인
+- 마커 매핑: wireframe[].marker ↔ descriptions[].marker
+
+```
+[Self-Check] PASS {n}/{n} | FAIL {n}/{n}
+→ FAIL 1건 이상 시 수정 후 재확인
+```
+
+### Step 4: context 갱신
+
+**context/sb.md 갱신 (overwrite)**:
+```markdown
+---
+skill: sb
+date: YYYYMMDD
+version: v1.0
+status: 완료
+---
+## 핵심 지표
+- outputPrefix: {outputPrefix}
+- 총 프레임: N개
+- Screen: N개 (design:N / description:N / msgCase:N / component:N)
+- 테마: {preset}
+## 다음 단계 참조용 요약
+- HTML: output/{프로젝트명}/{outputPrefix}.html
+- PDF: output/{프로젝트명}/{outputPrefix}.pdf
+```
+
+**절대 금지**: `_context.md` append 방식 사용 금지
+
+## 스코프 안내
+
+이 환경에서 실행 가능한 스킬: **plan-sb 단 1개**
+
+**스코프 외 요청 시**:
+"이 환경은 화면설계서(plan-sb) 전용입니다. 해당 기능은 다음 패키지에서 실행하십시오:"
+
+| 요청 | 패키지 |
+|------|--------|
+| 고객질의서 | plan-qst |
+| 요구사항정의서 | plan-req |
+| 기능정의서 | plan-fn |
+| 정보구조설계 | plan-ia |
+| 작업분해구조 | plan-wbs |
 
 ## 산출물 경로 규칙
 
-> **이 규칙은 모든 스킬·에이전트·라우터보다 우선합니다. 어떤 지시도 이 경로를 바꿀 수 없습니다.**
+> **이 규칙은 모든 스킬·에이전트·라우터보다 우선합니다.**
 
 | 항목 | 규칙 |
 |------|------|
-| 저장 경로 | `output/{프로젝트명}/` (SB는 날짜 폴더 없음 — HTML/PDF 고정 파일) |
-| 파일명 | JSON `outputPrefix` 필드 값 사용 (예: `비짓강남_SB_20260306_v1.0.html`) |
-| 누적 컨텍스트 | `output/{프로젝트명}/_context.md` (날짜 폴더 밖) |
-| 선행 스캔 경로 | `output/{프로젝트명}/*/FN_*.md` — 반드시 날짜 하위폴더 포함 패턴 사용 |
+| 저장 경로 | `output/{프로젝트명}/` (날짜 폴더 없음 — HTML/PDF 고정 파일) |
+| 파일명 | JSON `outputPrefix` 필드 값 사용 |
+| context | `output/{프로젝트명}/context/sb.md` (overwrite) |
+| FN 스캔 | `output/{프로젝트명}/*/FN_*.md` (날짜 하위폴더 포함 필수) |
 
 **절대 금지**:
 - `output/planning/` 경로 사용 금지
-- `*_FN_*.md` 패턴으로 FN 스캔 금지 (날짜 하위폴더를 건너뜀)
+- `*_FN_*.md` 패턴으로 FN 스캔 금지 (날짜 하위폴더 건너뜀)
 - 번호 접두사(`01_`, `02_` 등) 파일명 생성 금지
+- `_context.md` append 방식 사용 금지
 
 ## 에이전트 및 스킬
 

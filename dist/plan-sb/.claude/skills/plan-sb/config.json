@@ -5,7 +5,8 @@
       "writer": "ELUO"
     },
     "theme": {
-      "preset": "default"
+      "preset": "default",
+      "pageFormat": "16:9-landscape"
     }
   }
 }

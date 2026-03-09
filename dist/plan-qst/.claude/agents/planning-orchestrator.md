@@ -5,7 +5,7 @@ description: >
   plan-qst 스킬을 실행한 후 planning-reviewer로 검수합니다.
   "고객질의서", "질의서", "QST", "고객에게 물어볼", "인터뷰 질문" 등 키워드 감지 시 자동 호출됩니다.
 tools: Read, Grep, Glob, Write, Edit, Bash, Skill
-model: claude-sonnet-4-5
+model: sonnet
 maxTurns: 20
 color: blue
 skills:
@@ -79,10 +79,12 @@ pm-router 스킬을 실행합니다.
 
 ### Step 2: 고객질의서 생성 (plan-qst)
 
-plan-qst 스킬을 실행합니다.
+CLAUDE.md의 실행 절차(Step 0~4)에 따라 plan-qst 스킬을 실행합니다.
 - 선행 산출물 확인 → 연계/독립 모드 자동 감지
 - Self-Check 자동 실행 (내부 품질 검증)
 - PM 챌린지 3대 자동 실행
+
+> render.js 호출은 CLAUDE.md Step 4에서 전담합니다. 이 에이전트가 직접 호출하지 않습니다.
 
 **Gate 완료 출력**:
 ```
@@ -122,8 +124,10 @@ planning-reviewer 판정이 **BLOCK** (Critical 1건 이상)인 경우:
 ```
 output/{프로젝트명}/{YYYYMMDD}/
 ├── QST_{프로젝트코드}_{버전}.md
-output/{프로젝트명}/
-└── _context.md
+├── QST_{프로젝트코드}_{버전}.html  ← render.js 생성
+└── QST_{프로젝트코드}_{버전}.pdf   ← render.js 생성
+output/{프로젝트명}/context/
+└── qst.md  ← CLAUDE.md Step 4에서 overwrite
 ```
 
 ## ID 체계

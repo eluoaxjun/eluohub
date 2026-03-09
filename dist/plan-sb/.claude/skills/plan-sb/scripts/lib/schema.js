@@ -162,7 +162,9 @@ function normalizeScreen(s) {
       before: d.before || '',
       after: d.after || '',
       // 변경 유형 마크업: 변경|추가|삭제 (운영 모드 수정 영역 표기)
-      changeType: d.changeType || ''
+      changeType: d.changeType || '',
+      // FN 참조: 연계 모드 시 FN 코드 배열, 독립 모드 시 빈 배열
+      fnRef: d.fnRef || []
     })),
     // P1-2: MSG/Dialog Case
     msgCases: s.msgCases || null,

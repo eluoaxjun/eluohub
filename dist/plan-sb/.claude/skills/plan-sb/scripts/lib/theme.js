@@ -13,7 +13,7 @@ const DEFAULT_THEME = {
   neutralColor: '#666666',
   logo: { type: 'none' },
   fonts: { primary: "'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif" },
-  frame: { width: 1200, minHeight: 800, borderWidth: 2 }
+  frame: { width: 1280, height: 720, borderWidth: 2 }
 };
 
 /**

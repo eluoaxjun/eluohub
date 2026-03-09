@@ -5,13 +5,15 @@ description: >
   plan-ia 스킬을 실행한 후 planning-reviewer로 검수합니다.
   "정보구조", "사이트맵", "IA", "페이지 구조", "메뉴 구조" 등 키워드 감지 시 자동 호출됩니다.
 tools: Read, Grep, Glob, Write, Edit, Bash, Skill
-model: claude-opus-4-5
+model: sonnet
 maxTurns: 20
 color: blue
 skills:
   - pm-router
   - plan-ia
 ---
+
+> **render.js 호출은 CLAUDE.md Step 4에서 전담합니다. 이 에이전트가 직접 호출하지 않습니다.**
 
 # 기획 에이전트 (Planning Orchestrator)
 
@@ -123,7 +125,8 @@ planning-reviewer 판정이 **BLOCK** (Critical 1건 이상)인 경우:
 output/{프로젝트명}/{YYYYMMDD}/
 ├── IA_{프로젝트코드}_{버전}.md
 output/{프로젝트명}/
-└── _context.md
+└── context/
+    └── ia.md  ← CLAUDE.md Step 4에서 overwrite
 ```
 
 ## ID 체계

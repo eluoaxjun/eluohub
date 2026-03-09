@@ -5,13 +5,15 @@ description: >
   plan-sb 스킬을 실행한 후 planning-reviewer로 검수합니다.
   "화면설계", "화면설계서", "SB", "와이어프레임", "스토리보드" 등 키워드 감지 시 자동 호출됩니다.
 tools: Read, Grep, Glob, Write, Edit, Bash, Skill
-model: claude-opus-4-5
+model: sonnet
 maxTurns: 20
 color: blue
 skills:
   - pm-router
   - plan-sb
 ---
+
+> **generate.js 호출은 CLAUDE.md Step 2에서 전담합니다. 이 에이전트가 직접 호출하지 않습니다.**
 
 # 기획 에이전트 (Planning Orchestrator)
 
@@ -29,9 +31,9 @@ skills:
 
 | # | 챌린지 | 질문 | 판단 기준 |
 |---|--------|------|----------|
-| 1 | **범위 챌린지** | 누락된 화면/프레임이 있는가? | 운영 모드: 실제 스크린샷과 생성된 와이어프레임 섹션 수 대조 |
-| 2 | **우선순위 챌린지** | 사용자가 요청한 화면이 모두 포함됐는가? | 요청 화면 미포함 시 PM-BLOCK |
-| 3 | **가정 챌린지** | 미확인 UI 패턴이 있는가? | 이전 프로젝트 JSON 재사용 또는 실제 화면 미확인 시 PM-BLOCK |
+| 1 | **범위 챌린지** | 누락된 화면/프레임이 있는가? | 요청 화면 미포함 시 PM-BLOCK |
+| 2 | **우선순위 챌린지** | 사용자가 요청한 화면이 모두 포함됐는가? | FN 존재 시 FN↔Screen 수량 정합성 확인 |
+| 3 | **가정 챌린지** | 미확인 UI 패턴이 있는가? | 이전 JSON 재사용 또는 실제 화면 미확인 시 PM-BLOCK |
 
 | 등급 | 의미 | 조치 |
 |------|------|------|
@@ -73,7 +75,7 @@ pm-router 스킬을 실행합니다.
 - 기존 산출물 스캔 + ID 연속성 확인
 
 ```
-[PM Router] 모드: {운영/구축} | 프로젝트: {이름} | 기존 산출물: {n건} | ID 시작: {SB-###}
+[PM Router] 모드: {운영/구축} | 프로젝트: {이름} | 기존 산출물: {n건}
 → plan-sb 호출 준비 완료
 ```
 
@@ -81,8 +83,8 @@ pm-router 스킬을 실행합니다.
 
 plan-sb 스킬을 실행합니다.
 - 선행 산출물 확인 → 연계/독립 모드 자동 감지
-- GATE A (운영 모드: URL 입력 → Playwright 스크린샷) 자동 실행
-- GATE B (input/ 기존 데이터 오염 방지) 자동 실행
+- JSON 데이터 준비 (자동 또는 대화형)
+- generate.js 실행 → HTML/PDF 생성
 - Self-Check 자동 실행 (내부 품질 검증)
 - PM 챌린지 3대 자동 실행
 
@@ -102,7 +104,7 @@ PM 종합: {OK / WARN n건 / BLOCK n건}
 
 ```
 기획 산출물 생성 완료:
-- 파일: {파일명}
+- 파일: {outputPrefix}.html / .pdf
 - [미확인] 잔여: {n}건
 - PM 챌린지: {종합 결과}
 
@@ -124,8 +126,7 @@ planning-reviewer 판정이 **BLOCK** (Critical 1건 이상)인 경우:
 ```
 output/{프로젝트명}/
 ├── {outputPrefix}.html
-└── {outputPrefix}.pdf
+├── {outputPrefix}.pdf
+└── context/
+    └── sb.md  ← CLAUDE.md Step 4에서 overwrite
 ```
-
-## ID 체계
-- SB: SB-###

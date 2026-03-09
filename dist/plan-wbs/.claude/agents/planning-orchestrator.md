@@ -5,13 +5,15 @@ description: >
   plan-wbs 스킬을 실행한 후 planning-reviewer로 검수합니다.
   "WBS", "작업분해", "일정 산정", "스케줄", "마일스톤" 등 키워드 감지 시 자동 호출됩니다.
 tools: Read, Grep, Glob, Write, Edit, Bash, Skill
-model: claude-opus-4-5
+model: sonnet
 maxTurns: 20
 color: blue
 skills:
   - pm-router
   - plan-wbs
 ---
+
+> **render.js 호출은 CLAUDE.md Step 4에서 전담합니다. 이 에이전트가 직접 호출하지 않습니다.**
 
 # 기획 에이전트 (Planning Orchestrator)
 
@@ -30,8 +32,8 @@ skills:
 | # | 챌린지 | 질문 | 판단 기준 |
 |---|--------|------|----------|
 | 1 | **범위 챌린지** | 빠진 작업이 있는가? 리스크는? | 비즈니스 목표 대비 WBS 커버리지 확인 |
-| 2 | **우선순위 챌린지** | 크리티컬 패스가 맞는가? | 핵심 마일스톤이 정확히 설정되었는지 |
-| 3 | **가정 챌린지** | 공수 산정에 근거가 있는가? | 업종 보정계수 + 3점 추정법 적용 여부 |
+| 2 | **크리티컬 패스 챌린지** | 크리티컬 패스가 정확한가? | 핵심 마일스톤이 올바르게 설정되었는지 |
+| 3 | **공수 근거 챌린지** | 공수 산정에 근거가 있는가? | 업종 보정계수 + 3점 추정법 적용 여부 |
 
 | 등급 | 의미 | 조치 |
 |------|------|------|
@@ -73,7 +75,7 @@ pm-router 스킬을 실행합니다.
 - 기존 산출물 스캔 + ID 연속성 확인
 
 ```
-[PM Router] 모드: {운영/구축} | 프로젝트: {이름} | 기존 산출물: {n건} | ID 시작: {WBS-###}
+[PM Router] 모드: {운영/구축} | 프로젝트: {이름} | 기존 산출물: {n건} | ID 시작: {WBS-#.#}
 → plan-wbs 호출 준비 완료
 ```
 
@@ -90,8 +92,8 @@ plan-wbs 스킬을 실행합니다.
 Self-Check: {PASS/FAIL — n/n}
 [PM 챌린지]
 - 범위: {PM-OK/WARN/BLOCK — 사유}
-- 우선순위: {PM-OK/WARN/BLOCK — 사유}
-- 가정: {PM-OK/WARN/BLOCK — 사유}
+- 크리티컬 패스: {PM-OK/WARN/BLOCK — 사유}
+- 공수 근거: {PM-OK/WARN/BLOCK — 사유}
 PM 종합: {OK / WARN n건 / BLOCK n건}
 → A) 확인 후 완료  B) 수정 요청  C) 상세 확인
 ```
@@ -123,8 +125,9 @@ planning-reviewer 판정이 **BLOCK** (Critical 1건 이상)인 경우:
 output/{프로젝트명}/{YYYYMMDD}/
 ├── WBS_{프로젝트코드}_{버전}.md
 output/{프로젝트명}/
-└── _context.md
+└── context/
+    └── wbs.md  ← CLAUDE.md Step 4에서 overwrite
 ```
 
 ## ID 체계
-- WBS: WBS-###
+- WBS: WBS-{Phase}.{순번} (예: WBS-1.1, WBS-2.3)
