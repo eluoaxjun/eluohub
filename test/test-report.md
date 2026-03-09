@@ -454,6 +454,81 @@
 
 ---
 
+## 9. Round 3 테스트 시나리오 (2026-03-09 예정)
+
+> **테스트 프로젝트**: 짐핏(GymFit) — 헬스장 회원 관리 + 수업 예약 웹 플랫폼
+> **프로젝트 코드**: GYMFIT
+> **신규 검증 포인트**: ① 수동 연계 (input/ 폴더 복사 방식) ② SB 연계 모드 (fnRef 자동 매핑) ③ 통합 + 패키지별 2가지 환경 병행 검증
+
+### 9-1. 시나리오 목록
+
+| # | 시나리오 | 환경 | 연계 방식 | 핵심 검증 |
+|---|---------|------|---------|---------|
+| **S15** | 통합 파이프라인 QST→SB | `test/e2e-full/` | 자동 (context/ 공유) | 6단계 전체 연계 + SB fnRef 자동 매핑 |
+| **S16** | 패키지별 QST (독립) | `standalone-build/qst/` | 독립 | context/qst.md 생성 확인 |
+| **S17** | 패키지별 REQ (수동 연계) | `standalone-build/req/` | 수동 (input/QST_*.md) | `[REQ Step 0] 모드: 연계(수동)` 출력 |
+| **S18** | 패키지별 FN (수동 연계) | `standalone-build/fn/` | 수동 (input/REQ_*.md) | `[FN Step 0] 모드: 연계(수동)` 출력 |
+| **S19** | 패키지별 IA (수동 연계) | `standalone-build/ia/` | 수동 (input/FN_*.md) | `[IA Step 0] 모드: 연계(수동)` 출력 |
+| **S20** | 패키지별 WBS (수동 연계) | `standalone-build/wbs/` | 수동 (input/FN_*.md + IA_*.md) | `[WBS Step 0] 모드: 연계(수동)` 출력 |
+| **S21** | 패키지별 SB (수동 연계) | `standalone-build/sb/` | 수동 (input/FN_*.md + IA_*.md) | fnRef 자동 매핑 + 1280×720 PDF |
+
+### 9-2. 수동 연계 흐름 (S16 → S21)
+
+```
+S16: standalone-build/qst/
+     └─ output/GYMFIT/{날짜}/QST_GYMFIT_v1.0.md
+         └─ 복사 → req/input/QST_GYMFIT_v1.0.md
+
+S17: standalone-build/req/
+     └─ output/GYMFIT/{날짜}/REQ_GYMFIT_v1.0.md
+         └─ 복사 → fn/input/REQ_GYMFIT_v1.0.md
+
+S18: standalone-build/fn/
+     └─ output/GYMFIT/{날짜}/FN_GYMFIT_v1.0.md
+         └─ 복사 → ia/input/ + wbs/input/ + sb/input/
+
+S19: standalone-build/ia/
+     └─ output/GYMFIT/{날짜}/IA_GYMFIT_v1.0.md
+         └─ 복사 → wbs/input/ + sb/input/
+
+S20: standalone-build/wbs/
+     └─ output/GYMFIT/{날짜}/WBS_GYMFIT_v1.0.md
+
+S21: standalone-build/sb/
+     └─ output/GYMFIT/SB_GYMFIT_v1.html + .pdf
+```
+
+### 9-3. 전체 검증 체크리스트 (Round 3)
+
+| # | 검증 항목 | 대상 | 판정 기준 |
+|---|---------|------|---------|
+| V-R3-01 | 통합 파이프라인 6단계 완주 | S15 | QST→SB 순서로 context/ 5파일 + SB PDF 생성 |
+| V-R3-02 | 수동 연계 모드 판별 | S17~S21 | `모드: 연계(수동)` 출력 (5회) |
+| V-R3-03 | input/ 파일 참조 정상 | S17~S21 | 연계 내용이 산출물에 반영됨 |
+| V-R3-04 | SB fnRef 자동 매핑 (통합) | S15 | context/fn.md 기반 fnRef[] 자동 구성 |
+| V-R3-05 | SB fnRef 수동 연계 | S21 | input/FN_*.md 기반 fnRef[] 구성 |
+| V-R3-06 | SB 1280×720 landscape PDF | S15, S21 | verify.js ERROR 0건 |
+| V-R3-07 | detector.mjs 오탐 없음 | S15~S21 | 관련 없는 입력에 스킬 미감지 |
+| V-R3-08 | ID 추적성 체인 (통합) | S15 | Q-→FR-→FN-→IA-P→WBS-T 연결 확인 |
+
+### 9-4. 테스트 결과 (실행 후 기록)
+
+| # | 시나리오 | 판정 | 비고 |
+|---|---------|------|------|
+| S15 | 통합 파이프라인 QST→SB | - | |
+| S16 | 패키지별 QST (독립) | - | |
+| S17 | 패키지별 REQ (수동 연계) | - | |
+| S18 | 패키지별 FN (수동 연계) | - | |
+| S19 | 패키지별 IA (수동 연계) | - | |
+| S20 | 패키지별 WBS (수동 연계) | - | |
+| S21 | 패키지별 SB (수동 연계) | - | |
+
+**실행 가이드**: `test/e2e-full/test-prompt-guide.md` 참조
+
+*Round 3 테스트 기준일: 2026-03-09*
+
+---
+
 ## 8. v2 업그레이드 테스트 결과 (2026-03-09)
 
 ### 8-1. 동기화 현황
