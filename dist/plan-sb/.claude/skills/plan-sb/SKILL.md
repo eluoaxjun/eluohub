@@ -122,6 +122,77 @@ argument-hint: "[JSON 데이터 파일경로 또는 프로젝트 요구사항]"
 - `[미확인]`, `[미정]` 항목 잔존 금지
 - design 슬라이드 내 msgCases 인라인 혼재 금지
 
+## Self-Check
+
+산출물 생성 완료 후 자동 수행합니다.
+
+### 입력 검증
+
+| ID | 검증 항목 | 판정 기준 |
+|----|----------|----------|
+| V1 | JSON 파일 존재 + 파싱 가능 | JSON 로드 + 파싱 성공. Fail 시 생성 중단 |
+| V2 | 스키마 필수 필드 완전성 | `project` + `screens[]` 존재 (v1 스키마는 자동 정규화) |
+
+### 내부 구조 검증
+
+| # | 검증 항목 | 판정 기준 |
+|---|----------|----------|
+| 1 | Cover 슬라이드 존재 | 로고·과제명·버전 표시 |
+| 2 | History 슬라이드 존재 | `history[]` 1건 이상 시 변경 이력 테이블 생성 |
+| 3 | Overview 슬라이드 존재 | `overview` 데이터 존재 시 정상 렌더링 |
+| 4 | Screen 슬라이드 수 = screens[] 수 | 일치하지 않으면 Fail |
+| 5 | Divider 슬라이드 수 = hasDivider:true 수 | 일치하지 않으면 Fail |
+| 6 | End of Document 존재 | 마지막 슬라이드 확인 |
+| 7 | 메타 테이블 완전성 | Viewport·Interface·Location 표시 |
+| 8 | Description 완전성 | design/description 타입: marker + label 존재 |
+| 9 | 와이어프레임 마커 일치 | `wireframe[].marker` ↔ `descriptions[].marker` 매핑 |
+| 10 | PDF 출력 정상 | 1280×720 landscape, 슬라이드 간 페이지 구분 |
+| 11 | 정보 소유 경계 준수 | FN 처리 로직·REQ AC 직접 복사 0건 |
+| 12 | MSG Case 분리 | design 슬라이드 내 msgCases 인라인 혼재 0건 (verify.js ERROR 0건) |
+
+### 교차 검증
+
+| # | 검증 항목 | 판정 기준 |
+|---|----------|----------|
+| X1 | 프로젝트명 일관성 | `context/project.md` 존재 시 Cover 과제명 일치. 미존재 시 N/A |
+| X2 | FN↔Screen 수량 정합성 | `context/fn.md` 존재 시 FN 수와 Screen 수 비교. 미존재 시 N/A |
+| X3 | IA 경로 일관성 | `context/ia.md` 존재 시 페이지 경로와 Screen location 비교. 미존재 시 N/A |
+
+### Self-Check 출력
+
+```
+═══════════════════════════════════
+[Self-Check] plan-sb
+═══════════════════════════════════
+▶ 입력 검증
+| V1 | JSON 존재 + 파싱      | {Pass/Fail} |
+| V2 | 스키마 필수 필드       | {Pass/Fail} |
+▶ 내부 구조 검증
+| 1  | Cover 슬라이드        | {Pass/Fail} |
+| 2  | History 슬라이드       | {Pass/Fail/N/A} |
+| 3  | Overview 슬라이드      | {Pass/Fail/N/A} |
+| 4  | Screen 슬라이드 수     | {Pass/Fail — n/n} |
+| 5  | Divider 슬라이드 수    | {Pass/Fail — n/n} |
+| 6  | End of Document       | {Pass/Fail} |
+| 7  | 메타 테이블 완전성      | {Pass/Fail} |
+| 8  | Description 완전성     | {Pass/Fail} |
+| 9  | 마커 일치              | {Pass/Fail/N/A} |
+| 10 | PDF 출력 정상          | {Pass/Fail} |
+| 11 | 정보 소유 경계 준수     | {Pass/Fail} |
+| 12 | MSG Case 분리          | {Pass/Fail} |
+▶ 교차 검증
+| X1 | 프로젝트명 일관성       | {Pass/N/A} |
+| X2 | FN↔Screen 수량 정합성  | {Pass/Fail/N/A} |
+| X3 | IA 경로 일관성          | {Pass/Fail/N/A} |
+▶ PM Devil's Advocate
+| DA1 | 범위 — 누락된 화면/프레임  | {PM-OK/WARN/BLOCK — 사유} |
+| DA2 | 우선순위 — 핵심 화면 누락  | {PM-OK/WARN/BLOCK — 사유} |
+| DA3 | 가정 — 미확인 UI 패턴     | {PM-OK/WARN/BLOCK — 사유} |
+───────────────────────────────────
+판정: {PASS — 18/18} 또는 {FAIL — n/18}
+═══════════════════════════════════
+```
+
 ## 예시 데이터
 
 참조: [example/v2-1-e2e-test.json](example/v2-1-e2e-test.json)
