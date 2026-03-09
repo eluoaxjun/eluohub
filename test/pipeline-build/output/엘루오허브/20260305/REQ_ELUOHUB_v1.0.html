@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>REQ_ELUOHUB_v1.0</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif; font-size: 11pt; color: #1a1a2e; line-height: 1.7; }
+  .doc-header { background: #1a1a2e; color: #fff; padding: 24px 40px; display: flex; justify-content: space-between; align-items: center; }
+  .doc-header .logo { font-size: 16pt; font-weight: 700; letter-spacing: 0.05em; }
+  .doc-header .meta { text-align: right; font-size: 9pt; opacity: 0.8; line-height: 1.6; }
+  .doc-title-bar { background: #f0f4ff; border-left: 4px solid #4a6cf7; padding: 16px 40px; }
+  .doc-title-bar h1 { font-size: 18pt; color: #1a1a2e; }
+  .doc-title-bar .subtitle { font-size: 9pt; color: #666; margin-top: 4px; }
+  .toc { margin: 32px 40px; padding: 24px; background: #f9fafb; border-radius: 6px; }
+  .toc-title { font-size: 12pt; margin-bottom: 12px; color: #1a1a2e; }
+  .toc ul { list-style: none; padding-left: 0; }
+  .toc li { padding: 4px 0; }
+  .toc a { color: #4a6cf7; text-decoration: none; font-size: 10pt; }
+  .content { padding: 0 40px 60px; }
+  h1 { font-size: 20pt; margin: 32px 0 16px; color: #1a1a2e; }
+  h2.page-break { font-size: 15pt; margin: 0 0 16px; padding: 12px 16px; background: #f0f4ff; border-left: 4px solid #4a6cf7; color: #1a1a2e; page-break-before: always; }
+  h2.page-break:first-of-type { page-break-before: avoid; }
+  h3 { font-size: 12pt; margin: 20px 0 10px; color: #2d3a6e; }
+  h4 { font-size: 11pt; margin: 16px 0 8px; color: #3a4a7e; }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 24px; margin: 8px 0; }
+  li { margin: 4px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 10pt; }
+  th { background: #1a1a2e; color: #fff; padding: 8px 12px; text-align: left; font-weight: 600; }
+  td { border: 1px solid #dde3f0; padding: 7px 12px; vertical-align: top; }
+  tr:nth-child(even) td { background: #f9fafb; }
+  code { background: #f0f4ff; border-radius: 3px; padding: 1px 5px; font-family: 'D2Coding', 'Consolas', monospace; font-size: 9pt; }
+  pre { background: #1a1a2e; color: #e8eaf6; border-radius: 6px; padding: 16px; margin: 12px 0; overflow-x: auto; }
+  pre code { background: none; color: inherit; padding: 0; }
+  blockquote { border-left: 4px solid #4a6cf7; padding: 8px 16px; margin: 12px 0; color: #666; background: #f9fafb; }
+  hr { border: none; border-top: 1px solid #dde3f0; margin: 24px 0; }
+  .doc-footer { background: #f0f4ff; border-top: 1px solid #dde3f0; padding: 8px 40px; display: flex; justify-content: space-between; font-size: 8pt; color: #888; margin-top: 32px; }
+  @media print {
+    h2.page-break { page-break-before: always; }
+    h2.page-break:first-of-type { page-break-before: avoid; }
+  }
+</style>
+</head>
+<body>
+<header class="doc-header">
+  <div class="logo">ELUO</div>
+  <div class="meta">작성일: 2026-03-09</div>
+</header>
+<div class="doc-title-bar">
+  <h1>REQ_ELUOHUB_v1.0</h1>
+  <div class="subtitle">2026-03-09</div>
+</div>
+<nav class="toc"><h2 class="toc-title">목차</h2><ul><li><a href="#1-문서-개요">1. 문서 개요</a></li><li><a href="#2-비즈니스-목표-bg">2. 비즈니스 목표 (BG)</a></li><li><a href="#3-타겟-사용자">3. 타겟 사용자</a></li><li><a href="#4-기능-요구사항-fr">4. 기능 요구사항 (FR)</a></li><li><a href="#5-비기능-요구사항-nfr">5. 비기능 요구사항 (NFR)</a></li><li><a href="#6-범위-경계-sow-boundary">6. 범위 경계 (SOW Boundary)</a></li><li><a href="#7-비즈니스-규칙-br">7. 비즈니스 규칙 (BR)</a></li><li><a href="#8-추적성-매트릭스">8. 추적성 매트릭스</a></li><li><a href="#9-변경-이력">9. 변경 이력</a></li></ul></nav>
+<div class="content">
+<h1>REQ 요구사항정의서 — 엘루오 허브</h1>
+<blockquote>
+<p>작성일: 2026-03-05 | 버전: v1.0 | 프로젝트 유형: 구축</p>
+</blockquote>
+<h2 id="1-문서-개요" class="page-break">1. 문서 개요</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>프로젝트명</td>
+<td>엘루오 허브 (Eluo Hub)</td>
+</tr>
+<tr>
+<td>업종</td>
+<td>SaaS / AI 자동화 도구 플랫폼</td>
+</tr>
+<tr>
+<td>목적</td>
+<td>AI 기획 자동화 도구(스킬/에이전트)를 검색, 설치, 관리할 수 있는 마켓플레이스 구축</td>
+</tr>
+<tr>
+<td>범위</td>
+<td>마켓플레이스 코어 + 사용자 관리 + 패키지 관리 + 리뷰 시스템 + 관리자 기능</td>
+</tr>
+</tbody></table>
+<h2 id="2-비즈니스-목표-bg" class="page-break">2. 비즈니스 목표 (BG)</h2>
+<table>
+<thead>
+<tr>
+<th>BG-###</th>
+<th>목표</th>
+<th>측정 지표</th>
+<th>목표값</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BG-001</td>
+<td>사용자 기반 확보</td>
+<td>MAU (Monthly Active Users)</td>
+<td>1,000명 (런칭 6개월)</td>
+</tr>
+<tr>
+<td>BG-002</td>
+<td>도구 생태계 활성화</td>
+<td>등록 패키지 수</td>
+<td>50개 (런칭 3개월)</td>
+</tr>
+<tr>
+<td>BG-003</td>
+<td>설치 전환 최적화</td>
+<td>설치 전환율 (상세 조회 대비 설치)</td>
+<td>30% 이상</td>
+</tr>
+<tr>
+<td>BG-004</td>
+<td>개발자 커뮤니티 형성</td>
+<td>리뷰 작성률 (설치 대비 리뷰)</td>
+<td>15% 이상</td>
+</tr>
+</tbody></table>
+<h2 id="3-타겟-사용자" class="page-break">3. 타겟 사용자</h2>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>타겟</th>
+<th>특성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1차</td>
+<td>Claude Code 사용 기획자/개발자</td>
+<td>CLI 환경 익숙, 자동화 도구 니즈 높음, 데스크톱 중심</td>
+</tr>
+<tr>
+<td>2차</td>
+<td>PM/팀 리더</td>
+<td>팀 단위 도구 도입 결정권, 패키지 조합 관심</td>
+</tr>
+<tr>
+<td>3차</td>
+<td>패키지 개발자 (퍼블리셔)</td>
+<td>자체 스킬/에이전트 배포 희망, GitHub 활용 능숙</td>
+</tr>
+</tbody></table>
+<h2 id="4-기능-요구사항-fr" class="page-break">4. 기능 요구사항 (FR)</h2>
+<h3>마켓플레이스 코어</h3>
+<table>
+<thead>
+<tr>
+<th>FR-###</th>
+<th>요구사항명</th>
+<th>설명</th>
+<th>우선순위</th>
+<th>AC (인수조건)</th>
+<th>QST 근거</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FR-001</td>
+<td>패키지 목록 조회</td>
+<td>등록된 패키지를 카테고리/태그별로 목록 조회한다</td>
+<td>Must</td>
+<td>1. 패키지 목록이 카드 형태로 표시된다 2. 카테고리(파이프라인/기능/업종) 필터링이 작동한다 3. 정렬(인기순/최신순/평점순)이 작동한다 4. 페이지당 12개씩 무한스크롤 또는 페이지네이션으로 로드된다</td>
+<td>Q-008</td>
+</tr>
+<tr>
+<td>FR-002</td>
+<td>패키지 상세 조회</td>
+<td>패키지의 상세 정보(설명, 설치 방법, 버전, 리뷰)를 확인한다</td>
+<td>Must</td>
+<td>1. 패키지명, 설명, 스크린샷이 표시된다 2. 설치 명령어가 복사 가능한 코드블록으로 표시된다 3. 버전 히스토리(전체)가 표시된다 4. README.md 내용이 렌더링된다</td>
+<td>Q-009, Q-012</td>
+</tr>
+<tr>
+<td>FR-003</td>
+<td>패키지 검색</td>
+<td>키워드 기반으로 패키지를 검색한다</td>
+<td>Must</td>
+<td>1. 검색어 입력 시 300ms 디바운스 후 결과가 표시된다 2. 패키지명, 설명, 태그에서 검색된다 3. 검색 결과 0건 시 관련 추천이 표시된다 4. 최근 검색어가 5건까지 표시된다</td>
+<td>Q-008</td>
+</tr>
+<tr>
+<td>FR-004</td>
+<td>패키지 설치 (CLI)</td>
+<td>CLI 명령어를 통해 패키지를 로컬에 설치한다</td>
+<td>Must</td>
+<td>1. &quot;설치&quot; 버튼 클릭 시 CLI 명령어가 클립보드에 복사된다 2. 설치 가이드(3단계 이내)가 표시된다 3. 의존 패키지가 있으면 함께 표시된다 4. 설치 성공/실패 상태가 기록된다</td>
+<td>Q-009</td>
+</tr>
+<tr>
+<td>FR-005</td>
+<td>패키지 원클릭 설치</td>
+<td>웹에서 원클릭으로 패키지 설치를 트리거한다</td>
+<td>Should</td>
+<td>1. &quot;원클릭 설치&quot; 버튼이 CLI 설치와 별도로 존재한다 2. Claude Code CLI가 로컬에 설치된 경우 자동 실행된다 3. CLI 미설치 시 설치 안내로 폴백된다 4. 설치 진행률이 실시간 표시된다</td>
+<td>Q-009</td>
+</tr>
+<tr>
+<td>FR-006</td>
+<td>카테고리 관리</td>
+<td>패키지를 다중 카테고리(파이프라인/기능/업종)로 분류한다</td>
+<td>Must</td>
+<td>1. 3가지 분류 축(파이프라인 단계, 기능 유형, 업종)이 존재한다 2. 패키지 1개에 복수 카테고리 태깅이 가능하다 3. 카테고리별 패키지 수가 표시된다 4. 빈 카테고리는 목록에서 숨겨진다</td>
+<td>Q-008</td>
+</tr>
+</tbody></table>
+<h3>사용자 관리</h3>
+<table>
+<thead>
+<tr>
+<th>FR-###</th>
+<th>요구사항명</th>
+<th>설명</th>
+<th>우선순위</th>
+<th>AC (인수조건)</th>
+<th>QST 근거</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FR-007</td>
+<td>GitHub OAuth 로그인</td>
+<td>GitHub 계정으로 로그인/회원가입한다</td>
+<td>Must</td>
+<td>1. &quot;GitHub로 로그인&quot; 버튼 클릭 시 GitHub OAuth 화면으로 이동한다 2. 인증 완료 후 자동 회원가입(최초) 또는 로그인이 처리된다 3. GitHub 프로필 정보(이름, 아바타, 이메일)가 자동 동기화된다 4. 로그인 세션이 7일간 유지된다</td>
+<td>Q-013</td>
+</tr>
+<tr>
+<td>FR-008</td>
+<td>사용자 프로필 관리</td>
+<td>프로필 정보를 조회/수정한다</td>
+<td>Should</td>
+<td>1. 프로필 페이지에서 닉네임, 자기소개, 웹사이트 URL을 수정할 수 있다 2. GitHub 연동 정보는 읽기 전용이다 3. 프로필 이미지는 GitHub 아바타를 사용한다</td>
+<td>Q-013</td>
+</tr>
+<tr>
+<td>FR-009</td>
+<td>설치 이력 관리</td>
+<td>사용자가 설치한 패키지 이력을 확인한다</td>
+<td>Should</td>
+<td>1. 마이페이지에서 설치한 패키지 목록이 시간순으로 표시된다 2. 패키지별 설치 버전과 최신 버전이 비교 표시된다 3. 업데이트 가능 패키지에 배지가 표시된다</td>
+<td>Q-012</td>
+</tr>
+</tbody></table>
+<h3>패키지 퍼블리싱</h3>
+<table>
+<thead>
+<tr>
+<th>FR-###</th>
+<th>요구사항명</th>
+<th>설명</th>
+<th>우선순위</th>
+<th>AC (인수조건)</th>
+<th>QST 근거</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FR-010</td>
+<td>패키지 등록</td>
+<td>새 패키지를 등록하고 심사를 요청한다</td>
+<td>Must</td>
+<td>1. GitHub 리포지토리 URL 입력으로 패키지 정보가 자동 수집된다 2. 패키지명, 설명, 카테고리, 태그를 입력/수정할 수 있다 3. README.md가 미리보기로 렌더링된다 4. 제출 시 &quot;심사 대기&quot; 상태로 등록된다</td>
+<td>Q-010</td>
+</tr>
+<tr>
+<td>FR-011</td>
+<td>패키지 버전 관리</td>
+<td>패키지의 버전을 등록/관리한다</td>
+<td>Must</td>
+<td>1. Git 태그 기반으로 버전이 자동 감지된다 2. 전체 버전 히스토리가 표시된다 3. 각 버전의 변경 로그(CHANGELOG)가 표시된다 4. 사용자는 특정 버전을 선택하여 설치할 수 있다</td>
+<td>Q-012</td>
+</tr>
+<tr>
+<td>FR-012</td>
+<td>패키지 심사 워크플로우</td>
+<td>등록된 패키지를 심사하여 승인/반려한다</td>
+<td>Must</td>
+<td>1. 심사 대기 목록에서 패키지를 확인할 수 있다 2. 자동 검증(린트, 구조 확인)이 실행된다 3. 심사자가 승인/반려/보완요청을 선택할 수 있다 4. 반려/보완요청 시 사유가 퍼블리셔에게 전달된다</td>
+<td>Q-010, Q-015</td>
+</tr>
+<tr>
+<td>FR-013</td>
+<td>퍼블리셔 대시보드</td>
+<td>패키지 퍼블리셔의 통계/관리 대시보드를 제공한다</td>
+<td>Should</td>
+<td>1. 내 패키지 목록과 각 패키지의 설치 수, 평점이 표시된다 2. 일별/주별/월별 설치 추이 차트가 표시된다 3. 패키지별 리뷰 목록을 확인할 수 있다</td>
+<td>Q-010</td>
+</tr>
+</tbody></table>
+<h3>리뷰/평점</h3>
+<table>
+<thead>
+<tr>
+<th>FR-###</th>
+<th>요구사항명</th>
+<th>설명</th>
+<th>우선순위</th>
+<th>AC (인수조건)</th>
+<th>QST 근거</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FR-014</td>
+<td>리뷰 작성</td>
+<td>설치한 패키지에 별점과 텍스트 리뷰를 작성한다</td>
+<td>Must</td>
+<td>1. 패키지 설치 이력이 있는 사용자만 리뷰를 작성할 수 있다 2. 별점(1~5)은 필수, 텍스트 리뷰는 선택이다 3. 리뷰는 패키지당 1건만 작성 가능하다 4. 작성 후 수정/삭제가 가능하다</td>
+<td>Q-011</td>
+</tr>
+<tr>
+<td>FR-015</td>
+<td>리뷰 목록 조회</td>
+<td>패키지의 리뷰를 목록으로 조회한다</td>
+<td>Must</td>
+<td>1. 평균 별점과 별점 분포가 상단에 표시된다 2. 최신순/평점순 정렬이 가능하다 3. 리뷰당 &quot;도움됨&quot; 버튼이 존재한다</td>
+<td>Q-011</td>
+</tr>
+</tbody></table>
+<h3>API/연동</h3>
+<table>
+<thead>
+<tr>
+<th>FR-###</th>
+<th>요구사항명</th>
+<th>설명</th>
+<th>우선순위</th>
+<th>AC (인수조건)</th>
+<th>QST 근거</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FR-016</td>
+<td>REST API 제공</td>
+<td>패키지 조회/검색/설치 API를 외부에 공개한다</td>
+<td>Should</td>
+<td>1. OpenAPI 3.0 문서가 자동 생성된다 2. API 키 기반 인증이 적용된다 3. Rate Limiting(분당 60건)이 적용된다 4. 패키지 CRUD, 검색, 설치 트리거 엔드포인트가 제공된다</td>
+<td>Q-014</td>
+</tr>
+<tr>
+<td>FR-017</td>
+<td>GitHub 연동</td>
+<td>GitHub API를 통해 패키지 소스를 동기화한다</td>
+<td>Must</td>
+<td>1. 리포지토리 메타데이터(README, 태그, 릴리스)가 자동 동기화된다 2. Webhook으로 릴리스 이벤트를 수신한다 3. 동기화 실패 시 재시도(3회)하고 관리자에게 알림을 보낸다</td>
+<td>Q-017</td>
+</tr>
+<tr>
+<td>FR-018</td>
+<td>Webhook 알림</td>
+<td>패키지 상태 변경 시 외부 시스템에 Webhook을 발송한다</td>
+<td>Could</td>
+<td>1. 패키지 승인/업데이트/삭제 이벤트에 Webhook이 발송된다 2. 퍼블리셔가 Webhook URL을 등록할 수 있다 3. 발송 실패 시 3회 재시도한다</td>
+<td>Q-017</td>
+</tr>
+</tbody></table>
+<h3>관리자</h3>
+<table>
+<thead>
+<tr>
+<th>FR-###</th>
+<th>요구사항명</th>
+<th>설명</th>
+<th>우선순위</th>
+<th>AC (인수조건)</th>
+<th>QST 근거</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FR-019</td>
+<td>관리자 대시보드</td>
+<td>플랫폼 전체 현황을 모니터링하는 대시보드를 제공한다</td>
+<td>Must</td>
+<td>1. 총 사용자 수, 패키지 수, 일일 설치 수가 표시된다 2. 심사 대기 건수가 배지로 표시된다 3. 최근 7일 설치 추이 차트가 표시된다</td>
+<td>Q-001, Q-002</td>
+</tr>
+<tr>
+<td>FR-020</td>
+<td>사용자 관리</td>
+<td>사용자 목록을 조회하고 권한을 관리한다</td>
+<td>Must</td>
+<td>1. 사용자 목록이 검색/필터 가능하다 2. 사용자 역할(일반/퍼블리셔/관리자)을 변경할 수 있다 3. 사용자 비활성화(밴)가 가능하다</td>
+<td>Q-013</td>
+</tr>
+<tr>
+<td>FR-021</td>
+<td>카테고리 관리 (관리자)</td>
+<td>카테고리 체계를 추가/수정/삭제한다</td>
+<td>Should</td>
+<td>1. 3가지 분류 축별로 카테고리를 CRUD할 수 있다 2. 카테고리 순서를 드래그로 변경할 수 있다 3. 카테고리 삭제 시 해당 패키지의 카테고리가 &quot;미분류&quot;로 변경된다</td>
+<td>Q-008</td>
+</tr>
+</tbody></table>
+<h3>공통</h3>
+<table>
+<thead>
+<tr>
+<th>FR-###</th>
+<th>요구사항명</th>
+<th>설명</th>
+<th>우선순위</th>
+<th>AC (인수조건)</th>
+<th>QST 근거</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FR-022</td>
+<td>다국어 지원</td>
+<td>한국어/영어 2개 국어를 지원한다</td>
+<td>Should</td>
+<td>1. 언어 전환 버튼이 GNB에 존재한다 2. UI 텍스트가 선택 언어로 표시된다 3. 패키지 설명은 원본 언어로 표시된다 (번역 미적용) 4. 브라우저 언어 설정 기반 자동 감지된다</td>
+<td>Q-007</td>
+</tr>
+<tr>
+<td>FR-023</td>
+<td>알림 시스템</td>
+<td>사용자에게 주요 이벤트를 알림으로 전달한다</td>
+<td>Could</td>
+<td>1. 패키지 업데이트, 리뷰 답글, 심사 결과를 인앱 알림으로 전달한다 2. 읽음/안읽음 상태가 구분된다 3. 알림 설정에서 유형별 on/off가 가능하다</td>
+<td>Q-017</td>
+</tr>
+</tbody></table>
+<h2 id="5-비기능-요구사항-nfr" class="page-break">5. 비기능 요구사항 (NFR)</h2>
+<table>
+<thead>
+<tr>
+<th>NFR-###</th>
+<th>카테고리</th>
+<th>요구사항</th>
+<th>측정기준</th>
+<th>목표값</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NFR-001</td>
+<td>성능</td>
+<td>페이지 로딩 성능 최적화</td>
+<td>LCP (Largest Contentful Paint)</td>
+<td>1.5초 이내</td>
+</tr>
+<tr>
+<td>NFR-002</td>
+<td>성능</td>
+<td>API 응답 시간 최적화</td>
+<td>평균 응답 시간</td>
+<td>200ms 이내 (P95: 500ms)</td>
+</tr>
+<tr>
+<td>NFR-003</td>
+<td>반응형</td>
+<td>모바일/데스크톱 대응</td>
+<td>브레이크포인트</td>
+<td>768px(M), 1024px(T), 1280px(D) — 데스크톱 우선</td>
+</tr>
+<tr>
+<td>NFR-004</td>
+<td>접근성</td>
+<td>WCAG AA 수준 준수</td>
+<td>WCAG 2.1 Level AA</td>
+<td>Lighthouse 접근성 90점 이상</td>
+</tr>
+<tr>
+<td>NFR-005</td>
+<td>SEO</td>
+<td>검색 엔진 최적화</td>
+<td>Lighthouse SEO</td>
+<td>90점 이상, sitemap.xml, robots.txt, OG 태그</td>
+</tr>
+<tr>
+<td>NFR-006</td>
+<td>보안</td>
+<td>인증/인가 보안</td>
+<td>OAuth 2.0 + HTTPS</td>
+<td>GitHub OAuth, API Rate Limiting 분당 60건</td>
+</tr>
+<tr>
+<td>NFR-007</td>
+<td>보안</td>
+<td>데이터 보호</td>
+<td>암호화</td>
+<td>전송: TLS 1.2+, 저장: 민감 데이터 AES-256</td>
+</tr>
+<tr>
+<td>NFR-008</td>
+<td>가용성</td>
+<td>서비스 가용성</td>
+<td>업타임</td>
+<td>99.5% (월간)</td>
+</tr>
+<tr>
+<td>NFR-009</td>
+<td>확장성</td>
+<td>동시 사용자 처리</td>
+<td>동시 접속</td>
+<td>500명 동시 접속</td>
+</tr>
+<tr>
+<td>NFR-010</td>
+<td>다국어</td>
+<td>한/영 전환</td>
+<td>전환 속도</td>
+<td>500ms 이내 (SPA 라우팅)</td>
+</tr>
+</tbody></table>
+<h2 id="6-범위-경계-sow-boundary" class="page-break">6. 범위 경계 (SOW Boundary)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>영역</th>
+<th>항목</th>
+<th align="center">In</th>
+<th align="center">Out</th>
+<th align="center">Nego</th>
+<th>조건</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>콘텐츠</td>
+<td>패키지 설명 원고</td>
+<td align="center"></td>
+<td align="center">V</td>
+<td align="center"></td>
+<td>퍼블리셔가 직접 작성</td>
+</tr>
+<tr>
+<td>2</td>
+<td>콘텐츠</td>
+<td>랜딩 페이지 카피</td>
+<td align="center">V</td>
+<td align="center"></td>
+<td align="center"></td>
+<td>내부 작성</td>
+</tr>
+<tr>
+<td>3</td>
+<td>콘텐츠</td>
+<td>가이드/문서</td>
+<td align="center">V</td>
+<td align="center"></td>
+<td align="center"></td>
+<td>설치 가이드, API 문서</td>
+</tr>
+<tr>
+<td>4</td>
+<td>콘텐츠</td>
+<td>블로그/뉴스</td>
+<td align="center"></td>
+<td align="center">V</td>
+<td align="center"></td>
+<td>v2 이후 검토</td>
+</tr>
+<tr>
+<td>5</td>
+<td>콘텐츠</td>
+<td>다국어 번역</td>
+<td align="center">V</td>
+<td align="center"></td>
+<td align="center"></td>
+<td>UI 텍스트만 (패키지 설명 제외)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>디자인</td>
+<td>메인 시안</td>
+<td align="center">V</td>
+<td align="center"></td>
+<td align="center"></td>
+<td>데스크톱 + 모바일</td>
+</tr>
+<tr>
+<td>7</td>
+<td>디자인</td>
+<td>시안 수정</td>
+<td align="center">V</td>
+<td align="center"></td>
+<td align="center"></td>
+<td>최대 3회</td>
+</tr>
+<tr>
+<td>8</td>
+<td>디자인</td>
+<td>모션/애니메이션</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">V</td>
+<td>핵심 인터랙션만 (추가 공수 협의)</td>
+</tr>
+<tr>
+<td>9</td>
+<td>개발</td>
+<td>프론트엔드 (Next.js)</td>
+<td align="center">V</td>
+<td align="center"></td>
+<td align="center"></td>
+<td>SSR + CSR 혼합</td>
+</tr>
+<tr>
+<td>10</td>
+<td>개발</td>
+<td>백엔드 API</td>
+<td align="center">V</td>
+<td align="center"></td>
+<td align="center"></td>
+<td>REST API</td>
+</tr>
+<tr>
+<td>11</td>
+<td>개발</td>
+<td>DB 설계/구현</td>
+<td align="center">V</td>
+<td align="center"></td>
+<td align="center"></td>
+<td>PostgreSQL</td>
+</tr>
+<tr>
+<td>12</td>
+<td>개발</td>
+<td>GitHub OAuth</td>
+<td align="center">V</td>
+<td align="center"></td>
+<td align="center"></td>
+<td>인증 전담</td>
+</tr>
+<tr>
+<td>13</td>
+<td>개발</td>
+<td>결제 시스템</td>
+<td align="center"></td>
+<td align="center">V</td>
+<td align="center"></td>
+<td>v2에서 도입</td>
+</tr>
+<tr>
+<td>14</td>
+<td>개발</td>
+<td>네이티브 앱</td>
+<td align="center"></td>
+<td align="center">V</td>
+<td align="center"></td>
+<td>PWA로 대체 검토</td>
+</tr>
+<tr>
+<td>15</td>
+<td>개발</td>
+<td>관리자 페이지</td>
+<td align="center">V</td>
+<td align="center"></td>
+<td align="center"></td>
+<td>웹 기반</td>
+</tr>
+<tr>
+<td>16</td>
+<td>테스트</td>
+<td>기능 테스트</td>
+<td align="center">V</td>
+<td align="center"></td>
+<td align="center"></td>
+<td>주요 플로우</td>
+</tr>
+<tr>
+<td>17</td>
+<td>테스트</td>
+<td>부하 테스트</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">V</td>
+<td>500명 동시 접속 목표 시</td>
+</tr>
+<tr>
+<td>18</td>
+<td>테스트</td>
+<td>보안 점검</td>
+<td align="center">V</td>
+<td align="center"></td>
+<td align="center"></td>
+<td>OWASP Top 10 기반</td>
+</tr>
+<tr>
+<td>19</td>
+<td>운영</td>
+<td>모니터링 셋업</td>
+<td align="center">V</td>
+<td align="center"></td>
+<td align="center"></td>
+<td>Vercel Analytics + Sentry</td>
+</tr>
+<tr>
+<td>20</td>
+<td>운영</td>
+<td>데이터 이관</td>
+<td align="center"></td>
+<td align="center">V</td>
+<td align="center"></td>
+<td>신규 구축이므로 해당 없음</td>
+</tr>
+<tr>
+<td>21</td>
+<td>운영</td>
+<td>운영 매뉴얼</td>
+<td align="center">V</td>
+<td align="center"></td>
+<td align="center"></td>
+<td>관리자 기능 중심</td>
+</tr>
+</tbody></table>
+<h2 id="7-비즈니스-규칙-br" class="page-break">7. 비즈니스 규칙 (BR)</h2>
+<table>
+<thead>
+<tr>
+<th>BR-###</th>
+<th>규칙명</th>
+<th>설명</th>
+<th>관련 FR</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BR-001</td>
+<td>패키지 등록 심사 필수</td>
+<td>모든 패키지는 자동 검증 + 수동 심사를 통과해야 공개된다</td>
+<td>FR-010, FR-012</td>
+</tr>
+<tr>
+<td>BR-002</td>
+<td>리뷰 자격 제한</td>
+<td>패키지를 설치한 사용자만 리뷰를 작성할 수 있다</td>
+<td>FR-014</td>
+</tr>
+<tr>
+<td>BR-003</td>
+<td>리뷰 1건 제한</td>
+<td>사용자당 패키지당 리뷰는 1건만 작성 가능하다</td>
+<td>FR-014</td>
+</tr>
+<tr>
+<td>BR-004</td>
+<td>버전 관리 불변성</td>
+<td>한번 배포된 버전은 삭제할 수 없다 (비공개 전환만 가능)</td>
+<td>FR-011</td>
+</tr>
+<tr>
+<td>BR-005</td>
+<td>퍼블리셔 역할 전환</td>
+<td>패키지 등록 시 자동으로 퍼블리셔 역할이 부여된다</td>
+<td>FR-010, FR-020</td>
+</tr>
+<tr>
+<td>BR-006</td>
+<td>GitHub 계정 필수</td>
+<td>플랫폼 가입에 GitHub 계정이 필수이다</td>
+<td>FR-007</td>
+</tr>
+</tbody></table>
+<h2 id="8-추적성-매트릭스" class="page-break">8. 추적성 매트릭스</h2>
+<table>
+<thead>
+<tr>
+<th>Q-###</th>
+<th>→ FR-###</th>
+<th>상태</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Q-001</td>
+<td>FR-019 (BG-001)</td>
+<td>매핑 완료</td>
+</tr>
+<tr>
+<td>Q-002</td>
+<td>FR-010, FR-011 (BG-002)</td>
+<td>매핑 완료</td>
+</tr>
+<tr>
+<td>Q-003</td>
+<td>FR-004, FR-005 (BG-003)</td>
+<td>매핑 완료</td>
+</tr>
+<tr>
+<td>Q-004</td>
+<td>FR-016 (v2 과금)</td>
+<td>매핑 완료 (v1 무료)</td>
+</tr>
+<tr>
+<td>Q-005</td>
+<td>FR-022, NFR-004</td>
+<td>매핑 완료</td>
+</tr>
+<tr>
+<td>Q-006</td>
+<td>NFR-003</td>
+<td>매핑 완료</td>
+</tr>
+<tr>
+<td>Q-007</td>
+<td>FR-022, NFR-010</td>
+<td>매핑 완료</td>
+</tr>
+<tr>
+<td>Q-008</td>
+<td>FR-001, FR-003, FR-006, FR-021</td>
+<td>매핑 완료</td>
+</tr>
+<tr>
+<td>Q-009</td>
+<td>FR-002, FR-004, FR-005</td>
+<td>매핑 완료</td>
+</tr>
+<tr>
+<td>Q-010</td>
+<td>FR-010, FR-012, FR-013</td>
+<td>매핑 완료</td>
+</tr>
+<tr>
+<td>Q-011</td>
+<td>FR-014, FR-015</td>
+<td>매핑 완료</td>
+</tr>
+<tr>
+<td>Q-012</td>
+<td>FR-002, FR-009, FR-011</td>
+<td>매핑 완료</td>
+</tr>
+<tr>
+<td>Q-013</td>
+<td>FR-007, FR-008, FR-020</td>
+<td>매핑 완료</td>
+</tr>
+<tr>
+<td>Q-014</td>
+<td>FR-016</td>
+<td>매핑 완료</td>
+</tr>
+<tr>
+<td>Q-015</td>
+<td>FR-012</td>
+<td>매핑 완료</td>
+</tr>
+<tr>
+<td>Q-016</td>
+<td>BG-001 (v2 수익화)</td>
+<td>매핑 완료</td>
+</tr>
+<tr>
+<td>Q-017</td>
+<td>FR-017, FR-018, FR-023</td>
+<td>매핑 완료</td>
+</tr>
+<tr>
+<td>Q-018</td>
+<td>SOW #13 (결제 Out-of-Scope)</td>
+<td>매핑 완료</td>
+</tr>
+</tbody></table>
+<h2 id="9-변경-이력" class="page-break">9. 변경 이력</h2>
+<table>
+<thead>
+<tr>
+<th>버전</th>
+<th>날짜</th>
+<th>변경 내용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>v1.0</td>
+<td>2026-03-05</td>
+<td>최초 작성 (FR 23건, NFR 10건, BG 4건, BR 6건)</td>
+</tr>
+</tbody></table>
+<!-- META
+{"fr_count":23,"nfr_count":10,"bg_count":4,"br_count":6,"moscow":{"must":13,"should":6,"could":2,"wont":0},"sow_count":21}
+-->
+
+</div>
+<footer class="doc-footer">
+  <span>REQ_ELUOHUB_v1.0</span>
+  <span>2026-03-09</span>
+</footer>
+</body>
+</html>
