@@ -133,7 +133,7 @@ async function main() {
       });
       const slideArea = 1280 * SLIDE_HEIGHT;
       const density = contentArea / slideArea;
-      if (density < 0.30 && !['cover', 'end'].includes(slideType)) {
+      if (density < 0.30 && !['cover', 'end', 'divider', 'overview', 'history'].includes(slideType)) {
         results.warns.push(
           `[WARN] 슬라이드 ${slideNum} (${slideId}) 콘텐츠 밀도 부족: ${(density * 100).toFixed(1)}% < 30% (공백 과다)`
         );

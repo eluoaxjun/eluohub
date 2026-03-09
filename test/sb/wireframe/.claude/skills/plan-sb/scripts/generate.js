@@ -57,7 +57,9 @@ async function main() {
 
   // 2. HTML 생성
   const html = generateHTML(data, theme);
-  const outputDir = path.join(__dirname, 'output');
+  const outputDir = process.argv[3]
+    ? path.resolve(process.argv[3])
+    : path.join(__dirname, 'output');
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
   const htmlPath = path.join(outputDir, `${outputPrefix}.html`);

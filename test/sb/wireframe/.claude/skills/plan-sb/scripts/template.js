@@ -301,7 +301,7 @@ function renderCover(data, theme) {
   }
 
   return `
-<div class="slide">
+<div class="slide" data-slide-type="cover">
   <div class="slide-header" style="background: ${theme.primaryColor};">
     <div class="hd-left"><span class="hd-id">화면설계서</span></div>
     <div class="hd-right">${p.company?.name || ''} | ${p.writer || ''}</div>
@@ -364,7 +364,7 @@ function renderHistory(data) {
     </tr>`).join('');
 
   return `
-<div class="slide">
+<div class="slide" data-slide-type="history">
   ${renderSlideHeader(null, data, 'History')}
   <div class="slide-body slide-content">
     <table>
@@ -406,7 +406,7 @@ function renderAssignmentOverview(data) {
     `<li style="list-style:disc; margin-left:18px; margin-bottom:10px; font-size:14px; color:#ccc;">${b}</li>`).join('');
 
   const dividerSlide = `
-<div class="slide" style="background:#1a1a1a; color:#fff;">
+<div class="slide" data-slide-type="overview" style="background:#1a1a1a; color:#fff;">
   <div class="slide-header" style="background:#111; color:#fff; border-bottom:1px solid #333;">
     <div class="hd-left"><span class="hd-id" style="color:#fff;">${ov.divider?.sub || 'Overview'}</span></div>
     <div class="hd-right" style="color:#888;">${p.company?.name || ''}</div>
@@ -419,7 +419,7 @@ function renderAssignmentOverview(data) {
 </div>`;
 
   const detailSlide = `
-<div class="slide">
+<div class="slide" data-slide-type="overview">
   ${renderSlideHeader(null, data, 'Operational Assignment Detail')}
   <div class="slide-body slide-content">
     <table>
@@ -463,7 +463,7 @@ function renderSitemapOverview(data) {
     </tr>`).join('');
 
   return `
-<div class="slide">
+<div class="slide" data-slide-type="overview">
   ${renderSlideHeader(null, data, ov.title || 'Site Map')}
   <div class="slide-body slide-content">
     <table>
@@ -492,7 +492,7 @@ function renderSummaryOverview(data) {
   ).join('');
 
   return `
-<div class="slide">
+<div class="slide" data-slide-type="overview">
   ${renderSlideHeader(null, data, ov.title || 'Overview')}
   <div class="slide-body slide-content">
     <table style="width:100%; border-collapse:collapse; margin-bottom:16px;">${infoRows}</table>
@@ -523,7 +523,7 @@ function renderInterfaceList(data) {
     </tr>`).join('');
 
   return `
-<div class="slide">
+<div class="slide" data-slide-type="overview">
   ${renderSlideHeader(null, data, 'Task Target InterFace List')}
   <div class="slide-body slide-content">
     <table>
@@ -850,7 +850,7 @@ function renderDivider(divider, data) {
   }
 
   return `
-<div class="slide" style="background:#1a1a1a; color:#fff;">
+<div class="slide" data-slide-type="divider" style="background:#1a1a1a; color:#fff;">
   <div class="slide-header" style="background:#111; color:#fff; border-bottom:1px solid #333;">
     <div class="hd-left"><span class="hd-id" style="color:#fff;">Section</span></div>
     <div class="hd-right" style="color:#888;">${companyName}</div>
@@ -1002,7 +1002,7 @@ function renderScreen(screen, data) {
   }
 
   slides.push(`
-<div class="slide" style="position:relative;">
+<div class="slide" data-slide-type="${screenType}" style="position:relative;">
   ${header}
   ${modifiedHtml}
   ${bodyHtml}
@@ -1016,7 +1016,7 @@ function renderScreen(screen, data) {
       data, null
     );
     slides.push(`
-<div class="slide">
+<div class="slide" data-slide-type="msgCase">
   ${msgHeader}
   <div class="slide-body slide-content">
     ${renderMsgCaseTable(screen.msgCases)}
@@ -1035,7 +1035,7 @@ function renderEndOfDocument(data) {
   const p = data.project;
   const companyName = p.company?.name || '';
   return `
-<div class="slide">
+<div class="slide" data-slide-type="end">
   ${renderSlideHeader(null, data, 'END')}
   <div class="slide-body cover-body">
     <div style="font-size:32px; font-weight:700; color:#999; margin-bottom:10px;">END</div>
