@@ -1,13 +1,27 @@
 # E2E 파이프라인 테스트 — 예시 프롬프트 가안
 
-> **테스트 환경**: `D:/eluo-hub/test/e2e-full/`
 > **테스트 프로젝트**: 짐핏(GymFit) — 헬스장 회원 관리 + 수업 예약 웹 플랫폼
 > **프로젝트 코드**: GYMFIT
 > **테스트 날짜**: 2026-03-09
 
 ---
 
-## 테스트 전 체크리스트
+## 테스트 방식 2가지
+
+| 방식 | 환경 | 연계 | 실제 배포 반영 |
+|------|------|------|--------------|
+| **통합 테스트** | `test/e2e-full/` | 자동 (`context/` 공유) | 파이프라인 전체 설치 시 |
+| **패키지별 테스트** | `test/standalone-build/{skill}/` | 수동 (`input/`에 이전 산출물 복사) | 개별 패키지 다운로드 방식 |
+
+> **패키지별 테스트 흐름**:
+> 1. `standalone-build/qst/`에서 QST 실행 → `output/GYMFIT/context/qst.md` 생성
+> 2. 해당 파일을 `standalone-build/req/input/QST_GYMFIT_v1.0.md`로 복사
+> 3. `standalone-build/req/`에서 REQ 실행 → `input/QST_*.md` 감지 → 연계 모드 활성화
+> 4. 이하 동일 패턴 반복
+
+---
+
+## 통합 테스트 체크리스트
 
 | # | 항목 | 확인 |
 |---|------|------|
@@ -353,6 +367,43 @@ output/GYMFIT/
 | FR-### → FN-### | 모든 FR이 최소 1개 FN으로 분해됨 |
 | FN-### → IA-P### | FN 기능이 IA 페이지에 매핑됨 |
 | FN-### → WBS-T### | FN 기반 작업 항목 생성됨 |
+
+---
+
+## 패키지별 테스트 (수동 연계)
+
+> **환경**: `test/standalone-build/{skill}/`
+> **연계 방식**: 이전 패키지 output 산출물 → 다음 패키지 `input/` 폴더에 복사
+
+### 실행 순서
+
+| 단계 | 실행 폴더 | 실행 후 산출물 | 다음 단계 input/ 복사 대상 |
+|------|-----------|--------------|--------------------------|
+| QST | `standalone-build/qst/` | `output/GYMFIT/{날짜}/QST_GYMFIT_v1.0.md` | → `req/input/QST_GYMFIT_v1.0.md` |
+| REQ | `standalone-build/req/` | `output/GYMFIT/{날짜}/REQ_GYMFIT_v1.0.md` | → `fn/input/REQ_GYMFIT_v1.0.md` |
+| FN  | `standalone-build/fn/`  | `output/GYMFIT/{날짜}/FN_GYMFIT_v1.0.md`  | → `ia/input/FN_GYMFIT_v1.0.md` + `wbs/input/FN_GYMFIT_v1.0.md` + `sb/input/FN_GYMFIT_v1.0.md` |
+| IA  | `standalone-build/ia/`  | `output/GYMFIT/{날짜}/IA_GYMFIT_v1.0.md`  | → `wbs/input/IA_GYMFIT_v1.0.md` + `sb/input/IA_GYMFIT_v1.0.md` |
+| WBS | `standalone-build/wbs/` | `output/GYMFIT/{날짜}/WBS_GYMFIT_v1.0.md` | (SB에 불필요) |
+| SB  | `standalone-build/sb/`  | `output/GYMFIT/SB_GYMFIT_v1.html` + `.pdf` | — |
+
+### 검증 포인트
+
+- [ ] `standalone-build/req/`에서 REQ 실행 시 `[REQ Step 0] 모드: 연계(수동)` 출력됨
+- [ ] `standalone-build/fn/`에서 FN 실행 시 `[FN Step 0] 모드: 연계(수동)` 출력됨
+- [ ] `standalone-build/ia/`에서 IA 실행 시 `[IA Step 0] 모드: 연계(수동)` 출력됨
+- [ ] `standalone-build/wbs/`에서 WBS 실행 시 `[WBS Step 0] 모드: 연계(수동)` 출력됨
+- [ ] `standalone-build/sb/`에서 SB 실행 시 `[SB Step 0] 모드: 연계 | FN: 있음 | IA: 있음` 출력됨
+- [ ] 각 패키지가 `input/` 파일을 참조하여 연계 내용 반영
+- [ ] 최종 SB output 내용에 FN 기능 참조(fnRef) 포함됨
+
+### 패키지별 테스트 체크리스트
+
+| # | 항목 | 확인 |
+|---|------|------|
+| 1 | 각 `standalone-build/{skill}/` 폴더에서 Claude Code 실행 | □ |
+| 2 | 각 폴더에 `PROJECT.md` 존재 | □ |
+| 3 | 이전 단계 산출물 `input/`에 복사 후 Claude Code 재실행 | □ |
+| 4 | 각 단계 `output/GYMFIT/` 하위에 MD + HTML + PDF 생성 | □ |
 
 ---
 
