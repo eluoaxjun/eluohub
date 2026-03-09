@@ -1,0 +1,9 @@
+{
+  "name": "plan-req-render",
+  "version": "1.0.0",
+  "description": "기획 산출물 MD → HTML → PDF 렌더러",
+  "private": true,
+  "dependencies": {
+    "marked": "^12.0.0"
+  }
+}
