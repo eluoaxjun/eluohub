@@ -137,7 +137,7 @@ function css(theme) {
 
   /* Wireframe 영역 */
   .wf-container { height: 100%; display: flex; flex-direction: column; overflow: hidden; }
-  .wf-scroll { flex: 1; overflow-y: auto; padding: 8px 10px; }
+  .wf-scroll { flex: 1; overflow-y: auto; overflow-x: clip; padding: 8px 10px 8px 32px; }
   .wf-el { border: 1px dashed #ccc; background: #fafafa; padding: 8px 10px; margin: 0 0 5px 0; font-size: 10px; color: #666; position: relative; display: flex; flex-direction: column; }
   .wf-el:last-child { margin-bottom: 0; }
   .wf-el--header { background: #e8e8e8; border: 1px solid #bbb; min-height: 36px; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #555; }
@@ -157,13 +157,38 @@ function css(theme) {
   .wf-el--banner { background: linear-gradient(135deg, #e8e8e8, #f5f5f5); border: 1px solid #ccc; min-height: 60px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #888; font-weight: 600; }
   .wf-el--divider { border: none; border-top: 1px solid #ddd; margin: 6px 0; padding: 0; min-height: 0; background: transparent; }
   .wf-el--group { border: 1px dashed #bbb; background: #fcfcfc; padding: 6px; gap: 5px; }
-  .wf-el--group-h { flex-direction: row; align-items: center; flex-wrap: wrap; }
-  .wf-el--button-icon { width: 26px; height: 26px; min-height: 26px; border-radius: 50%; padding: 0; background: rgba(255,255,255,0.9); border: 1px solid #999; font-size: 12px; align-self: flex-end; }
-  .wf-el--button-arrow { width: 30px; height: 30px; min-height: 30px; border-radius: 50%; padding: 0; background: rgba(0,0,0,0.35); border: none; color: #fff; font-size: 13px; }
-  .wf-el--checkbox { background: transparent; border: none; padding: 4px 0; gap: 5px; flex-direction: row; align-items: center; min-height: 24px; }
-  .wf-checkbox-box { width: 13px; height: 13px; border: 1px solid #888; border-radius: 2px; flex-shrink: 0; background: #fff; }
-  .wf-dot { width: 9px; height: 9px; border-radius: 50%; background: #ccc; flex-shrink: 0; }
-  .wf-dot--active { background: #e20047; }
+  .wf-el--group--horizontal { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
+  .wf-el--group--horizontal > .wf-el { flex: 1; min-width: 0; margin: 0 3px 3px 0; }
+
+  /* group layout: popup */
+  .wf-el--group--popup { position: relative; background: #fff; border: 2px solid #aaa !important; border-radius: 6px; padding: 0; gap: 0; }
+  .wf-grp-close { position: absolute; top: 6px; right: 8px; display: flex; align-items: center; gap: 3px; z-index: 3; }
+  .wf-grp-close-btn { width: 22px; height: 22px; background: rgba(0,0,0,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; font-weight: 700; flex-shrink: 0; }
+  .wf-grp-image { min-height: 90px; background: #e0e0e0; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #999; position: relative; flex: 1; }
+  .wf-grp-image::before { content: '\\1F5BC'; font-size: 18px; margin-right: 5px; }
+  .wf-grp-nav { display: flex; align-items: center; justify-content: space-between; padding: 4px 10px; border-top: 1px solid #eee; position: relative; }
+  .wf-grp-footer { display: flex; align-items: center; gap: 6px; padding: 6px 10px; border-top: 1px solid #eee; background: #fafafa; position: relative; }
+  .wf-grp-footer > .wf-el { flex: 1; }
+  .wf-marker-inline { display: inline-flex; width: 16px; height: 16px; background: ${theme.accentColor}; color: #fff; border-radius: 50%; font-size: 8px; font-weight: 700; align-items: center; justify-content: center; flex-shrink: 0; }
+
+  /* popup */
+  .wf-el--popup { background: #fff; border: 2px solid #aaa; border-radius: 6px; padding: 0; overflow: hidden; position: relative; min-height: 180px; gap: 0; }
+  .wf-popup-close { position: absolute; top: 6px; right: 8px; width: 22px; height: 22px; background: rgba(0,0,0,0.25); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; z-index: 2; font-weight: 700; }
+  .wf-popup-image { background: #e0e0e0; min-height: 110px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #aaa; }
+  .wf-popup-image::before { content: '\\1F5BC'; font-size: 20px; margin-right: 6px; }
+  .wf-popup-nav { display: flex; align-items: center; justify-content: space-between; padding: 4px 10px; }
+  .wf-popup-nav-btn { width: 22px; height: 22px; border: 1px solid #ccc; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #666; background: #fff; }
+  .wf-popup-dots { display: flex; gap: 5px; align-items: center; }
+  .wf-popup-dots span { width: 7px; height: 7px; border-radius: 50%; background: #ccc; display: inline-block; }
+  .wf-popup-dots span.active { background: #555; }
+  .wf-popup-actions { display: flex; gap: 6px; padding: 6px 10px; border-top: 1px solid #eee; background: #fafafa; }
+  .wf-popup-actions > * { flex: 1; }
+
+  /* card with thumbnail */
+  .wf-el--card { background: #fff; border: 1px solid #ddd; border-radius: 5px; padding: 0; overflow: hidden; }
+  .wf-card-thumb { background: #e8e8e8; min-height: 70px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #aaa; border-bottom: 1px solid #ddd; }
+  .wf-card-thumb::before { content: '\\1F5BC'; font-size: 16px; margin-right: 4px; }
+  .wf-card-body { padding: 8px 10px; }
   .wf-el--table { background: #fff; }
   .wf-el--table table { width: 100%; border-collapse: collapse; font-size: 9px; }
   .wf-el--table th { background: #f0f0f0; padding: 3px 5px; border: 1px solid #ddd; font-size: 9px; }
@@ -171,7 +196,7 @@ function css(theme) {
   .wf-label { font-size: 9px; color: #999; font-weight: 600; text-transform: uppercase; margin-bottom: 2px; }
   .wf-marker { position: absolute; top: 50%; left: -22px; transform: translateY(-50%); width: 18px; height: 18px; background: ${theme.accentColor}; color: #fff; border-radius: 50%; text-align: center; line-height: 18px; font-size: 9px; font-weight: 700; z-index: 2; }
   .wf-el--marked { border: 2px dashed ${theme.accentColor} !important; background: rgba(204, 51, 51, 0.03); }
-  .wf-viewport { padding: 0 0 0 26px; }
+  .wf-viewport { padding: 0; }
 
   /* 이미지 UI 캡처 */
   .ui-capture { flex: 1; background: #f9f9f9; border-right: 1px solid #ddd; display: flex; align-items: center; justify-content: center; color: #999; font-size: 13px; overflow: hidden; }
@@ -251,7 +276,7 @@ function renderSlideHeader(screen, data, title) {
     // 커버/History/Overview 등 특수 슬라이드용
     return `<div class="slide-header">
   <div class="hd-left"><span class="hd-id">${title}</span></div>
-  <div class="hd-right">${companyName}${p.writer ? ' | ' + p.writer : ''}${p.date ? ' | ' + p.date : ''}</div>
+  <div class="hd-right">${companyName}${p.writer && p.writer !== companyName ? ' | ' + p.writer : ''}${p.date ? ' | ' + p.date : ''}</div>
 </div>`;
   }
 
@@ -266,7 +291,7 @@ function renderSlideHeader(screen, data, title) {
     ${name ? `<span class="hd-sep">|</span><span class="hd-name">${name}</span>` : ''}
     ${page ? `<span class="hd-sep">|</span><span>${page}</span>` : ''}
   </div>
-  <div class="hd-right">${companyName}${p.writer ? ' | ' + p.writer : ''}${p.date ? ' | ' + p.date : ''}</div>
+  <div class="hd-right">${companyName}${p.writer && p.writer !== companyName ? ' | ' + p.writer : ''}${p.date ? ' | ' + p.date : ''}</div>
 </div>`;
 }
 
@@ -553,24 +578,6 @@ function renderInterfaceList(data) {
 }
 
 /**
- * 그룹 가로 배열 자동 감지
- * - 모든 자식이 ●/○ 도트 버튼 → 인디케이터 행
- * - 자식 중 ◀/▶ 화살표 버튼 존재 → 네비게이션 행
- * - 자식이 input + button 2개 → 컨트롤 행
- */
-function _isHorizontalGroup(el) {
-  if (el.direction === 'horizontal') return true;
-  const ch = el.children || [];
-  if (ch.length === 0) return false;
-  const allDots = ch.every(c => c.type === 'button' && (c.label === '●' || c.label === '○'));
-  if (allDots) return true;
-  const hasArrow = ch.some(c => c.type === 'button' && c.label && /[◀▶←→]/.test(c.label));
-  if (hasArrow) return true;
-  if (ch.length === 2 && ch.some(c => c.type === 'input') && ch.some(c => c.type === 'button')) return true;
-  return false;
-}
-
-/**
  * 와이어프레임 엘리먼트 렌더
  */
 function renderWfElement(el) {
@@ -591,36 +598,28 @@ function renderWfElement(el) {
       const content = el.content ? `<div class="wf-content">${el.content}</div>` : '';
       return `<div class="wf-el wf-el--text${markedCls}" style="${h}">${markerHtml}${labelHtml}${content}</div>`;
     }
-    case 'input': {
-      // 체크박스 패턴 (☐ 로 시작하는 레이블)
-      if (el.label && el.label.startsWith('☐')) {
-        const checkLabel = el.label.replace('☐', '').trim();
-        return `<div class="wf-el wf-el--checkbox${markedCls}" style="${h}">${markerHtml}<span class="wf-checkbox-box"></span><span>${checkLabel}</span></div>`;
-      }
+    case 'input':
       return `<div class="wf-el wf-el--input${markedCls}" style="${h}">${markerHtml}${el.label || el.placeholder || 'Input'}</div>`;
-    }
     case 'button': {
-      // 아이콘 버튼 (variant: "icon") → 원형 닫기 버튼
-      if (el.variant === 'icon') {
-        return `<div class="wf-el wf-el--button wf-el--button-icon${markedCls}" title="${el.label || ''}">${markerHtml}✕</div>`;
-      }
-      // 인디케이터 도트 (● 활성 / ○ 비활성)
-      if (el.label === '●' || el.label === '○') {
-        const activeCls = el.label === '●' ? ' wf-dot--active' : '';
-        return `<span class="wf-dot${activeCls}"></span>`;
-      }
-      // 화살표 네비게이션 버튼 (◀ / ▶)
-      if (el.label && /[◀▶←→]/.test(el.label)) {
-        const arrow = /[◀←]/.test(el.label) ? '◀' : '▶';
-        return `<div class="wf-el wf-el--button wf-el--button-arrow${markedCls}" style="${h}">${markerHtml}${arrow}</div>`;
-      }
       const variant = el.variant === 'primary' ? ' wf-el--button-primary'
         : el.variant === 'outline' ? ' wf-el--button-outline' : '';
       return `<div class="wf-el wf-el--button${variant}${markedCls}" style="${h}">${markerHtml}${el.label || 'Button'}</div>`;
     }
     case 'card': {
-      const children = (el.children || []).map(c => renderWfElement(c)).join('');
-      return `<div class="wf-el wf-el--card${markedCls}" style="${h}">${markerHtml}${labelHtml}${children}</div>`;
+      const kids = el.children || [];
+      const imgKids = kids.filter(c => c.type === 'image');
+      const restKids = kids.filter(c => c.type !== 'image');
+      let inner = '';
+      if (imgKids.length > 0) {
+        const thumbLabel = imgKids[0].label || 'Thumbnail';
+        inner += `<div class="wf-card-thumb">${thumbLabel}</div>`;
+        const bodyHtml = [...imgKids.slice(1), ...restKids].map(c => renderWfElement(c)).join('');
+        if (bodyHtml) inner += `<div class="wf-card-body">${labelHtml}${bodyHtml}</div>`;
+        else if (el.label) inner += `<div class="wf-card-body">${labelHtml}</div>`;
+      } else {
+        inner = labelHtml + restKids.map(c => renderWfElement(c)).join('');
+      }
+      return `<div class="wf-el wf-el--card${markedCls}" style="${h}">${markerHtml}${inner}</div>`;
     }
     case 'image':
       return `<div class="wf-el wf-el--image${markedCls}" style="${h}">${markerHtml}${el.label || 'Image'}</div>`;
@@ -638,11 +637,85 @@ function renderWfElement(el) {
         `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('');
       return `<div class="wf-el wf-el--table${markedCls}" style="${h}">${markerHtml}${labelHtml}<table><thead><tr>${headers}</tr></thead><tbody>${rows}</tbody></table></div>`;
     }
+    case 'popup': {
+      const hasClose = el.close !== false;
+      const hasNav = el.nav !== false && el.navDots !== false;
+      const imageLabel = el.imageLabel || el.label || '팝업 이미지';
+      const closeHtml = hasClose ? `<div class="wf-popup-close">✕</div>` : '';
+      const navHtml = hasNav ? `<div class="wf-popup-nav">
+        <div class="wf-popup-nav-btn">◀</div>
+        <div class="wf-popup-dots"><span class="active"></span><span></span><span></span></div>
+        <div class="wf-popup-nav-btn">▶</div>
+      </div>` : '';
+      const rawActions = el.actions || ['오늘 하루 보지 않기', '닫기'];
+      const actionsHtml = rawActions.map(a => {
+        const lbl = typeof a === 'string' ? a : (a.label || 'Button');
+        const variant = typeof a === 'object' && a.variant ? ` wf-el--button-${a.variant}` : '';
+        return `<div class="wf-el wf-el--button${variant}">${lbl}</div>`;
+      }).join('');
+      return `<div class="wf-el wf-el--popup${markedCls}" style="${h}">
+        ${markerHtml}${closeHtml}
+        <div class="wf-popup-image">${imageLabel}</div>
+        ${navHtml}
+        <div class="wf-popup-actions">${actionsHtml}</div>
+      </div>`;
+    }
     case 'group': {
-      const isH = _isHorizontalGroup(el);
-      const dirCls = isH ? ' wf-el--group-h' : '';
+      const layout = el.layout || 'default';
+
+      if (layout === 'popup') {
+        const kids = el.children || [];
+        const closeKid = kids.find(c => c.role === 'close');
+        const imageKid = kids.find(c => c.role === 'image' || (c.type === 'image' && !c.role));
+        const navKid   = kids.find(c => c.role === 'nav');
+        const footerKid = kids.find(c => c.role === 'footer');
+
+        // Close button — absolute top-right
+        let closePart = '';
+        if (closeKid) {
+          const mInline = closeKid.marker ? `<span class="wf-marker-inline">${closeKid.marker}</span>` : '';
+          closePart = `<div class="wf-grp-close">${mInline}<div class="wf-grp-close-btn">✕</div></div>`;
+        } else {
+          closePart = `<div class="wf-grp-close"><div class="wf-grp-close-btn">✕</div></div>`;
+        }
+
+        // Image area
+        let imagePart = '';
+        if (imageKid) {
+          const im = imageKid.marker ? `<span class="wf-marker">${imageKid.marker}</span>` : '';
+          const markedI = imageKid.marker ? ' wf-el--marked' : '';
+          imagePart = `<div class="wf-grp-image${markedI}">${im}${imageKid.label || '이미지'}</div>`;
+        } else {
+          imagePart = `<div class="wf-grp-image">이미지</div>`;
+        }
+
+        // Nav area (좌우 버튼 + 인디케이터)
+        let navPart = '';
+        if (navKid) {
+          const nm = navKid.marker ? `<span class="wf-marker">${navKid.marker}</span>` : '';
+          const navContent = (navKid.children || []).map(c => renderWfElement(c)).join('');
+          navPart = `<div class="wf-grp-nav">${nm}${navContent}</div>`;
+        }
+
+        // Footer area (액션 버튼)
+        let footerPart = '';
+        if (footerKid) {
+          const fm = footerKid.marker ? `<span class="wf-marker">${footerKid.marker}</span>` : '';
+          const markedF = footerKid.marker ? ' wf-el--marked' : '';
+          const footerContent = (footerKid.children || []).map(c => renderWfElement(c)).join('');
+          footerPart = `<div class="wf-grp-footer${markedF}">${fm}${footerContent}</div>`;
+        }
+
+        return `<div class="wf-el wf-el--group wf-el--group--popup${markedCls}" style="${h}">
+          ${markerHtml}${closePart}${imagePart}${navPart}${footerPart}
+        </div>`;
+      }
+
+      // default layout
+      const dirCls = el.direction === 'horizontal' ? ' wf-el--group--horizontal' : '';
       const children = (el.children || []).map(c => renderWfElement(c)).join('');
-      return `<div class="wf-el wf-el--group${dirCls}${markedCls}" style="${h}">${markerHtml}${labelHtml}${children}</div>`;
+      // group label은 와이어프레임에서 완전히 숨김 — description 패널에서 설명
+      return `<div class="wf-el wf-el--group${dirCls}${markedCls}" style="${h}">${markerHtml}${children}</div>`;
     }
     default:
       return `<div class="wf-el${markedCls}" style="${h}">${markerHtml}${labelHtml}${el.content || el.type}</div>`;
@@ -730,7 +803,7 @@ function renderDescriptionTableV2(descriptions, pmComments) {
         } else if (item.highlight === 'variable') {
           textEl = `<span class="desc-var">■ ${item.text}</span>`;
         } else {
-          const prefix = level === 1 ? '- ' : level === 2 ? '└ ' : level === 3 ? '> ' : level === 4 ? '└ ' : '';
+          const prefix = level === 1 ? '- ' : level === 3 ? '> ' : level === 4 ? '└ ' : '';
           textEl = `${prefix}${numPrefix}${item.text}`;
         }
         content += `<div class="${indentClass}">${textEl}</div>`;
