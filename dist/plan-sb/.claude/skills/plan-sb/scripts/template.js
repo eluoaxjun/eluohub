@@ -157,6 +157,13 @@ function css(theme) {
   .wf-el--banner { background: linear-gradient(135deg, #e8e8e8, #f5f5f5); border: 1px solid #ccc; min-height: 60px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #888; font-weight: 600; }
   .wf-el--divider { border: none; border-top: 1px solid #ddd; margin: 6px 0; padding: 0; min-height: 0; background: transparent; }
   .wf-el--group { border: 1px dashed #bbb; background: #fcfcfc; padding: 6px; gap: 5px; }
+  .wf-el--group-h { flex-direction: row; align-items: center; flex-wrap: wrap; }
+  .wf-el--button-icon { width: 26px; height: 26px; min-height: 26px; border-radius: 50%; padding: 0; background: rgba(255,255,255,0.9); border: 1px solid #999; font-size: 12px; align-self: flex-end; }
+  .wf-el--button-arrow { width: 30px; height: 30px; min-height: 30px; border-radius: 50%; padding: 0; background: rgba(0,0,0,0.35); border: none; color: #fff; font-size: 13px; }
+  .wf-el--checkbox { background: transparent; border: none; padding: 4px 0; gap: 5px; flex-direction: row; align-items: center; min-height: 24px; }
+  .wf-checkbox-box { width: 13px; height: 13px; border: 1px solid #888; border-radius: 2px; flex-shrink: 0; background: #fff; }
+  .wf-dot { width: 9px; height: 9px; border-radius: 50%; background: #ccc; flex-shrink: 0; }
+  .wf-dot--active { background: #e20047; }
   .wf-el--table { background: #fff; }
   .wf-el--table table { width: 100%; border-collapse: collapse; font-size: 9px; }
   .wf-el--table th { background: #f0f0f0; padding: 3px 5px; border: 1px solid #ddd; font-size: 9px; }
@@ -546,6 +553,24 @@ function renderInterfaceList(data) {
 }
 
 /**
+ * 그룹 가로 배열 자동 감지
+ * - 모든 자식이 ●/○ 도트 버튼 → 인디케이터 행
+ * - 자식 중 ◀/▶ 화살표 버튼 존재 → 네비게이션 행
+ * - 자식이 input + button 2개 → 컨트롤 행
+ */
+function _isHorizontalGroup(el) {
+  if (el.direction === 'horizontal') return true;
+  const ch = el.children || [];
+  if (ch.length === 0) return false;
+  const allDots = ch.every(c => c.type === 'button' && (c.label === '●' || c.label === '○'));
+  if (allDots) return true;
+  const hasArrow = ch.some(c => c.type === 'button' && c.label && /[◀▶←→]/.test(c.label));
+  if (hasArrow) return true;
+  if (ch.length === 2 && ch.some(c => c.type === 'input') && ch.some(c => c.type === 'button')) return true;
+  return false;
+}
+
+/**
  * 와이어프레임 엘리먼트 렌더
  */
 function renderWfElement(el) {
@@ -566,9 +591,29 @@ function renderWfElement(el) {
       const content = el.content ? `<div class="wf-content">${el.content}</div>` : '';
       return `<div class="wf-el wf-el--text${markedCls}" style="${h}">${markerHtml}${labelHtml}${content}</div>`;
     }
-    case 'input':
+    case 'input': {
+      // 체크박스 패턴 (☐ 로 시작하는 레이블)
+      if (el.label && el.label.startsWith('☐')) {
+        const checkLabel = el.label.replace('☐', '').trim();
+        return `<div class="wf-el wf-el--checkbox${markedCls}" style="${h}">${markerHtml}<span class="wf-checkbox-box"></span><span>${checkLabel}</span></div>`;
+      }
       return `<div class="wf-el wf-el--input${markedCls}" style="${h}">${markerHtml}${el.label || el.placeholder || 'Input'}</div>`;
+    }
     case 'button': {
+      // 아이콘 버튼 (variant: "icon") → 원형 닫기 버튼
+      if (el.variant === 'icon') {
+        return `<div class="wf-el wf-el--button wf-el--button-icon${markedCls}" title="${el.label || ''}">${markerHtml}✕</div>`;
+      }
+      // 인디케이터 도트 (● 활성 / ○ 비활성)
+      if (el.label === '●' || el.label === '○') {
+        const activeCls = el.label === '●' ? ' wf-dot--active' : '';
+        return `<span class="wf-dot${activeCls}"></span>`;
+      }
+      // 화살표 네비게이션 버튼 (◀ / ▶)
+      if (el.label && /[◀▶←→]/.test(el.label)) {
+        const arrow = /[◀←]/.test(el.label) ? '◀' : '▶';
+        return `<div class="wf-el wf-el--button wf-el--button-arrow${markedCls}" style="${h}">${markerHtml}${arrow}</div>`;
+      }
       const variant = el.variant === 'primary' ? ' wf-el--button-primary'
         : el.variant === 'outline' ? ' wf-el--button-outline' : '';
       return `<div class="wf-el wf-el--button${variant}${markedCls}" style="${h}">${markerHtml}${el.label || 'Button'}</div>`;
@@ -594,8 +639,10 @@ function renderWfElement(el) {
       return `<div class="wf-el wf-el--table${markedCls}" style="${h}">${markerHtml}${labelHtml}<table><thead><tr>${headers}</tr></thead><tbody>${rows}</tbody></table></div>`;
     }
     case 'group': {
+      const isH = _isHorizontalGroup(el);
+      const dirCls = isH ? ' wf-el--group-h' : '';
       const children = (el.children || []).map(c => renderWfElement(c)).join('');
-      return `<div class="wf-el wf-el--group${markedCls}" style="${h}">${markerHtml}${labelHtml}${children}</div>`;
+      return `<div class="wf-el wf-el--group${dirCls}${markedCls}" style="${h}">${markerHtml}${labelHtml}${children}</div>`;
     }
     default:
       return `<div class="wf-el${markedCls}" style="${h}">${markerHtml}${labelHtml}${el.content || el.type}</div>`;
@@ -683,7 +730,7 @@ function renderDescriptionTableV2(descriptions, pmComments) {
         } else if (item.highlight === 'variable') {
           textEl = `<span class="desc-var">■ ${item.text}</span>`;
         } else {
-          const prefix = level === 1 ? '- ' : level === 3 ? '> ' : level === 4 ? '└ ' : '';
+          const prefix = level === 1 ? '- ' : level === 2 ? '└ ' : level === 3 ? '> ' : level === 4 ? '└ ' : '';
           textEl = `${prefix}${numPrefix}${item.text}`;
         }
         content += `<div class="${indentClass}">${textEl}</div>`;
