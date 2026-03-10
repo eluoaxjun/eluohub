@@ -57,7 +57,9 @@ async function main() {
 
   // 2. HTML 생성
   const html = generateHTML(data, theme);
-  const outputDir = path.join(process.cwd(), 'output');
+  const outputDir = process.argv[3]
+    ? path.resolve(process.argv[3])
+    : path.join(process.cwd(), 'output');
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
   const htmlPath = path.join(outputDir, `${outputPrefix}.html`);
@@ -83,20 +85,16 @@ async function main() {
   const fileUrl = 'file:///' + htmlPath.replace(/\\/g, '/');
   await page.goto(fileUrl, { waitUntil: 'networkidle' });
 
-  // 프레임별 실제 높이 측정 → 최대 높이로 PDF 페이지 사이즈 결정
-  const frameHeights = await page.evaluate(() => {
-    const frames = document.querySelectorAll('.frame');
-    return Array.from(frames).map(f => f.scrollHeight);
-  });
-  const maxFrameHeight = Math.max(theme.frame.minHeight, ...frameHeights);
-  const pdfHeight = maxFrameHeight + 20; // 여유 마진
-  console.log(`[PDF] 프레임 ${frameHeights.length}개, 최대 높이: ${maxFrameHeight}px → 페이지: ${pdfHeight}px`);
+  // 16:9 landscape 고정 PDF (1280×720)
+  const frameCount = await page.evaluate(() => document.querySelectorAll('.slide').length);
+  console.log(`[PDF] 슬라이드 ${frameCount}개, 1280×720 landscape`);
 
   const pdfPath = path.join(outputDir, `${outputPrefix}.pdf`);
   await page.pdf({
     path: pdfPath,
-    width: `${theme.frame.width}px`,
-    height: `${pdfHeight}px`,
+    width: '1280px',
+    height: '720px',
+    landscape: true,
     printBackground: true,
     margin: { top: '0', right: '0', bottom: '0', left: '0' }
   });
