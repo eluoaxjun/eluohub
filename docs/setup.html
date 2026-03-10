@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>최초 세팅 가이드 — Eluo Hub</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+  <style>
+    /* ── Tokens ── */
+    :root {
+      --color-primary: #FFE362;
+      --color-primary-light: #FFF8DC;
+      --color-navy: #0E3060;
+      --color-navy-dark: #00162F;
+      --color-navy-light: #1A4A8A;
+      --color-gray-50: #F9FAFB;
+      --color-gray-100: #F3F4F6;
+      --color-gray-200: #E5E7EB;
+      --color-gray-300: #D1D5DB;
+      --color-gray-400: #9CA3AF;
+      --color-gray-500: #6B7280;
+      --color-gray-700: #374151;
+      --color-gray-800: #1F2937;
+      --color-gray-900: #111827;
+      --color-text: #1E1F23;
+      --color-text-secondary: #6B7280;
+      --color-bg: #FFFFFF;
+      --color-bg-code: #1E293B;
+      --color-border: #E5E7EB;
+      --color-success: #10B981;
+      --color-warning: #F59E0B;
+      --color-error: #EF4444;
+      --font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-family);
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--color-text);
+      background: var(--color-bg);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--color-navy); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+      background: var(--color-gray-100);
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      color: var(--color-navy);
+    }
+
+    /* ── Layout ── */
+    .setup {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 32px 24px 48px;
+    }
+
+    /* ── Header ── */
+    .setup-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .setup-header__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--color-primary-light);
+      border: 1px solid rgba(255, 227, 98, 0.4);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-navy);
+      margin-bottom: 16px;
+    }
+    .setup-header__title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--color-gray-900);
+      margin-bottom: 8px;
+    }
+    .setup-header__desc {
+      font-size: 15px;
+      color: var(--color-text-secondary);
+    }
+
+    /* ── Prerequisites ── */
+    .prereq {
+      display: flex;
+      gap: 12px;
+      background: var(--color-gray-50);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      margin-bottom: 36px;
+    }
+    .prereq__icon {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      margin-top: 1px;
+      color: var(--color-text-secondary);
+    }
+    .prereq__label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-gray-700);
+      margin-bottom: 4px;
+    }
+    .prereq__list {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      list-style: none;
+    }
+    .prereq__list li { margin-bottom: 2px; }
+    .prereq__list li::before {
+      content: '·';
+      margin-right: 6px;
+      color: var(--color-gray-400);
+    }
+
+    /* ── Step ── */
+    .step {
+      margin-bottom: 36px;
+      position: relative;
+    }
+    .step:not(:last-of-type)::after {
+      content: '';
+      position: absolute;
+      left: 18px;
+      top: 44px;
+      bottom: -20px;
+      width: 1px;
+      background: var(--color-gray-200);
+    }
+    .step__header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .step__num {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--color-navy);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .step__title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--color-gray-900);
+      margin-bottom: 4px;
+    }
+    .step__subtitle {
+      font-size: 14px;
+      color: var(--color-text-secondary);
+    }
+    .step__body {
+      margin-left: 50px;
+    }
+
+    /* ── Example badge ── */
+    .example-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--color-text-secondary);
+      margin-bottom: 8px;
+    }
+
+    /* ── Skill table ── */
+    .skill-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+    .skill-table th {
+      text-align: left;
+      padding: 8px 12px;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      background: var(--color-gray-50);
+      border-bottom: 1px solid var(--color-border);
+      font-size: 12px;
+    }
+    .skill-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--color-gray-100);
+      vertical-align: middle;
+    }
+    .skill-table td:first-child { font-weight: 500; }
+    .skill-table tr:last-child td { border-bottom: none; }
+    .skill-table-wrap {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .table-hint {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+    }
+    .table-hint a { font-weight: 500; }
+
+    /* ── Code block ── */
+    .code-block {
+      background: var(--color-bg-code);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .code-block__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .code-block__label {
+      font-size: 12px;
+      color: var(--color-gray-400);
+      font-family: var(--font-mono);
+    }
+    .code-block pre {
+      margin: 0;
+      padding: 16px;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #E2E8F0;
+      overflow-x: auto;
+    }
+    .code-block .dim { color: var(--color-gray-500); }
+    .code-block .hl { color: var(--color-primary); }
+
+    /* ── Info card ── */
+    .info-card {
+      background: var(--color-gray-50);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin-bottom: 16px;
+    }
+    .info-card__title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-gray-700);
+      margin-bottom: 8px;
+    }
+    .info-card__list {
+      list-style: none;
+      font-size: 13px;
+      color: var(--color-text-secondary);
+    }
+    .info-card__list li {
+      padding: 3px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+    .info-card__list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-gray-300);
+    }
+
+    /* ── Collapsible ── */
+    .collapsible { margin-bottom: 16px; }
+    .collapsible summary {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-navy);
+      cursor: pointer;
+      padding: 8px 0;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .collapsible summary::before {
+      content: '';
+      display: inline-block;
+      width: 0;
+      height: 0;
+      border-left: 5px solid var(--color-navy);
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      transition: transform 0.15s;
+    }
+    .collapsible[open] summary::before {
+      transform: rotate(90deg);
+    }
+    .collapsible__body {
+      padding: 4px 0 0 11px;
+    }
+    .collapsible__body .code-block {
+      font-size: 13px;
+    }
+
+    /* ── Test prompt ── */
+    .test-prompt {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--color-primary-light);
+      border: 1px solid rgba(255, 227, 98, 0.4);
+      border-radius: var(--radius-md);
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-navy);
+      margin-bottom: 12px;
+    }
+    .test-prompt__icon { font-size: 16px; }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--color-border);
+      margin: 32px 0;
+    }
+
+    /* ── Bottom sections ── */
+    .bottom-section {
+      margin-bottom: 28px;
+    }
+    .bottom-section__title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-gray-900);
+      margin-bottom: 12px;
+    }
+    .bottom-section__text {
+      font-size: 14px;
+      color: var(--color-text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ── Troubleshoot table ── */
+    .trouble-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .trouble-table th {
+      text-align: left;
+      padding: 8px 10px;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      background: var(--color-gray-50);
+      border-bottom: 1px solid var(--color-border);
+      font-size: 12px;
+    }
+    .trouble-table td {
+      padding: 10px;
+      border-bottom: 1px solid var(--color-gray-100);
+      vertical-align: top;
+    }
+    .trouble-table tr:last-child td { border-bottom: none; }
+    .trouble-table-wrap {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    /* ── Print ── */
+    @media print {
+      body { font-size: 12px; }
+      .setup { padding: 0; max-width: 100%; }
+      .code-block { background: #f5f5f5 !important; }
+      .code-block pre { color: #333 !important; }
+      .step:not(:last-of-type)::after { display: none; }
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 480px) {
+      .setup { padding: 24px 16px 40px; }
+      .setup-header__title { font-size: 20px; }
+      .step__body { margin-left: 0; margin-top: 12px; }
+      .step__header { align-items: center; }
+      .prereq { flex-direction: column; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="setup">
+
+  <!-- Header -->
+  <div class="setup-header">
+    <div class="setup-header__badge">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      Eluo Hub
+    </div>
+    <h1 class="setup-header__title">최초 세팅 가이드</h1>
+    <p class="setup-header__desc">스킬 폴더를 다운로드하고 바로 사용하기까지의 과정을 안내합니다.</p>
+  </div>
+
+  <!-- Prerequisites -->
+  <div class="prereq">
+    <svg class="prereq__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    <div>
+      <div class="prereq__label">사전 요구사항</div>
+      <ul class="prereq__list">
+        <li>Claude Code <strong>v2.1</strong> 이상 — <code>claude --version</code></li>
+        <li>Node.js <strong>18</strong> 이상 — <code>node --version</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Step 1 -->
+  <div class="step">
+    <div class="step__header">
+      <span class="step__num">1</span>
+      <div>
+        <div class="step__title">스킬 폴더 다운로드</div>
+        <div class="step__subtitle">필요한 스킬만 골라서 다운로드합니다. 각 폴더는 자기완결형이므로 하나만 받아도 바로 사용할 수 있습니다.</div>
+      </div>
+    </div>
+    <div class="step__body">
+      <span class="example-badge">예시</span>
+      <div class="skill-table-wrap">
+        <table class="skill-table">
+          <thead>
+            <tr><th>스킬</th><th>폴더명</th><th>설명</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>고객질의서</td><td><code>plan-qst/</code></td><td>고객 요구사항 수집</td></tr>
+            <tr><td>요구사항정의서</td><td><code>plan-req/</code></td><td>기능·비기능 요구사항 정의</td></tr>
+            <tr><td>기능정의서</td><td><code>plan-fn/</code></td><td>입력-처리-출력 상세 명세</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-hint">전체 스킬 목록은 <a href="index.html">스킬 카탈로그</a>를 참고하세요.</p>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="step">
+    <div class="step__header">
+      <span class="step__num">2</span>
+      <div>
+        <div class="step__title">스킬 폴더에서 Claude Code 실행</div>
+        <div class="step__subtitle">다운로드한 폴더를 열고 Claude Code를 실행합니다.</div>
+      </div>
+    </div>
+    <div class="step__body">
+      <span class="example-badge">예시</span>
+      <div class="code-block">
+        <div class="code-block__header">
+          <span class="code-block__label">폴더 구조</span>
+        </div>
+        <pre>plan-req/                    <span class="dim">← 이 폴더에서 Claude Code 실행</span>
+├── .claude/                 <span class="dim">← 스킬 설정 (자동 인식, 수정 불필요)</span>
+├── README.md                <span class="dim">← 사용 설명</span>
+├── input/                   <span class="dim">← 참고 자료 넣는 곳</span>
+└── output/                  <span class="dim">← 산출물이 여기에 생성됩니다</span></pre>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card__title">참고 자료 넣기</div>
+        <p style="font-size:13px; color:var(--color-text-secondary); margin-bottom:8px;"><code>input/</code> 폴더에 아래 자료를 넣으면 산출물 품질이 향상됩니다.</p>
+        <ul class="info-card__list">
+          <li>제안서, RFP</li>
+          <li>디자인 시안 (이미지, PDF)</li>
+          <li>현행 사이트 분석 자료</li>
+          <li>벤치마킹 레퍼런스</li>
+        </ul>
+      </div>
+
+      <details class="collapsible">
+        <summary>PROJECT.md 직접 작성하기 (선택)</summary>
+        <div class="collapsible__body">
+          <p style="font-size:13px; color:var(--color-text-secondary); margin-bottom:8px;">보통은 스킬이 자동 생성하지만, 미리 작성해 두면 질문 없이 바로 진행됩니다.</p>
+          <div class="code-block">
+            <div class="code-block__header">
+              <span class="code-block__label">PROJECT.md</span>
+            </div>
+            <pre><span class="hl"># 프로젝트명</span>
+
+## 개요
+- 고객사: OOO
+- 프로젝트 유형: 신규 구축 / 리뉴얼 / 운영
+- 오픈 예정일: YYYY-MM-DD
+
+## 주요 요구사항
+- (고객이 전달한 핵심 내용을 기술)</pre>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="step">
+    <div class="step__header">
+      <span class="step__num">3</span>
+      <div>
+        <div class="step__title">동작 테스트</div>
+        <div class="step__subtitle">자연어로 요청하면 산출물이 자동 생성됩니다.</div>
+      </div>
+    </div>
+    <div class="step__body">
+      <span class="example-badge">예시</span>
+      <div class="test-prompt">
+        <span class="test-prompt__icon">💬</span>
+        "요구사항 정리해줘"
+      </div>
+      <p style="font-size:13px; color:var(--color-text-secondary);"><code>output/</code> 폴더에 산출물 파일이 생성되면 설치 완료입니다.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- MCP -->
+  <div class="bottom-section">
+    <div class="bottom-section__title">MCP 서버</div>
+    <p class="bottom-section__text">대부분의 스킬은 MCP 서버가 필요 없습니다.<br>일부 스킬(디자인 벤치마킹, QA 성능 테스트 등)은 Playwright 등 MCP 서버가 필요할 수 있으며, 해당 스킬의 README에 안내가 포함됩니다.</p>
+  </div>
+
+  <!-- Update -->
+  <div class="bottom-section">
+    <div class="bottom-section__title">업데이트</div>
+    <p class="bottom-section__text">새 버전을 배포받으면 스킬 폴더의 <code>.claude/</code>만 덮어쓰기합니다.<br><code>input/</code>, <code>output/</code> 등 작업 데이터는 영향 없습니다.</p>
+  </div>
+
+  <!-- Remove -->
+  <div class="bottom-section">
+    <div class="bottom-section__title">제거</div>
+    <p class="bottom-section__text">스킬 폴더를 삭제합니다. 산출물을 보관하려면 <code>output/</code>만 별도로 백업하세요.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Troubleshoot -->
+  <div class="bottom-section">
+    <div class="bottom-section__title">문제 해결</div>
+    <div class="trouble-table-wrap">
+      <table class="trouble-table">
+        <thead>
+          <tr><th>증상</th><th>원인</th><th>해결</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>자연어 요청에 반응 안 함</td>
+            <td>Claude Code 재시작 필요</td>
+            <td><code>Ctrl+C</code>로 종료 후 재실행</td>
+          </tr>
+          <tr>
+            <td>산출물이 생성되지 않음</td>
+            <td>스킬 폴더 밖에서 실행</td>
+            <td>스킬 폴더 안에서 Claude Code 실행</td>
+          </tr>
+          <tr>
+            <td>스킬이 동작 안 함</td>
+            <td><code>.claude/</code> 경로 오류</td>
+            <td><code>.claude/skills/</code> 하위에 스킬 폴더 존재 확인</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
