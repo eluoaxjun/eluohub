@@ -932,6 +932,14 @@ function renderDesignLayout(screen) {
   const descContent = renderDescriptionTableV2(screen.descriptions, screen.pmComments);
   const fnRefHtml = renderFnRef(screen.descriptions);
 
+  // descriptions가 없으면 wireframe-area 100% (가로형 전체 와이어프레임)
+  const hasDesc = (screen.descriptions && screen.descriptions.length > 0) || (screen.pmComments && screen.pmComments.length > 0);
+  if (!hasDesc) {
+    return `<div class="design-layout">
+  <div class="wireframe-area" style="flex:1; border-right:none;">${wireframeHtml}</div>
+</div>`;
+  }
+
   return `<div class="design-layout">
   <div class="wireframe-area">${wireframeHtml}</div>
   <div class="description-panel">
