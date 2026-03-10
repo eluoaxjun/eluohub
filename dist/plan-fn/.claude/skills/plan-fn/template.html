@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>기능정의서 (FN) — {프로젝트명}</title>
+<style>
+:root {
+  --c-primary: #1a1a2e;
+  --c-primary-mid: #1B3A5C;
+  --c-accent: #e20047;
+  --c-bg: #f9fafb;
+  --c-surface: #FFFFFF;
+  --c-bg-alt: #F7F8FA;
+  --c-text: #2d2d2d;
+  --c-text-sub: #6b7280;
+  --c-border: #e5e7eb;
+  --c-success: #059669;
+  --c-warning: #d97706;
+  --c-danger: #DC2626;
+  --c-blue: #2563eb;
+  --radius: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06);
+  --max-w: 960px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Pretendard Variable', 'Pretendard', -apple-system, 'Segoe UI', 'Malgun Gothic', sans-serif;
+  color: var(--c-text);
+  background: var(--c-bg);
+  line-height: 1.7;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+
+/* Cover */
+.cover { background: var(--c-primary); color: #fff; padding: 56px 0 44px; position: relative; overflow: hidden; }
+.cover::after { content: ''; position: absolute; top: -40%; right: -6%; width: 380px; height: 380px; background: var(--c-accent); border-radius: 50%; opacity: 0.07; pointer-events: none; }
+.cover-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 16px; }
+.cover-title { font-size: 28px; font-weight: 800; line-height: 1.3; margin-bottom: 6px; }
+.cover-subtitle { font-size: 15px; color: rgba(255,255,255,0.5); margin-bottom: 28px; }
+.meta-grid { display: flex; flex-wrap: wrap; gap: 20px; font-size: 13px; color: rgba(255,255,255,0.4); }
+.meta-grid span { color: rgba(255,255,255,0.8); font-weight: 600; }
+
+/* Summary Area */
+.summary-area { background: var(--c-surface); border-bottom: 1px solid var(--c-border); padding: 20px 0; }
+.summary-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.summary-card { background: var(--c-bg-alt); border-radius: var(--radius); padding: 14px 16px; text-align: center; border-top: 3px solid var(--c-primary-mid); }
+.summary-card.green  { border-top-color: var(--c-success); }
+.summary-card.warn   { border-top-color: var(--c-warning); }
+.summary-card.accent { border-top-color: var(--c-accent); }
+.summary-value { font-size: 26px; font-weight: 800; color: var(--c-primary-mid); line-height: 1.2; }
+.summary-card.green  .summary-value { color: var(--c-success); }
+.summary-card.warn   .summary-value { color: var(--c-warning); }
+.summary-card.accent .summary-value { color: var(--c-accent); }
+.summary-label { font-size: 12px; color: var(--c-text-sub); margin-top: 2px; }
+
+/* Sticky Tab */
+.tab-wrap { position: sticky; top: 0; z-index: 100; background: var(--c-surface); border-bottom: 1px solid var(--c-border); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.tab-nav { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; display: flex; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.tab-nav::-webkit-scrollbar { display: none; }
+.tab-btn { flex-shrink: 0; padding: 13px 22px; font-size: 14px; font-weight: 600; color: var(--c-text-sub); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.2s; white-space: nowrap; font-family: inherit; }
+.tab-btn:hover { color: var(--c-text); }
+.tab-btn.active { color: var(--c-accent); border-bottom-color: var(--c-accent); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* Inner Section */
+.inner-section { padding: 32px 0 24px; border-bottom: 1px solid var(--c-border); }
+.inner-section:last-child { border-bottom: none; padding-bottom: 48px; }
+.s-label { font-size: 11px; font-weight: 700; color: var(--c-accent); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
+.s-title { font-size: 17px; font-weight: 700; color: var(--c-primary-mid); margin-bottom: 16px; }
+
+/* Info Table */
+.info-table { width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid var(--c-border); border-radius: var(--radius); overflow: hidden; }
+.info-table th { width: 160px; background: var(--c-bg-alt); font-weight: 600; text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--c-border); color: var(--c-text-sub); font-size: 13px; vertical-align: top; }
+.info-table td { padding: 10px 14px; border-bottom: 1px solid var(--c-border); font-size: 14px; }
+.info-table tr:last-child th, .info-table tr:last-child td { border-bottom: none; }
+
+/* Summary Table (기능 목록) */
+.fn-summary-table { width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid var(--c-border); border-radius: var(--radius); overflow: hidden; }
+.fn-summary-table thead th { background: var(--c-bg-alt); color: var(--c-text-sub); font-weight: 600; text-align: left; padding: 9px 12px; border-bottom: 2px solid var(--c-border); font-size: 12px; white-space: nowrap; }
+.fn-summary-table tbody td { padding: 9px 12px; border-bottom: 1px solid var(--c-border); vertical-align: top; }
+.fn-summary-table tbody tr:last-child td { border-bottom: none; }
+.fn-summary-table tbody tr:nth-child(even) { background: var(--c-bg-alt); }
+
+/* FN Card */
+.fn-list { display: flex; flex-direction: column; gap: 16px; }
+.fn-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--c-primary-mid);
+}
+.fn-card.high   { border-left-color: var(--c-danger); }
+.fn-card.mid    { border-left-color: var(--c-warning); }
+.fn-card.low    { border-left-color: var(--c-success); }
+.fn-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.fn-id { font-size: 11px; font-weight: 700; background: var(--c-primary-mid); color: #fff; padding: 2px 8px; border-radius: 4px; }
+.fn-card.high .fn-id { background: var(--c-danger); }
+.fn-card.mid  .fn-id { background: var(--c-warning); }
+.fn-card.low  .fn-id { background: var(--c-success); }
+.fn-title { font-size: 16px; font-weight: 700; color: var(--c-text); margin-bottom: 6px; }
+.fn-meta { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.fn-meta-item { font-size: 12px; color: var(--c-text-sub); }
+.fn-meta-item strong { color: var(--c-text); }
+
+/* Badge */
+.badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+.b-high   { background: #fee2e2; color: #991b1b; }
+.b-mid    { background: #fef3c7; color: #92400e; }
+.b-low    { background: #d1fae5; color: #065f46; }
+.b-must   { background: #fee2e2; color: #991b1b; }
+.b-should { background: #fef3c7; color: #92400e; }
+.b-could  { background: #eff6ff; color: #1e40af; }
+
+/* FN Detail Sections */
+.fn-section { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--c-border); }
+.fn-section-title { font-size: 12px; font-weight: 700; color: var(--c-text-sub); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.fn-desc { font-size: 14px; color: var(--c-text); }
+
+/* Sub Table (입출력/에러) */
+.sub-table { width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid var(--c-border); border-radius: var(--radius); overflow: hidden; }
+.sub-table thead th { background: var(--c-bg-alt); color: var(--c-text-sub); font-weight: 600; text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--c-border); font-size: 11px; white-space: nowrap; }
+.sub-table tbody td { padding: 7px 10px; border-bottom: 1px solid var(--c-border); font-size: 12px; vertical-align: top; }
+.sub-table tbody tr:last-child td { border-bottom: none; }
+
+/* Flow List */
+.flow-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; counter-reset: flow; }
+.flow-list li { font-size: 13px; display: flex; gap: 8px; counter-increment: flow; }
+.flow-list li::before { content: counter(flow); min-width: 20px; height: 20px; background: var(--c-primary-mid); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+
+/* Verify Grid */
+.verify-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.verify-item { background: var(--c-bg-alt); border-radius: var(--radius); padding: 10px 12px; }
+.verify-label { font-size: 11px; font-weight: 700; color: var(--c-text-sub); margin-bottom: 4px; }
+.verify-item.normal .verify-label { color: var(--c-success); }
+.verify-item.exception .verify-label { color: var(--c-warning); }
+.verify-item.error .verify-label { color: var(--c-danger); }
+.verify-item p { font-size: 12px; color: var(--c-text); }
+
+/* Tech Note */
+.tech-note { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: var(--radius); padding: 12px 14px; font-size: 13px; }
+.tech-note .tn-label { font-size: 11px; font-weight: 700; color: var(--c-blue); margin-bottom: 6px; }
+.tech-note p { color: var(--c-text); margin-bottom: 4px; }
+.tech-note p:last-child { margin-bottom: 0; }
+.tech-note strong { color: var(--c-primary-mid); }
+
+/* Footer */
+.report-footer { text-align: center; padding: 28px 0; color: var(--c-text-sub); font-size: 12px; border-top: 1px solid var(--c-border); }
+
+@media (max-width: 768px) {
+  .cover { padding: 44px 0 36px; }
+  .cover-title { font-size: 22px; }
+  .summary-strip { grid-template-columns: repeat(2, 1fr); }
+  .tab-btn { padding: 11px 14px; font-size: 13px; }
+  .verify-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .cover-title { font-size: 20px; }
+  .meta-grid { flex-direction: column; gap: 6px; }
+  .fn-card { padding: 14px 16px; }
+}
+@media print {
+  .summary-area, .tab-wrap { display: none; }
+  .tab-panel { display: block !important; page-break-before: always; }
+  .tab-panel:first-of-type { page-break-before: avoid; }
+  .fn-card { break-inside: avoid; }
+  @page { margin: 14mm 10mm; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== COVER ===== -->
+<div class="cover">
+  <div class="container">
+    <div class="cover-label">Functional Specification</div>
+    <h1 class="cover-title">기능정의서 (FN)<br>{프로젝트명}</h1>
+    <p class="cover-subtitle">{고객사명} · {프로젝트유형}</p>
+    <div class="meta-grid">
+      <div>문서 코드 <span>FN_{코드}_v1.0</span></div>
+      <div>작성일 <span>{YYYY-MM-DD}</span></div>
+      <div>상위 문서 <span>REQ_{코드}_v1.0</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SUMMARY STRIP ===== -->
+<div class="summary-area">
+  <div class="container">
+    <div class="summary-strip">
+      <div class="summary-card">
+        <div class="summary-value">{FN총수}</div>
+        <div class="summary-label">전체 기능</div>
+      </div>
+      <div class="summary-card accent">
+        <div class="summary-value">{Must수}</div>
+        <div class="summary-label">Must</div>
+      </div>
+      <div class="summary-card warn">
+        <div class="summary-value">{높음수}</div>
+        <div class="summary-label">높음 복잡도</div>
+      </div>
+      <div class="summary-card green">
+        <div class="summary-value">{FR수}</div>
+        <div class="summary-label">FR 참조</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STICKY TAB ===== -->
+<div class="tab-wrap">
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="overview">개요</button>
+    <button class="tab-btn" data-tab="list">기능 목록</button>
+    <button class="tab-btn" data-tab="detail">기능 상세</button>
+  </nav>
+</div>
+
+<!-- ===== TAB: 개요 ===== -->
+<div class="tab-panel active" id="panel-overview">
+<div class="container">
+
+  <div class="inner-section">
+    <div class="s-label">Document Overview</div>
+    <div class="s-title">문서 개요</div>
+    <table class="info-table">
+      <tr><th>대상</th><td>{프로젝트명} 전체 {N}개 기능 (FN-001 ~ FN-{NNN})</td></tr>
+      <tr><th>플랫폼</th><td>{기술 스택}</td></tr>
+      <tr><th>상위 문서</th><td>REQ_{코드}_v1.0</td></tr>
+      <tr><th>작성 기준</th><td>FR 복잡도별 분기 — 높음(4-탭) / 중간(처리+에러) / 낮음(서술형)</td></tr>
+    </table>
+  </div>
+
+  <div class="inner-section">
+    <div class="s-label">Function Summary</div>
+    <div class="s-title">기능 목록 요약</div>
+    <!-- 기능 전체 목록 요약 테이블 -->
+    <table class="fn-summary-table">
+      <thead>
+        <tr>
+          <th style="width:80px">FN ID</th>
+          <th>기능명</th>
+          <th style="width:90px">FR 근거</th>
+          <th style="width:80px">우선순위</th>
+          <th style="width:70px">복잡도</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>FN-001</strong></td>
+          <td>{기능명}</td>
+          <td>FR-{###}</td>
+          <td><span class="badge b-must">Must</span></td>
+          <td><span class="badge b-high">높음</span></td>
+        </tr>
+        <tr>
+          <td><strong>FN-002</strong></td>
+          <td>{기능명}</td>
+          <td>FR-{###}</td>
+          <td><span class="badge b-should">Should</span></td>
+          <td><span class="badge b-mid">중간</span></td>
+        </tr>
+        <tr>
+          <td><strong>FN-003</strong></td>
+          <td>{기능명}</td>
+          <td>FR-{###}</td>
+          <td><span class="badge b-could">Could</span></td>
+          <td><span class="badge b-low">낮음</span></td>
+        </tr>
+        <!-- 추가 기능은 동일 패턴으로 반복 -->
+      </tbody>
+    </table>
+  </div>
+
+</div>
+</div>
+
+<!-- ===== TAB: 기능 목록 ===== -->
+<div class="tab-panel" id="panel-list">
+<div class="container">
+  <div class="inner-section">
+    <div class="s-label">Function List</div>
+    <div class="s-title">기능 요약 카드</div>
+
+    <div class="fn-list">
+
+      <!-- FN 요약 카드 — 높음 복잡도 -->
+      <div class="fn-card high">
+        <div class="fn-header">
+          <span class="fn-id">FN-001</span>
+          <span class="badge b-must">Must</span>
+          <span class="badge b-high">높음</span>
+        </div>
+        <div class="fn-title">{기능명 — 동사+명사형}</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-{###}</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> {이 기능이 필요한 비즈니스/UX 이유}</span>
+        </div>
+      </div>
+
+      <!-- FN 요약 카드 — 중간 복잡도 -->
+      <div class="fn-card mid">
+        <div class="fn-header">
+          <span class="fn-id">FN-002</span>
+          <span class="badge b-should">Should</span>
+          <span class="badge b-mid">중간</span>
+        </div>
+        <div class="fn-title">{기능명}</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-{###}</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> {기획 근거}</span>
+        </div>
+      </div>
+
+      <!-- FN 요약 카드 — 낮음 복잡도 -->
+      <div class="fn-card low">
+        <div class="fn-header">
+          <span class="fn-id">FN-003</span>
+          <span class="badge b-could">Could</span>
+          <span class="badge b-low">낮음</span>
+        </div>
+        <div class="fn-title">{기능명}</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-{###}</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> {기획 근거}</span>
+        </div>
+      </div>
+
+      <!-- 추가 카드는 동일 패턴으로 반복 -->
+
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ===== TAB: 기능 상세 ===== -->
+<div class="tab-panel" id="panel-detail">
+<div class="container">
+  <div class="inner-section">
+    <div class="s-label">Function Detail</div>
+    <div class="s-title">기능 상세 정의</div>
+
+    <div class="fn-list">
+
+      <!-- ===== 높음 복잡도 — 4-탭 구조 ===== -->
+      <div class="fn-card high">
+        <div class="fn-header">
+          <span class="fn-id">FN-001</span>
+          <span class="badge b-must">Must</span>
+          <span class="badge b-high">높음</span>
+        </div>
+        <div class="fn-title">{기능명}</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-{###}</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> {근거}</span>
+        </div>
+
+        <div class="fn-section">
+          <div class="fn-section-title">화면 구성</div>
+          <div class="fn-desc">{영역별 구성요소 나열. 예: 상단: 검색폼, 중단: 결과 리스트, 하단: 페이지네이션}</div>
+        </div>
+
+        <div class="fn-section">
+          <div class="fn-section-title">입력</div>
+          <table class="sub-table">
+            <thead><tr><th>항목</th><th>타입</th><th>필수</th><th>검증 규칙</th></tr></thead>
+            <tbody>
+              <tr><td>{항목명}</td><td>{string/number/...}</td><td>Y</td><td>{검증 규칙}</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>{처리 단계 1}</li>
+            <li>{처리 단계 2}</li>
+            <li>{처리 단계 3}</li>
+          </ol>
+        </div>
+
+        <div class="fn-section">
+          <div class="fn-section-title">출력</div>
+          <table class="sub-table">
+            <thead><tr><th>항목</th><th>타입</th><th>설명</th></tr></thead>
+            <tbody>
+              <tr><td>{항목명}</td><td>{타입}</td><td>{설명}</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal">
+              <div class="verify-label">정상</div>
+              <p>{정상 입력 → 기대 출력 (수치 포함)}</p>
+            </div>
+            <div class="verify-item exception">
+              <div class="verify-label">예외</div>
+              <p>{경계값·특수문자·타임아웃 처리}</p>
+            </div>
+            <div class="verify-item error">
+              <div class="verify-label">에러</div>
+              <p>{시스템 장애·권한 부족·연동 실패 복구}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="fn-section">
+          <div class="fn-section-title">기술 노트</div>
+          <div class="tech-note">
+            <div class="tn-label">Tech Note</div>
+            <p><strong>기술 선택:</strong> {채택한 기술/라이브러리/패턴}</p>
+            <p><strong>대안:</strong> {검토 후 기각한 대안}</p>
+            <p><strong>선택 사유:</strong> {성능/호환성/팀 역량/라이선스 등 근거}</p>
+            <p><strong>제약:</strong> {알려진 제약이나 주의사항}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 중간 복잡도 — 처리+에러 구조 ===== -->
+      <div class="fn-card mid">
+        <div class="fn-header">
+          <span class="fn-id">FN-002</span>
+          <span class="badge b-should">Should</span>
+          <span class="badge b-mid">중간</span>
+        </div>
+        <div class="fn-title">{기능명}</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-{###}</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> {근거}</span>
+        </div>
+
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>{처리 단계 1}</li>
+            <li>{처리 단계 2}</li>
+          </ol>
+        </div>
+
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal">
+              <div class="verify-label">정상</div>
+              <p>{정상 처리 결과}</p>
+            </div>
+            <div class="verify-item exception">
+              <div class="verify-label">예외</div>
+              <p>{예외 처리}</p>
+            </div>
+            <div class="verify-item error">
+              <div class="verify-label">에러</div>
+              <p>{에러 복구}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 낮음 복잡도 — 서술형 ===== -->
+      <div class="fn-card low">
+        <div class="fn-header">
+          <span class="fn-id">FN-003</span>
+          <span class="badge b-could">Could</span>
+          <span class="badge b-low">낮음</span>
+        </div>
+        <div class="fn-title">{기능명}</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-{###}</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-desc">{서술형 1~2문장. 입력·처리·출력을 자연어로 설명}</div>
+        </div>
+      </div>
+
+      <!-- 추가 FN은 복잡도에 맞는 패턴으로 반복 -->
+
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="report-footer">
+  <div class="container">&copy; {작성연도} {작성사명}</div>
+</div>
+
+<script>
+(function() {
+  var btns = document.querySelectorAll('.tab-btn');
+  var panels = document.querySelectorAll('.tab-panel');
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var target = btn.dataset.tab;
+      btns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      panels.forEach(function(p) {
+        p.classList.toggle('active', p.id === 'panel-' + target);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+})();
+</script>
+</body>
+</html>

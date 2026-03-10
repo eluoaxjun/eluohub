@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>요구사항정의서 (REQ) — {프로젝트명}</title>
+<style>
+:root {
+  --c-primary: #1a1a2e;
+  --c-primary-mid: #1B3A5C;
+  --c-accent: #e20047;
+  --c-bg: #f9fafb;
+  --c-surface: #FFFFFF;
+  --c-bg-alt: #F7F8FA;
+  --c-text: #2d2d2d;
+  --c-text-sub: #6b7280;
+  --c-border: #e5e7eb;
+  --c-success: #059669;
+  --c-warning: #d97706;
+  --c-danger: #DC2626;
+  --c-blue: #2563eb;
+  --c-purple: #7C3AED;
+  --radius: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06);
+  --max-w: 960px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Pretendard Variable', 'Pretendard', -apple-system, 'Segoe UI', 'Malgun Gothic', sans-serif;
+  color: var(--c-text);
+  background: var(--c-bg);
+  line-height: 1.7;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+
+/* Cover */
+.cover {
+  background: var(--c-primary);
+  color: #fff;
+  padding: 56px 0 44px;
+  position: relative;
+  overflow: hidden;
+}
+.cover::after {
+  content: '';
+  position: absolute;
+  top: -40%; right: -6%;
+  width: 380px; height: 380px;
+  background: var(--c-accent);
+  border-radius: 50%;
+  opacity: 0.07;
+  pointer-events: none;
+}
+.cover-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 16px; }
+.cover-title { font-size: 28px; font-weight: 800; line-height: 1.3; margin-bottom: 6px; }
+.cover-subtitle { font-size: 15px; color: rgba(255,255,255,0.5); margin-bottom: 28px; }
+.meta-grid { display: flex; flex-wrap: wrap; gap: 20px; font-size: 13px; color: rgba(255,255,255,0.4); }
+.meta-grid span { color: rgba(255,255,255,0.8); font-weight: 600; }
+
+/* Summary Area */
+.summary-area { background: var(--c-surface); border-bottom: 1px solid var(--c-border); padding: 20px 0; }
+.summary-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.summary-card { background: var(--c-bg-alt); border-radius: var(--radius); padding: 14px 16px; text-align: center; border-top: 3px solid var(--c-primary-mid); }
+.summary-card.green  { border-top-color: var(--c-success); }
+.summary-card.warn   { border-top-color: var(--c-warning); }
+.summary-card.accent { border-top-color: var(--c-accent); }
+.summary-value { font-size: 26px; font-weight: 800; color: var(--c-primary-mid); line-height: 1.2; }
+.summary-card.green  .summary-value { color: var(--c-success); }
+.summary-card.warn   .summary-value { color: var(--c-warning); }
+.summary-card.accent .summary-value { color: var(--c-accent); }
+.summary-label { font-size: 12px; color: var(--c-text-sub); margin-top: 2px; }
+
+/* Sticky Tab */
+.tab-wrap { position: sticky; top: 0; z-index: 100; background: var(--c-surface); border-bottom: 1px solid var(--c-border); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.tab-nav { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; display: flex; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.tab-nav::-webkit-scrollbar { display: none; }
+.tab-btn { flex-shrink: 0; padding: 13px 22px; font-size: 14px; font-weight: 600; color: var(--c-text-sub); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.2s; white-space: nowrap; font-family: inherit; }
+.tab-btn:hover { color: var(--c-text); }
+.tab-btn.active { color: var(--c-accent); border-bottom-color: var(--c-accent); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* Inner Section */
+.inner-section { padding: 32px 0 24px; border-bottom: 1px solid var(--c-border); }
+.inner-section:last-child { border-bottom: none; padding-bottom: 48px; }
+.s-label { font-size: 11px; font-weight: 700; color: var(--c-accent); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
+.s-title { font-size: 17px; font-weight: 700; color: var(--c-primary-mid); margin-bottom: 16px; }
+
+/* Info Table */
+.info-table { width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid var(--c-border); border-radius: var(--radius); overflow: hidden; }
+.info-table th { width: 160px; background: var(--c-bg-alt); font-weight: 600; text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--c-border); color: var(--c-text-sub); font-size: 13px; vertical-align: top; }
+.info-table td { padding: 10px 14px; border-bottom: 1px solid var(--c-border); font-size: 14px; }
+.info-table tr:last-child th, .info-table tr:last-child td { border-bottom: none; }
+
+/* FR Card */
+.req-list { display: flex; flex-direction: column; gap: 12px; }
+.req-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--c-primary-mid);
+}
+.req-card.must    { border-left-color: var(--c-danger); }
+.req-card.should  { border-left-color: var(--c-warning); }
+.req-card.could   { border-left-color: var(--c-blue); }
+.req-card.wont    { border-left-color: var(--c-text-sub); opacity: 0.7; }
+.req-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.req-id { font-size: 11px; font-weight: 700; background: var(--c-primary-mid); color: #fff; padding: 2px 8px; border-radius: 4px; }
+.req-card.must   .req-id { background: var(--c-danger); }
+.req-card.should .req-id { background: var(--c-warning); }
+.req-card.could  .req-id { background: var(--c-blue); }
+.req-card.wont   .req-id { background: var(--c-text-sub); }
+.priority-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-left: auto; }
+.p-must    { background: #fee2e2; color: #991b1b; }
+.p-should  { background: #fef3c7; color: #92400e; }
+.p-could   { background: #eff6ff; color: #1e40af; }
+.p-wont    { background: #f1f5f9; color: #475569; }
+.req-title { font-size: 15px; font-weight: 600; color: var(--c-text); margin-bottom: 8px; }
+.req-desc { font-size: 14px; color: var(--c-text-sub); margin-bottom: 10px; }
+.ac-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.ac-list li { font-size: 13px; display: flex; gap: 6px; }
+.ac-list li::before { content: '✓'; color: var(--c-success); font-weight: 700; flex-shrink: 0; }
+.req-footer { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--c-border); display: flex; gap: 16px; font-size: 12px; color: var(--c-text-sub); flex-wrap: wrap; }
+.req-footer strong { color: var(--c-text); }
+
+/* NFR Card */
+.nfr-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--c-purple);
+  margin-bottom: 12px;
+}
+.nfr-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.nfr-id { font-size: 11px; font-weight: 700; background: var(--c-purple); color: #fff; padding: 2px 8px; border-radius: 4px; }
+.nfr-title { font-size: 15px; font-weight: 600; color: var(--c-text); margin-bottom: 6px; }
+.nfr-body { font-size: 14px; color: var(--c-text-sub); }
+.nfr-metric { font-size: 13px; font-weight: 600; color: var(--c-primary-mid); background: var(--c-bg-alt); padding: 6px 12px; border-radius: var(--radius); margin-top: 8px; display: inline-block; }
+
+/* BG Table */
+.bg-table { width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid var(--c-border); border-radius: var(--radius); overflow: hidden; }
+.bg-table th { background: var(--c-bg-alt); font-weight: 600; text-align: left; padding: 9px 12px; border-bottom: 2px solid var(--c-border); font-size: 12px; color: var(--c-text-sub); white-space: nowrap; }
+.bg-table td { padding: 9px 12px; border-bottom: 1px solid var(--c-border); font-size: 13px; vertical-align: top; }
+.bg-table tr:last-child td { border-bottom: none; }
+.bg-table tr:nth-child(even) { background: var(--c-bg-alt); }
+
+/* Footer */
+.report-footer { text-align: center; padding: 28px 0; color: var(--c-text-sub); font-size: 12px; border-top: 1px solid var(--c-border); }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cover { padding: 44px 0 36px; }
+  .cover-title { font-size: 22px; }
+  .summary-strip { grid-template-columns: repeat(2, 1fr); }
+  .tab-btn { padding: 11px 14px; font-size: 13px; }
+  .info-table th { width: 110px; }
+}
+@media (max-width: 480px) {
+  .cover-title { font-size: 20px; }
+  .meta-grid { flex-direction: column; gap: 6px; }
+  .req-card, .nfr-card { padding: 14px 16px; }
+}
+@media print {
+  .summary-area, .tab-wrap { display: none; }
+  .tab-panel { display: block !important; page-break-before: always; }
+  .tab-panel:first-of-type { page-break-before: avoid; }
+  .req-card, .nfr-card { break-inside: avoid; }
+  @page { margin: 14mm 10mm; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== COVER ===== -->
+<div class="cover">
+  <div class="container">
+    <div class="cover-label">Requirements Definition</div>
+    <h1 class="cover-title">요구사항정의서 (REQ)<br>{프로젝트명}</h1>
+    <p class="cover-subtitle">{고객사명} · {프로젝트유형}</p>
+    <div class="meta-grid">
+      <div>문서 코드 <span>REQ_{코드}_v1.0</span></div>
+      <div>작성일 <span>{YYYY-MM-DD}</span></div>
+      <div>상위 문서 <span>QST_{코드}_v1.0</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SUMMARY STRIP ===== -->
+<div class="summary-area">
+  <div class="container">
+    <div class="summary-strip">
+      <div class="summary-card">
+        <div class="summary-value">{FR총수}</div>
+        <div class="summary-label">전체 FR</div>
+      </div>
+      <div class="summary-card accent">
+        <div class="summary-value">{Must수}</div>
+        <div class="summary-label">Must</div>
+      </div>
+      <div class="summary-card green">
+        <div class="summary-value">{NFR수}</div>
+        <div class="summary-label">NFR</div>
+      </div>
+      <div class="summary-card warn">
+        <div class="summary-value">{미확인수}</div>
+        <div class="summary-label">미확인</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STICKY TAB ===== -->
+<div class="tab-wrap">
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="overview">개요</button>
+    <button class="tab-btn" data-tab="fr">기능 요구사항 (FR)</button>
+    <button class="tab-btn" data-tab="nfr">비기능 요구사항 (NFR)</button>
+  </nav>
+</div>
+
+<!-- ===== TAB: 개요 ===== -->
+<div class="tab-panel active" id="panel-overview">
+<div class="container">
+
+  <div class="inner-section">
+    <div class="s-label">Project Overview</div>
+    <div class="s-title">프로젝트 개요</div>
+    <table class="info-table">
+      <tr><th>프로젝트명</th><td>{프로젝트 전체명}</td></tr>
+      <tr><th>고객사</th><td>{고객사명}</td></tr>
+      <tr><th>프로젝트 유형</th><td>{신규 구축 / 리뉴얼 / 운영}</td></tr>
+      <tr><th>목적</th><td>{1~2문장. 정량 목표 포함}</td></tr>
+      <tr><th>범위</th><td>{핵심 범위 요약}</td></tr>
+      <tr><th>기술 환경</th><td>{기술 스택 또는 플랫폼}</td></tr>
+    </table>
+  </div>
+
+  <div class="inner-section">
+    <div class="s-label">Business Goals</div>
+    <div class="s-title">비즈니스 목표</div>
+    <!-- BG-01, BG-02... 형식으로 행 추가 -->
+    <table class="bg-table">
+      <thead>
+        <tr><th style="width:80px">ID</th><th>목표</th><th>정량 지표</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>BG-01</strong></td><td>{목표명}</td><td>{측정 가능한 수치 목표}</td></tr>
+        <tr><td><strong>BG-02</strong></td><td>{목표명}</td><td>{수치 목표}</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+</div>
+
+<!-- ===== TAB: 기능 요구사항 ===== -->
+<div class="tab-panel" id="panel-fr">
+<div class="container">
+  <div class="inner-section">
+    <div class="s-label">Functional Requirements</div>
+    <div class="s-title">기능 요구사항 목록</div>
+
+    <!-- req-card 클래스: must / should / could / wont -->
+    <div class="req-list">
+
+      <!-- FR 예시: Must -->
+      <div class="req-card must">
+        <div class="req-header">
+          <span class="req-id">FR-001</span>
+          <span class="priority-badge p-must">Must</span>
+        </div>
+        <div class="req-title">{요구사항명 — 동사형}</div>
+        <div class="req-desc">{1~2문장 상세 설명}</div>
+        <ul class="ac-list">
+          <li>{AC 조건 1 — "~할 때 ~한다" 형식}</li>
+          <li>{AC 조건 2}</li>
+          <li>{AC 조건 3}</li>
+        </ul>
+        <div class="req-footer">
+          <span><strong>QST 근거:</strong> Q-00{N}</span>
+          <span><strong>연관 IA:</strong> IA-P{###}</span>
+        </div>
+      </div>
+
+      <!-- FR 예시: Should -->
+      <div class="req-card should">
+        <div class="req-header">
+          <span class="req-id">FR-002</span>
+          <span class="priority-badge p-should">Should</span>
+        </div>
+        <div class="req-title">{요구사항명}</div>
+        <div class="req-desc">{상세 설명}</div>
+        <ul class="ac-list">
+          <li>{AC 조건 1}</li>
+          <li>{AC 조건 2}</li>
+        </ul>
+        <div class="req-footer">
+          <span><strong>QST 근거:</strong> Q-00{N}</span>
+          <span><strong>연관 IA:</strong> IA-P{###}</span>
+        </div>
+      </div>
+
+      <!-- 추가 FR은 동일 패턴으로 반복 -->
+
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ===== TAB: 비기능 요구사항 ===== -->
+<div class="tab-panel" id="panel-nfr">
+<div class="container">
+  <div class="inner-section">
+    <div class="s-label">Non-Functional Requirements</div>
+    <div class="s-title">비기능 요구사항</div>
+
+    <!-- NFR-001 성능부터 순서대로 -->
+    <div class="nfr-card">
+      <div class="nfr-header">
+        <span class="nfr-id">NFR-001</span>
+      </div>
+      <div class="nfr-title">성능</div>
+      <div class="nfr-body">{성능 요건 설명}</div>
+      <span class="nfr-metric">LCP ≤ {N}초 / FCP ≤ {N}초 / Lighthouse ≥ {N}점</span>
+    </div>
+
+    <div class="nfr-card">
+      <div class="nfr-header">
+        <span class="nfr-id">NFR-002</span>
+      </div>
+      <div class="nfr-title">반응형</div>
+      <div class="nfr-body">{반응형 요건 설명}</div>
+      <span class="nfr-metric">모바일 ≤ {N}px / 태블릿 ≤ {N}px / 데스크톱 ≥ {N}px</span>
+    </div>
+
+    <div class="nfr-card">
+      <div class="nfr-header">
+        <span class="nfr-id">NFR-003</span>
+      </div>
+      <div class="nfr-title">접근성</div>
+      <div class="nfr-body">{접근성 요건 설명}</div>
+      <span class="nfr-metric">WCAG 2.1 AA / {검사 도구}</span>
+    </div>
+
+    <div class="nfr-card">
+      <div class="nfr-header">
+        <span class="nfr-id">NFR-004</span>
+      </div>
+      <div class="nfr-title">SEO</div>
+      <div class="nfr-body">{SEO 요건 설명}</div>
+      <span class="nfr-metric">{메타/스키마 요건}</span>
+    </div>
+
+    <div class="nfr-card">
+      <div class="nfr-header">
+        <span class="nfr-id">NFR-005</span>
+      </div>
+      <div class="nfr-title">보안</div>
+      <div class="nfr-body">{보안 요건 설명}</div>
+      <span class="nfr-metric">SSL / {인증 요건}</span>
+    </div>
+
+    <!-- 추가 NFR은 동일 패턴으로 반복 -->
+
+  </div>
+</div>
+</div>
+
+<div class="report-footer">
+  <div class="container">&copy; {작성연도} {작성사명}</div>
+</div>
+
+<script>
+(function() {
+  var btns = document.querySelectorAll('.tab-btn');
+  var panels = document.querySelectorAll('.tab-panel');
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var target = btn.dataset.tab;
+      btns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      panels.forEach(function(p) {
+        p.classList.toggle('active', p.id === 'panel-' + target);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+})();
+</script>
+</body>
+</html>

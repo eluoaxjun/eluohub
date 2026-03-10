@@ -70,13 +70,38 @@ description: REQ/FN 기반으로 사이트맵·페이지 인벤토리·네비게
 
 ## 출력 명세
 
-MD 필수 섹션:
-1. **문서 개요** — 프로젝트명, 입력 근거, 총 페이지 수, 최대 Depth
-2. **사이트맵** — 이모지 트리 (🏠홈, 📂메뉴, 📄페이지, ASCII `├──` `└──`)
-3. **페이지 인벤토리** — IA-P### 전수 테이블
-4. **네비게이션 구조** — GNB / LNB / Footer / 브레드크럼
-5. **콘텐츠 인벤토리** — 페이지별 블록 (IA-C###)
-6. **URL 설계** — 전체 URL 목록
+**파일명**: `IA_{프로젝트코드}_{버전}.html`
+
+**HTML 직접 출력**: `template.html`을 참조하여 동일한 디자인 시스템으로 HTML을 직접 작성합니다.
+MD 파일은 생성하지 않습니다.
+
+**HTML 필수 구조**:
+
+```
+1. Cover — 프로젝트명, 문서 유형(정보구조설계), 버전, 작성일
+2. summary-area (4카드)
+   - 전체 페이지 / GNB 메뉴 수 / 신규 페이지 수 / 최대 Depth
+3. sticky tab
+   - 탭1 "개요": 프로젝트 정보 테이블 (총 페이지, 최대 Depth, GNB 수, URL 구조)
+   - 탭2 "사이트맵": <pre class="sitemap-tree"> 이모지+ASCII 트리
+   - 탭3 "페이지 인벤토리": inventory-table (depth indent d0~d3, 상태 배지)
+4. footer — 버전 이력
+```
+
+**추가 출력 (파이프라인 SSOT)**:
+`context/ia.md`를 함께 생성합니다. 후속 스킬(plan-wbs)이 이 파일을 읽어 IA-P### 목록과 URL을 참조합니다.
+
+```markdown
+<!-- context/ia.md 형식 -->
+# IA Context
+project: {프로젝트명}
+date: {날짜}
+total_pages: {N}
+max_depth: {N}
+
+## 페이지 목록
+| IA-P### | 페이지명 | Depth | URL | 상태 | FN 참조 |
+```
 
 ## 품질 기준
 
