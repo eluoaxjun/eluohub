@@ -26,8 +26,10 @@ async function main() {
     process.exit(1);
   }
 
+  const projectRoot = process.cwd();
+
   // 0. config.json 디폴트 로드 → JSON 병합 → 스키마 정규화 → 테마 로드
-  const configPath = path.join(__dirname, 'config.json');
+  const configPath = path.join(__dirname, '..', 'config.json');
   let config = { defaults: {} };
   if (fs.existsSync(configPath)) {
     try { config = JSON.parse(fs.readFileSync(configPath, 'utf-8')); } catch {}
@@ -40,7 +42,7 @@ async function main() {
   console.log(`[SCHEMA] ${raw.$schema ? 'v2' : 'v1'} → normalized (preset: ${theme.preset || 'default'})`);
 
   // 1. input/ 폴더 이미지 우선 체크
-  const inputDir = path.join(process.cwd(), 'input');
+  const inputDir = path.join(projectRoot, 'input');
   if (data.screens) {
     for (const screen of data.screens) {
       if (!screen.uiImagePath) continue;
@@ -59,7 +61,7 @@ async function main() {
   const html = generateHTML(data, theme);
   const outputDir = process.argv[3]
     ? path.resolve(process.argv[3])
-    : path.join(process.cwd(), 'output');
+    : path.join(projectRoot, 'output', data.project.id || outputPrefix);
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
   const htmlPath = path.join(outputDir, `${outputPrefix}.html`);
