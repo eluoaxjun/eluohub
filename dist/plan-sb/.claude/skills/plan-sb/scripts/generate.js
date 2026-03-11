@@ -62,7 +62,7 @@ async function main() {
   const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
   const outputDir = process.argv[3]
     ? path.resolve(process.argv[3])
-    : path.join(projectRoot, 'output', data.project.id || outputPrefix, today);
+    : path.join(projectRoot, 'output', data.project.serviceName || data.project.id || outputPrefix, today);
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
   const htmlPath = path.join(outputDir, `${outputPrefix}.html`);
