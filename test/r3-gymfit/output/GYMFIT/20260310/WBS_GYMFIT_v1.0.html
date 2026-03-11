@@ -135,19 +135,19 @@ thead .g-id,thead .g-name,thead .g-owner,thead .g-dur{z-index:4;background:var(-
   <div class="container">
     <div class="summary-strip">
       <div class="summary-card">
-        <div class="summary-value">27주</div>
+        <div class="summary-value" id="sc-weeks">27주</div>
         <div class="summary-label">총 기간</div>
       </div>
       <div class="summary-card accent">
-        <div class="summary-value">63</div>
+        <div class="summary-value" id="sc-tasks">63건</div>
         <div class="summary-label">전체 작업</div>
       </div>
       <div class="summary-card warn">
-        <div class="summary-value">62일</div>
+        <div class="summary-value" id="sc-cp">62일</div>
         <div class="summary-label">크리티컬 패스</div>
       </div>
       <div class="summary-card green">
-        <div class="summary-value">3</div>
+        <div class="summary-value" id="sc-waves">3</div>
         <div class="summary-label">Wave</div>
       </div>
     </div>
@@ -194,50 +194,7 @@ thead .g-id,thead .g-name,thead .g-owner,thead .g-dur{z-index:4;background:var(-
   <div class="inner-section">
     <div class="s-label">Milestones</div>
     <div class="s-title">마일스톤</div>
-    <div class="milestone-grid">
-      <div class="milestone-card m-done">
-        <div class="ms-id">M1 · 완료</div>
-        <div class="ms-name">기획 완료</div>
-        <div class="ms-date">2026-03-10</div>
-        <span class="ms-gate">게이트: QST/REQ/FN/IA/WBS 검수 Pass</span>
-      </div>
-      <div class="milestone-card m-curr">
-        <div class="ms-id">M2 · 진행중</div>
-        <div class="ms-name">디자인 완료</div>
-        <div class="ms-date">2026-04-03</div>
-        <span class="ms-gate">게이트: 디자인 시스템 + UI 명세 고객 승인</span>
-      </div>
-      <div class="milestone-card m-plan">
-        <div class="ms-id">M3</div>
-        <div class="ms-name">인증/예약 개발 완료</div>
-        <div class="ms-date">2026-05-09</div>
-        <span class="ms-gate">게이트: JWT/RBAC/그룹예약/PT예약 기능 테스트 Pass</span>
-      </div>
-      <div class="milestone-card m-plan">
-        <div class="ms-id">M4</div>
-        <div class="ms-name">결제/회원권 개발 완료</div>
-        <div class="ms-date">2026-05-28</div>
-        <span class="ms-gate">게이트: 포트원 V2 결제 + 회원권 E2E 테스트 Pass</span>
-      </div>
-      <div class="milestone-card m-plan">
-        <div class="ms-id">M5</div>
-        <div class="ms-name">전체 개발 완료</div>
-        <div class="ms-date">2026-06-19</div>
-        <span class="ms-gate">게이트: 63개 FN 기능 완성 + 통합 테스트 Pass</span>
-      </div>
-      <div class="milestone-card m-plan">
-        <div class="ms-id">M6</div>
-        <div class="ms-name">QA 완료</div>
-        <div class="ms-date">2026-07-10</div>
-        <span class="ms-gate">게이트: 결함 0건(Critical) + Lighthouse 90+</span>
-      </div>
-      <div class="milestone-card m-plan">
-        <div class="ms-id">M7</div>
-        <div class="ms-name">정식 런칭</div>
-        <div class="ms-date">2026-07-22</div>
-        <span class="ms-gate">게이트: AWS 프로덕션 배포 + 고객 인수 서명</span>
-      </div>
-    </div>
+    <div class="milestone-grid" id="msGrid"></div>
   </div>
 </div>
 </div>
@@ -301,7 +258,7 @@ var GANTT_ROWS = [
   {t:'task', id:'WBS-1.4', name:'IA 정보구조설계',                    owner:'기획', dur:'5일', ph:1, sw:3,  ew:3,  cp:false},
   {t:'task', id:'WBS-1.5', name:'WBS 작업분해구조',                   owner:'기획', dur:'3일', ph:1, sw:4,  ew:4,  cp:false},
   {t:'task', id:'WBS-1.6', name:'기획 검수 완료 (planning-reviewer)', owner:'기획', dur:'3일', ph:1, sw:8,  ew:9,  cp:false},
-  {t:'ms',  week:9,  name:'M1: 기획 완료 (완료)'},
+  {t:'ms',  week:9,  name:'M1: 기획 완료 (완료)', gate:'QST/REQ/FN/IA/WBS 검수 Pass'},
 
   /* ── Phase 2: 디자인 ── */
   {t:'ph', ph:2, name:'Phase 2: 디자인'},
@@ -313,7 +270,7 @@ var GANTT_ROWS = [
   {t:'task', id:'WBS-2.6', name:'결제/회원권/구독 UI 설계',             owner:'디자인', dur:'3일', ph:2, sw:11, ew:11, cp:false},
   {t:'task', id:'WBS-2.7', name:'UI 명세서 통합 작성',                  owner:'디자인', dur:'3일', ph:2, sw:11, ew:12, cp:false},
   {t:'task', id:'WBS-2.8', name:'디자인 검수 및 고객 승인',             owner:'디자인', dur:'2일', ph:2, sw:12, ew:12, cp:false},
-  {t:'ms',  week:12, name:'M2: 디자인 완료'},
+  {t:'ms',  week:12, name:'M2: 디자인 완료', gate:'디자인 시스템 + UI 명세 고객 승인'},
 
   /* ── Phase 3: 개발 ── */
   {t:'ph', ph:3, name:'Phase 3: 개발'},
@@ -338,7 +295,7 @@ var GANTT_ROWS = [
   {t:'task', id:'WBS-3.15', name:'예약 취소 / 대기 등록 처리',                     owner:'BE', dur:'3일', ph:3, sw:17, ew:17, cp:false},
   {t:'task', id:'WBS-3.16', name:'출결 관리 (체크인 QR / 출석 현황)',              owner:'BE', dur:'2일', ph:3, sw:17, ew:17, cp:false},
   {t:'task', id:'WBS-3.17', name:'예약/스케줄 화면 퍼블리싱 (회원)',               owner:'FE', dur:'3일', ph:3, sw:18, ew:18, cp:false},
-  {t:'ms',  week:17, name:'M3: 인증/예약 개발 완료'},
+  {t:'ms',  week:17, name:'M3: 인증/예약 개발 완료', gate:'JWT/RBAC/그룹예약/PT예약 기능 테스트 Pass'},
   {t:'sub', name:'3-E. 회원 관리'},
   {t:'task', id:'WBS-3.18', name:'회원 등록/조회/수정/등급 관리',                  owner:'BE', dur:'3일', ph:3, sw:15, ew:15, cp:true},
   {t:'task', id:'WBS-3.19', name:'트레이너 프로필 관리 (자격증/담당 수업)',         owner:'BE', dur:'2일', ph:3, sw:15, ew:15, cp:false},
@@ -350,7 +307,7 @@ var GANTT_ROWS = [
   {t:'task', id:'WBS-3.24', name:'정기 결제 / 회원권 자동 갱신',                   owner:'BE', dur:'3일', ph:3, sw:17, ew:18, cp:false},
   {t:'task', id:'WBS-3.25', name:'환불 처리 / 이의제기 워크플로우',                owner:'BE', dur:'3일', ph:3, sw:17, ew:18, cp:true},
   {t:'task', id:'WBS-3.26', name:'회원권/결제 화면 퍼블리싱 (회원/운영자)',        owner:'FE', dur:'3일', ph:3, sw:18, ew:18, cp:false},
-  {t:'ms',  week:20, name:'M4: 결제/회원권 개발 완료'},
+  {t:'ms',  week:20, name:'M4: 결제/회원권 개발 완료', gate:'포트원 V2 결제 + 회원권 E2E 테스트 Pass'},
   {t:'sub', name:'3-G. 알림'},
   {t:'task', id:'WBS-3.27', name:'카카오 알림톡 연동 (예약/결제 알림)',            owner:'BE', dur:'3일', ph:3, sw:17, ew:18, cp:false},
   {t:'task', id:'WBS-3.28', name:'인앱 알림 시스템 (실시간 푸시)',                 owner:'BE', dur:'2일', ph:3, sw:18, ew:18, cp:false},
@@ -364,7 +321,7 @@ var GANTT_ROWS = [
   {t:'task', id:'WBS-3.34', name:'통합 E2E 테스트 (인증/예약/결제 플로우)',        owner:'BE', dur:'5일', ph:3, sw:20, ew:21, cp:true},
   {t:'task', id:'WBS-3.35', name:'성능 최적화 (LCP ≤1.5초 / Code Splitting)',      owner:'FE', dur:'3일', ph:3, sw:21, ew:21, cp:true},
   {t:'task', id:'WBS-3.36', name:'버그 수정 / 코드 리뷰 / 문서화',                owner:'BE', dur:'5일', ph:3, sw:22, ew:22, cp:true},
-  {t:'ms',  week:22, name:'M5: 전체 개발 완료'},
+  {t:'ms',  week:22, name:'M5: 전체 개발 완료', gate:'63개 FN 기능 완성 + 통합 테스트 Pass'},
 
   /* ── Phase 4: QA ── */
   {t:'ph', ph:4, name:'Phase 4: QA'},
@@ -376,7 +333,7 @@ var GANTT_ROWS = [
   {t:'task', id:'WBS-4.6', name:'반응형 / 브라우저 호환성 테스트',                owner:'QA', dur:'2일', ph:4, sw:23, ew:23, cp:false},
   {t:'task', id:'WBS-4.7', name:'UAT 고객 수락 테스트 (운영자/강사/회원)',        owner:'QA', dur:'3일', ph:4, sw:24, ew:24, cp:false},
   {t:'task', id:'WBS-4.8', name:'QA 결함 수정 / 회귀 테스트 (TC-R)',             owner:'QA', dur:'5일', ph:4, sw:25, ew:25, cp:true},
-  {t:'ms',  week:26, name:'M6: QA 완료'},
+  {t:'ms',  week:26, name:'M6: QA 완료', gate:'결함 0건(Critical) + Lighthouse 90+'},
 
   /* ── Phase 5: 런칭 ── */
   {t:'ph', ph:5, name:'Phase 5: 런칭'},
@@ -385,7 +342,7 @@ var GANTT_ROWS = [
   {t:'task', id:'WBS-5.3', name:'소프트 런칭 (베타 피트니스센터 3곳)',            owner:'기획', dur:'2일', ph:5, sw:27, ew:27, cp:false},
   {t:'task', id:'WBS-5.4', name:'모니터링 설정 (CloudWatch + Sentry)',             owner:'BE', dur:'1일', ph:5, sw:27, ew:27, cp:false},
   {t:'task', id:'WBS-5.5', name:'정식 런칭 및 고객 인수 서명',                   owner:'기획', dur:'2일', ph:5, sw:27, ew:27, cp:true},
-  {t:'ms',  week:27, name:'M7: 정식 런칭'}
+  {t:'ms',  week:27, name:'M7: 정식 런칭', gate:'AWS 프로덕션 배포 + 고객 인수 서명'}
 ];
 
 var WBS_ROWS = [
@@ -481,7 +438,56 @@ var WBS_ROWS = [
    렌더링 엔진 — 수정 불필요
 ================================================================ */
 (function() {
-  /* 탭 전환 */
+  /* ── 유틸 ── */
+  function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function fmtDate(d) { var m=d.getMonth()+1,dd=d.getDate(); return d.getFullYear()+'.'+(m<10?'0':'')+m+'.'+(dd<10?'0':'')+dd; }
+  var ownerCls = {'PM':'role-plan','기획':'role-plan','디자인':'role-design','FE':'role-pub','BE':'role-dev','QA':'role-qa'};
+  function ownerBadge(o) { return '<span class="badge '+(ownerCls[o]||'role-dev')+'">'+esc(o)+'</span>'; }
+
+  /* ── 공통 날짜 계산 ── */
+  var table      = document.getElementById('ganttTable');
+  var projStart  = new Date((table && table.dataset.projStart) || '2026-01-01');
+  var totalWeeks = parseInt((table && table.dataset.totalWeeks)) || 12;
+  var _today = new Date(); _today.setHours(0,0,0,0);
+  var _diff  = _today - projStart;
+  var todayWeek = (_diff < 0) ? 0 : Math.min(Math.floor(_diff / 604800000) + 1, totalWeeks);
+
+  /* ── Summary 카드 자동 계산 (WBS_ROWS 기반) ── */
+  var taskRows = WBS_ROWS.filter(function(r){ return r.t === 'task'; });
+  var cpDays   = taskRows.filter(function(r){ return r.cp; }).reduce(function(s,r){ return s+(r.dur||0); }, 0);
+  var waves    = taskRows.map(function(r){ return r.wave; }).filter(function(v,i,a){ return v && a.indexOf(v)===i; });
+  var scEl;
+  scEl = document.getElementById('sc-weeks'); if(scEl) scEl.textContent = totalWeeks + '주';
+  scEl = document.getElementById('sc-tasks'); if(scEl) scEl.textContent = taskRows.length + '건';
+  scEl = document.getElementById('sc-cp');    if(scEl) scEl.textContent = cpDays + '일';
+  scEl = document.getElementById('sc-waves'); if(scEl) scEl.textContent = waves.length;
+
+  /* ── 마일스톤 그리드 자동 렌더링 (GANTT_ROWS ms 항목 기반) ── */
+  var msGrid = document.getElementById('msGrid');
+  if (msGrid) {
+    var msItems = GANTT_ROWS.filter(function(r){ return r.t === 'ms'; });
+    var foundCurr = false;
+    msItems.forEach(function(ms) {
+      var msDate = new Date(projStart);
+      msDate.setDate(msDate.getDate() + (ms.week - 1) * 7 + 6);
+      var status;
+      if (msDate < _today)  { status = 'm-done'; }
+      else if (!foundCurr)  { status = 'm-curr'; foundCurr = true; }
+      else                  { status = 'm-plan'; }
+      var idMatch = ms.name.match(/M(\d+)/);
+      var msId    = idMatch ? 'M' + idMatch[1] : 'M';
+      var msName  = ms.name.replace(/^M\d+[\s:：·\-]+/, '');
+      var card = document.createElement('div');
+      card.className = 'milestone-card ' + status;
+      card.innerHTML = '<div class="ms-id">'+esc(msId)+'</div>'
+        + '<div class="ms-name">'+esc(msName)+'</div>'
+        + '<div class="ms-date">'+fmtDate(msDate)+'</div>'
+        + (ms.gate ? '<span class="ms-gate">게이트: '+esc(ms.gate)+'</span>' : '');
+      msGrid.appendChild(card);
+    });
+  }
+
+  /* ── 탭 전환 ── */
   var btns = document.querySelectorAll('.tab-btn');
   var panels = document.querySelectorAll('.tab-panel');
   btns.forEach(function(btn) {
@@ -494,13 +500,6 @@ var WBS_ROWS = [
       if (target === 'gantt') scrollGanttToToday();
     });
   });
-
-  /* 유틸 */
-  function esc(s) {
-    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-  var ownerCls = {'PM':'role-plan','기획':'role-plan','디자인':'role-design','FE':'role-pub','BE':'role-dev','QA':'role-qa'};
-  function ownerBadge(o) { return '<span class="badge '+(ownerCls[o]||'role-dev')+'">'+esc(o)+'</span>'; }
 
   /* ── 간트 tbody 렌더링 ── */
   var tbody = document.getElementById('ganttBody');
@@ -531,79 +530,72 @@ var WBS_ROWS = [
   }
 
   /* ── 간트 헤더 + 바 렌더링 ── */
-  var table = document.getElementById('ganttTable');
-  if (!table) return;
-  var projStart  = new Date(table.dataset.projStart  || '2026-01-01');
-  var totalWeeks = parseInt(table.dataset.totalWeeks) || 12;
-  /* 오늘 날짜 기준으로 현재 주차 자동 계산 (data-today-week 하드코딩 불필요) */
-  var _today = new Date(); _today.setHours(0,0,0,0);
-  var _diff  = _today - projStart;
-  var todayWeek = (_diff < 0) ? 0 : Math.min(Math.floor(_diff / 604800000) + 1, totalWeeks);
-
-  var weeks = [];
-  for (var w = 1; w <= totalWeeks; w++) {
-    var d = new Date(projStart); d.setDate(d.getDate() + (w-1)*7);
-    weeks.push({ w: w, month: d.getMonth()+1 });
-  }
-  var monthGroups = [];
-  weeks.forEach(function(wk) {
-    var last = monthGroups[monthGroups.length-1];
-    if (last && last.month === wk.month) { last.count++; }
-    else { monthGroups.push({ month: wk.month, count: 1 }); }
-  });
-  var mNames = ['','1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
-  var thead = document.getElementById('ganttHead');
-
-  var tr1 = document.createElement('tr'); tr1.className = 'month-hdr';
-  [['g-id','WBS ID'],['g-name','작업명'],['g-owner','담당'],['g-dur','기간']].forEach(function(p) {
-    var th = document.createElement('th'); th.className = p[0]; th.textContent = p[1]; tr1.appendChild(th);
-  });
-  monthGroups.forEach(function(mg) {
-    var th = document.createElement('th'); th.colSpan = mg.count; th.textContent = mNames[mg.month]; th.style.textAlign='center'; tr1.appendChild(th);
-  });
-  thead.appendChild(tr1);
-
-  var tr2 = document.createElement('tr'); tr2.className = 'week-hdr';
-  ['g-id','g-name','g-owner','g-dur'].forEach(function(cls) {
-    var th = document.createElement('th'); th.className = cls; tr2.appendChild(th);
-  });
-  weeks.forEach(function(wk) {
-    var th = document.createElement('th'); th.textContent = 'W'+wk.w;
-    if (wk.w === todayWeek) { th.style.color='var(--c-accent)'; th.style.fontWeight='800'; }
-    tr2.appendChild(th);
-  });
-  thead.appendChild(tr2);
-
-  document.querySelectorAll('.g-task').forEach(function(row) {
-    var sw = parseInt(row.dataset.sw)||1, ew = parseInt(row.dataset.ew)||sw;
-    var ph = parseInt(row.dataset.phase)||1, cp = row.dataset.cp==='true';
-    for (var w=1; w<=totalWeeks; w++) {
-      var td = document.createElement('td'); td.className='g-wk';
-      if (w===todayWeek) td.style.borderLeft='2px solid var(--c-accent)';
-      if (w>=sw && w<=ew) {
-        var div = document.createElement('div');
-        var cls = 'bar-inner '+(cp?'cp':'ph'+ph);
-        if (w===sw && w===ew) cls+=' bar-s bar-e';
-        else if (w===sw) cls+=' bar-s';
-        else if (w===ew) cls+=' bar-e';
-        else cls+=' bar-mid';
-        div.className=cls; td.appendChild(div);
-      }
-      row.appendChild(td);
+  if (table) {
+    var weeks = [];
+    for (var w = 1; w <= totalWeeks; w++) {
+      var d = new Date(projStart); d.setDate(d.getDate() + (w-1)*7);
+      weeks.push({ w: w, month: d.getMonth()+1 });
     }
-  });
+    var monthGroups = [];
+    weeks.forEach(function(wk) {
+      var last = monthGroups[monthGroups.length-1];
+      if (last && last.month === wk.month) { last.count++; }
+      else { monthGroups.push({ month: wk.month, count: 1 }); }
+    });
+    var mNames = ['','1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+    var thead = document.getElementById('ganttHead');
 
-  document.querySelectorAll('.g-phase-row,.g-sub-row,.g-milestone').forEach(function(row) {
-    var isMilestone = row.classList.contains('g-milestone');
-    var mwk = isMilestone ? parseInt(row.dataset.week)||0 : 0;
-    for (var w=1; w<=totalWeeks; w++) {
-      var td = document.createElement('td'); td.className='g-wk';
-      if (isMilestone && w===mwk) {
-        var span = document.createElement('span'); span.className='ms-marker'; span.textContent='▼'; td.appendChild(span);
+    var tr1 = document.createElement('tr'); tr1.className = 'month-hdr';
+    [['g-id','WBS ID'],['g-name','작업명'],['g-owner','담당'],['g-dur','기간']].forEach(function(p) {
+      var th = document.createElement('th'); th.className = p[0]; th.textContent = p[1]; tr1.appendChild(th);
+    });
+    monthGroups.forEach(function(mg) {
+      var th = document.createElement('th'); th.colSpan = mg.count; th.textContent = mNames[mg.month]; th.style.textAlign='center'; tr1.appendChild(th);
+    });
+    thead.appendChild(tr1);
+
+    var tr2 = document.createElement('tr'); tr2.className = 'week-hdr';
+    ['g-id','g-name','g-owner','g-dur'].forEach(function(cls) {
+      var th = document.createElement('th'); th.className = cls; tr2.appendChild(th);
+    });
+    weeks.forEach(function(wk) {
+      var th = document.createElement('th'); th.textContent = 'W'+wk.w;
+      if (wk.w === todayWeek) { th.style.color='var(--c-accent)'; th.style.fontWeight='800'; }
+      tr2.appendChild(th);
+    });
+    thead.appendChild(tr2);
+
+    document.querySelectorAll('.g-task').forEach(function(row) {
+      var sw = parseInt(row.dataset.sw)||1, ew = parseInt(row.dataset.ew)||sw;
+      var ph = parseInt(row.dataset.phase)||1, cp = row.dataset.cp==='true';
+      for (var w=1; w<=totalWeeks; w++) {
+        var td = document.createElement('td'); td.className='g-wk';
+        if (w===todayWeek) td.style.borderLeft='2px solid var(--c-accent)';
+        if (w>=sw && w<=ew) {
+          var div = document.createElement('div');
+          var cls = 'bar-inner '+(cp?'cp':'ph'+ph);
+          if (w===sw && w===ew) cls+=' bar-s bar-e';
+          else if (w===sw) cls+=' bar-s';
+          else if (w===ew) cls+=' bar-e';
+          else cls+=' bar-mid';
+          div.className=cls; td.appendChild(div);
+        }
+        row.appendChild(td);
       }
-      row.appendChild(td);
-    }
-  });
+    });
+
+    document.querySelectorAll('.g-phase-row,.g-sub-row,.g-milestone').forEach(function(row) {
+      var isMilestone = row.classList.contains('g-milestone');
+      var mwk = isMilestone ? parseInt(row.dataset.week)||0 : 0;
+      for (var w=1; w<=totalWeeks; w++) {
+        var td = document.createElement('td'); td.className='g-wk';
+        if (isMilestone && w===mwk) {
+          var span = document.createElement('span'); span.className='ms-marker'; span.textContent='▼'; td.appendChild(span);
+        }
+        row.appendChild(td);
+      }
+    });
+  } /* end if (table) */
 
   /* ── 오늘 주차 가운데 스크롤 ── */
   /* display:none 상태에서 getBoundingClientRect()가 0을 반환하므로 오프셋 직접 계산 */
