@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>기능정의서 — 짐핏 (GymFit) v1.0</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif; font-size: 14px; color: #2d2d2d; background: #f9fafb; line-height: 1.6; }
+:root {
+  --c-primary: #1a1a2e;
+  --c-primary-mid: #1B3A5C;
+  --c-primary-light: #2A5580;
+  --c-secondary: #C8894F;
+  --c-accent: #e20047;
+  --c-accent-light: #fff0f4;
+  --c-bg: #f9fafb;
+  --c-surface: #FFFFFF;
+  --c-bg-alt: #F7F8FA;
+  --c-text: #2d2d2d;
+  --c-text-sub: #6b7280;
+  --c-border: #e5e7eb;
+  --c-success: #059669;
+  --c-warning: #d97706;
+  --c-danger: #DC2626;
+  --c-blue: #2563eb;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.1);
+  --max-w: 960px;
+}
+.container { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+
+/* Cover */
+.cover { background: linear-gradient(135deg, var(--c-primary) 0%, var(--c-primary-mid) 100%); color: #fff; padding: 52px 0 44px; }
+.cover-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--c-secondary); margin-bottom: 12px; }
+.cover-title { font-size: 28px; font-weight: 800; line-height: 1.3; margin-bottom: 8px; }
+.cover-subtitle { font-size: 14px; color: rgba(255,255,255,0.7); margin-bottom: 20px; }
+.meta-grid { display: flex; gap: 24px; flex-wrap: wrap; font-size: 12px; color: rgba(255,255,255,0.65); }
+.meta-grid div span { color: #fff; font-weight: 600; margin-left: 6px; }
+
+/* Summary Strip */
+.summary-area { background: var(--c-surface); border-bottom: 1px solid var(--c-border); padding: 16px 0; }
+.summary-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+.summary-card { text-align: center; padding: 12px 8px; border-right: 1px solid var(--c-border); }
+.summary-card:last-child { border-right: none; }
+.summary-value { font-size: 24px; font-weight: 800; color: var(--c-primary-mid); }
+.summary-card.green  .summary-value { color: var(--c-success); }
+.summary-card.warn   .summary-value { color: var(--c-warning); }
+.summary-card.accent .summary-value { color: var(--c-accent); }
+.summary-label { font-size: 12px; color: var(--c-text-sub); margin-top: 2px; }
+
+/* Sticky Tab */
+.tab-wrap { position: sticky; top: 0; z-index: 100; background: var(--c-surface); border-bottom: 1px solid var(--c-border); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.tab-nav { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; display: flex; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.tab-nav::-webkit-scrollbar { display: none; }
+.tab-btn { flex-shrink: 0; padding: 13px 22px; font-size: 14px; font-weight: 600; color: var(--c-text-sub); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.2s; white-space: nowrap; font-family: inherit; }
+.tab-btn:hover { color: var(--c-text); }
+.tab-btn.active { color: var(--c-accent); border-bottom-color: var(--c-accent); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* Inner Section */
+.inner-section { padding: 32px 0 24px; border-bottom: 1px solid var(--c-border); }
+.inner-section:last-child { border-bottom: none; padding-bottom: 48px; }
+.s-label { font-size: 11px; font-weight: 700; color: var(--c-accent); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
+.s-title { font-size: 17px; font-weight: 700; color: var(--c-primary-mid); margin-bottom: 16px; }
+
+/* Info Table */
+.info-table { width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid var(--c-border); border-radius: var(--radius); overflow: hidden; }
+.info-table th { width: 160px; background: var(--c-bg-alt); font-weight: 600; text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--c-border); color: var(--c-text-sub); font-size: 13px; vertical-align: top; }
+.info-table td { padding: 10px 14px; border-bottom: 1px solid var(--c-border); font-size: 14px; }
+.info-table tr:last-child th, .info-table tr:last-child td { border-bottom: none; }
+
+/* Summary Table */
+.fn-summary-table { width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid var(--c-border); border-radius: var(--radius); overflow: hidden; }
+.fn-summary-table thead th { background: var(--c-bg-alt); color: var(--c-text-sub); font-weight: 600; text-align: left; padding: 9px 12px; border-bottom: 2px solid var(--c-border); font-size: 12px; white-space: nowrap; }
+.fn-summary-table tbody td { padding: 9px 12px; border-bottom: 1px solid var(--c-border); vertical-align: top; }
+.fn-summary-table tbody tr:last-child td { border-bottom: none; }
+.fn-summary-table tbody tr:nth-child(even) { background: var(--c-bg-alt); }
+
+/* FN Card */
+.fn-list { display: flex; flex-direction: column; gap: 16px; }
+.fn-card { background: var(--c-surface); border: 1px solid var(--c-border); border-radius: var(--radius); padding: 20px 22px; box-shadow: var(--shadow); border-left: 4px solid var(--c-primary-mid); }
+.fn-card.high { border-left-color: var(--c-danger); }
+.fn-card.mid  { border-left-color: var(--c-warning); }
+.fn-card.low  { border-left-color: var(--c-success); }
+.fn-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.fn-id { font-size: 11px; font-weight: 700; background: var(--c-primary-mid); color: #fff; padding: 2px 8px; border-radius: 4px; }
+.fn-card.high .fn-id { background: var(--c-danger); }
+.fn-card.mid  .fn-id { background: var(--c-warning); }
+.fn-card.low  .fn-id { background: var(--c-success); }
+.fn-title { font-size: 16px; font-weight: 700; color: var(--c-text); margin-bottom: 6px; }
+.fn-meta { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.fn-meta-item { font-size: 12px; color: var(--c-text-sub); }
+.fn-meta-item strong { color: var(--c-text); }
+
+/* Badge */
+.badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+.b-high   { background: #fee2e2; color: #991b1b; }
+.b-mid    { background: #fef3c7; color: #92400e; }
+.b-low    { background: #d1fae5; color: #065f46; }
+.b-must   { background: #fee2e2; color: #991b1b; }
+.b-should { background: #fef3c7; color: #92400e; }
+.b-could  { background: #eff6ff; color: #1e40af; }
+
+/* FN Detail Sections */
+.fn-section { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--c-border); }
+.fn-section-title { font-size: 12px; font-weight: 700; color: var(--c-text-sub); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.fn-desc { font-size: 14px; color: var(--c-text); }
+
+/* Sub Table */
+.sub-table { width: 100%; border-collapse: collapse; font-size: 13px; border: 1px solid var(--c-border); border-radius: var(--radius); overflow: hidden; }
+.sub-table thead th { background: var(--c-bg-alt); color: var(--c-text-sub); font-weight: 600; text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--c-border); font-size: 11px; white-space: nowrap; }
+.sub-table tbody td { padding: 7px 10px; border-bottom: 1px solid var(--c-border); font-size: 12px; vertical-align: top; }
+.sub-table tbody tr:last-child td { border-bottom: none; }
+
+/* Flow List */
+.flow-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; counter-reset: flow; }
+.flow-list li { font-size: 13px; display: flex; gap: 8px; counter-increment: flow; }
+.flow-list li::before { content: counter(flow); min-width: 20px; height: 20px; background: var(--c-primary-mid); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+
+/* Verify Grid */
+.verify-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.verify-item { background: var(--c-bg-alt); border-radius: var(--radius); padding: 10px 12px; }
+.verify-label { font-size: 11px; font-weight: 700; color: var(--c-text-sub); margin-bottom: 4px; }
+.verify-item.normal    .verify-label { color: var(--c-success); }
+.verify-item.exception .verify-label { color: var(--c-warning); }
+.verify-item.error     .verify-label { color: var(--c-danger); }
+.verify-item p { font-size: 12px; color: var(--c-text); }
+
+/* Tech Note */
+.tech-note { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: var(--radius); padding: 12px 14px; font-size: 13px; }
+.tech-note .tn-label { font-size: 11px; font-weight: 700; color: var(--c-blue); margin-bottom: 6px; }
+.tech-note p { color: var(--c-text); margin-bottom: 4px; }
+.tech-note p:last-child { margin-bottom: 0; }
+.tech-note strong { color: var(--c-primary-mid); }
+
+/* Footer */
+.report-footer { text-align: center; padding: 28px 0; color: var(--c-text-sub); font-size: 12px; border-top: 1px solid var(--c-border); }
+
+@media (max-width: 768px) {
+  .cover { padding: 44px 0 36px; }
+  .cover-title { font-size: 22px; }
+  .summary-strip { grid-template-columns: repeat(2, 1fr); }
+  .tab-btn { padding: 11px 14px; font-size: 13px; }
+  .verify-grid { grid-template-columns: 1fr; }
+}
+@media print {
+  .summary-area, .tab-wrap { display: none; }
+  .tab-panel { display: block !important; page-break-before: always; }
+  .tab-panel:first-of-type { page-break-before: avoid; }
+  .fn-card { break-inside: avoid; }
+  @page { margin: 14mm 10mm; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== COVER ===== -->
+<div class="cover">
+  <div class="container">
+    <div class="cover-label">Functional Specification</div>
+    <h1 class="cover-title">기능정의서 (FN)<br>짐핏 (GymFit)</h1>
+    <p class="cover-subtitle">엘루오 · SaaS 구축 (신규)</p>
+    <div class="meta-grid">
+      <div>문서 코드 <span>FN_GYMFIT_v1.0</span></div>
+      <div>작성일 <span>2026-03-10</span></div>
+      <div>상위 문서 <span>REQ_GYMFIT_v1.0</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SUMMARY STRIP ===== -->
+<div class="summary-area">
+  <div class="container">
+    <div class="summary-strip">
+      <div class="summary-card">
+        <div class="summary-value">23</div>
+        <div class="summary-label">전체 기능</div>
+      </div>
+      <div class="summary-card accent">
+        <div class="summary-value">17</div>
+        <div class="summary-label">Must</div>
+      </div>
+      <div class="summary-card warn">
+        <div class="summary-value">8</div>
+        <div class="summary-label">높음 복잡도</div>
+      </div>
+      <div class="summary-card green">
+        <div class="summary-value">23</div>
+        <div class="summary-label">FR 참조</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STICKY TAB ===== -->
+<div class="tab-wrap">
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="overview">개요</button>
+    <button class="tab-btn" data-tab="list">기능 목록</button>
+    <button class="tab-btn" data-tab="detail">기능 상세</button>
+  </nav>
+</div>
+
+<!-- ===== TAB: 개요 ===== -->
+<div class="tab-panel active" id="panel-overview">
+<div class="container">
+
+  <div class="inner-section">
+    <div class="s-label">Document Overview</div>
+    <div class="s-title">문서 개요</div>
+    <table class="info-table">
+      <tr><th>대상</th><td>짐핏 (GymFit) 전체 23개 기능 (FN-001 ~ FN-023)</td></tr>
+      <tr><th>플랫폼</th><td>React + Node.js / MySQL / AWS EC2 · JWT 인증 · 포트원 PG · 카카오 알림톡</td></tr>
+      <tr><th>상위 문서</th><td>REQ_GYMFIT_v1.0</td></tr>
+      <tr><th>작성 기준</th><td>FR 복잡도별 분기 — 높음(화면구성+입출력+처리+검증+기술노트) / 중간(처리+검증) / 낮음(서술형)</td></tr>
+    </table>
+  </div>
+
+  <div class="inner-section">
+    <div class="s-label">Function Summary</div>
+    <div class="s-title">기능 목록 요약</div>
+    <table class="fn-summary-table">
+      <thead>
+        <tr>
+          <th style="width:80px">FN ID</th>
+          <th>기능명</th>
+          <th style="width:90px">FR 근거</th>
+          <th style="width:80px">우선순위</th>
+          <th style="width:70px">복잡도</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>FN-001</strong></td><td>운영자 가입·로그인·인증</td><td>FR-001</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-high">높음</span></td></tr>
+        <tr><td><strong>FN-002</strong></td><td>사용자 역할 권한 제어</td><td>FR-002</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-high">높음</span></td></tr>
+        <tr><td><strong>FN-003</strong></td><td>강사·스태프 이메일 초대</td><td>FR-003</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-mid">중간</span></td></tr>
+        <tr><td><strong>FN-004</strong></td><td>그룹 수업 목록·예약</td><td>FR-004</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-high">높음</span></td></tr>
+        <tr><td><strong>FN-005</strong></td><td>PT 1:1 세션 예약</td><td>FR-005</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-high">높음</span></td></tr>
+        <tr><td><strong>FN-006</strong></td><td>예약 취소·변경</td><td>FR-006</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-mid">중간</span></td></tr>
+        <tr><td><strong>FN-007</strong></td><td>대기자 명단 관리</td><td>FR-007</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-mid">중간</span></td></tr>
+        <tr><td><strong>FN-008</strong></td><td>수업 일정 등록·관리</td><td>FR-008</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-mid">중간</span></td></tr>
+        <tr><td><strong>FN-009</strong></td><td>강사 스케줄·부재 관리</td><td>FR-009</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-mid">중간</span></td></tr>
+        <tr><td><strong>FN-010</strong></td><td>회원 등록·검색·관리</td><td>FR-010</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-mid">중간</span></td></tr>
+        <tr><td><strong>FN-011</strong></td><td>회원권 설정·유효성 관리</td><td>FR-011</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-high">높음</span></td></tr>
+        <tr><td><strong>FN-012</strong></td><td>출석 체크·이력 기록</td><td>FR-012</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-mid">중간</span></td></tr>
+        <tr><td><strong>FN-013</strong></td><td>회원 통합 이력 조회</td><td>FR-013</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-mid">중간</span></td></tr>
+        <tr><td><strong>FN-014</strong></td><td>포트원 온라인 결제</td><td>FR-014</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-high">높음</span></td></tr>
+        <tr><td><strong>FN-015</strong></td><td>오프라인 결제 기록</td><td>FR-015</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-mid">중간</span></td></tr>
+        <tr><td><strong>FN-016</strong></td><td>정산·매출 리포트</td><td>FR-016</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-mid">중간</span></td></tr>
+        <tr><td><strong>FN-017</strong></td><td>카카오 알림톡 자동 발송</td><td>FR-017</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-high">높음</span></td></tr>
+        <tr><td><strong>FN-018</strong></td><td>예약 리마인더 스케줄러</td><td>FR-018</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-mid">중간</span></td></tr>
+        <tr><td><strong>FN-019</strong></td><td>운영자 메인 대시보드</td><td>FR-019</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-mid">중간</span></td></tr>
+        <tr><td><strong>FN-020</strong></td><td>예약 현황 캘린더·조회</td><td>FR-020</td><td><span class="badge b-should">Should</span></td><td><span class="badge b-mid">중간</span></td></tr>
+        <tr><td><strong>FN-021</strong></td><td>SaaS 구독 플랜 관리</td><td>FR-021</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-high">높음</span></td></tr>
+        <tr><td><strong>FN-022</strong></td><td>서비스 랜딩 페이지</td><td>FR-022</td><td><span class="badge b-could">Could</span></td><td><span class="badge b-low">낮음</span></td></tr>
+        <tr><td><strong>FN-023</strong></td><td>데이터 CSV 내보내기</td><td>FR-023</td><td><span class="badge b-must">Must</span></td><td><span class="badge b-mid">중간</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+</div>
+
+<!-- ===== TAB: 기능 목록 ===== -->
+<div class="tab-panel" id="panel-list">
+<div class="container">
+  <div class="inner-section">
+    <div class="s-label">Function List</div>
+    <div class="s-title">기능 요약 카드</div>
+    <div class="fn-list">
+
+      <div class="fn-card high">
+        <div class="fn-header"><span class="fn-id">FN-001</span><span class="badge b-must">Must</span><span class="badge b-high">높음</span></div>
+        <div class="fn-title">운영자 가입·로그인·인증</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-001</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 플랫폼 모든 기능의 진입점. JWT 기반 stateless 인증으로 AWS 수평 확장 대응</span>
+        </div>
+      </div>
+
+      <div class="fn-card high">
+        <div class="fn-header"><span class="fn-id">FN-002</span><span class="badge b-must">Must</span><span class="badge b-high">높음</span></div>
+        <div class="fn-title">사용자 역할 권한 제어</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-002</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 운영자/강사/회원 3종 역할별 UI 분기 및 API 접근 제어. 역할 혼용 방지</span>
+        </div>
+      </div>
+
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-003</span><span class="badge b-must">Must</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">강사·스태프 이메일 초대</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-003</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 운영자가 별도 계정 생성 없이 팀 구성 가능. 초대 수락 전까지 계정 미활성화</span>
+        </div>
+      </div>
+
+      <div class="fn-card high">
+        <div class="fn-header"><span class="fn-id">FN-004</span><span class="badge b-must">Must</span><span class="badge b-high">높음</span></div>
+        <div class="fn-title">그룹 수업 목록·예약</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-004</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> BG-003 예약 전환율 70%+ 달성 핵심 기능. 3클릭 이내 예약 완료 UX 목표</span>
+        </div>
+      </div>
+
+      <div class="fn-card high">
+        <div class="fn-header"><span class="fn-id">FN-005</span><span class="badge b-must">Must</span><span class="badge b-high">높음</span></div>
+        <div class="fn-title">PT 1:1 세션 예약</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-005</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 강사-회원 1:1 매칭. 강사 부재 시간대 자동 차단으로 예약 충돌 방지</span>
+        </div>
+      </div>
+
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-006</span><span class="badge b-must">Must</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">예약 취소·변경</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-006</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> BR-003 취소 정책 적용. 회원 직접 취소 + 운영자 강제 취소 이원화</span>
+        </div>
+      </div>
+
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-007</span><span class="badge b-must">Must</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">대기자 명단 관리</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-007</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 정원 초과 시 수요 손실 방지. 취소 발생 시 자동 전환으로 운영자 개입 최소화</span>
+        </div>
+      </div>
+
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-008</span><span class="badge b-must">Must</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">수업 일정 등록·관리</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-008</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 운영자가 반복 수업을 일괄 등록하여 수작업 감소 (BG-004)</span>
+        </div>
+      </div>
+
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-009</span><span class="badge b-must">Must</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">강사 스케줄·부재 관리</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-009</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 강사 부재 시간대 PT 예약 자동 차단으로 예약 충돌 방지</span>
+        </div>
+      </div>
+
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-010</span><span class="badge b-must">Must</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">회원 등록·검색·관리</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-010</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 엑셀 수작업 관리 대체. 회원 데이터 중앙화로 BG-004 운영 효율 향상</span>
+        </div>
+      </div>
+
+      <div class="fn-card high">
+        <div class="fn-header"><span class="fn-id">FN-011</span><span class="badge b-must">Must</span><span class="badge b-high">높음</span></div>
+        <div class="fn-title">회원권 설정·유효성 관리</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-011</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> BR-001/005 핵심 비즈니스 규칙 적용. 회원권 유효성이 예약 가능 여부를 결정</span>
+        </div>
+      </div>
+
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-012</span><span class="badge b-must">Must</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">출석 체크·이력 기록</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-012</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 출석 데이터 기반 회원 이탈 예측. 횟수권 차감 자동화</span>
+        </div>
+      </div>
+
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-013</span><span class="badge b-must">Must</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">회원 통합 이력 조회</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-013</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 운영자가 회원별 예약·결제·출석 데이터를 통합 조회하여 의사결정 지원</span>
+        </div>
+      </div>
+
+      <div class="fn-card high">
+        <div class="fn-header"><span class="fn-id">FN-014</span><span class="badge b-must">Must</span><span class="badge b-high">높음</span></div>
+        <div class="fn-title">포트원 온라인 결제</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-014</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 포트원 PG 연동으로 온라인 회원권 결제 처리. 결제 실패 시 안전한 롤백</span>
+        </div>
+      </div>
+
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-015</span><span class="badge b-should">Should</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">오프라인 결제 기록</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-015</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 현금/단말기 현장 결제를 플랫폼에 기록하여 매출 통합 관리 (온오프 혼합)</span>
+        </div>
+      </div>
+
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-016</span><span class="badge b-should">Should</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">정산·매출 리포트</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-016</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 엑셀 수작업 매출 집계 대체. 기간별 트렌드로 경영 의사결정 지원</span>
+        </div>
+      </div>
+
+      <div class="fn-card high">
+        <div class="fn-header"><span class="fn-id">FN-017</span><span class="badge b-must">Must</span><span class="badge b-high">높음</span></div>
+        <div class="fn-title">카카오 알림톡 자동 발송</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-017</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 예약·취소·결제 등 이벤트 발생 시 즉시 알림. SMS 대체 발송으로 미발송 방지</span>
+        </div>
+      </div>
+
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-018</span><span class="badge b-should">Should</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">예약 리마인더 스케줄러</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-018</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 수업 전 자동 리마인더로 노쇼 감소. 운영자 설정 가능한 발송 시점</span>
+        </div>
+      </div>
+
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-019</span><span class="badge b-should">Should</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">운영자 메인 대시보드</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-019</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 오늘 현황을 한눈에 파악. 운영 의사결정 속도 향상 (BG-004)</span>
+        </div>
+      </div>
+
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-020</span><span class="badge b-should">Should</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">예약 현황 캘린더·조회</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-020</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 날짜별·수업별 예약 현황 시각화. 명단 인쇄로 현장 운영 지원</span>
+        </div>
+      </div>
+
+      <div class="fn-card high">
+        <div class="fn-header"><span class="fn-id">FN-021</span><span class="badge b-must">Must</span><span class="badge b-high">높음</span></div>
+        <div class="fn-title">SaaS 구독 플랜 관리</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-021</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 플랫폼 수익화 핵심. 구독 만료 시 자동 기능 비활성화로 BR-004 적용</span>
+        </div>
+      </div>
+
+      <div class="fn-card low">
+        <div class="fn-header"><span class="fn-id">FN-022</span><span class="badge b-could">Could</span><span class="badge b-low">낮음</span></div>
+        <div class="fn-title">서비스 랜딩 페이지</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-022</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> BG-001 헬스장 50곳 가입 달성을 위한 운영자 유입 채널</span>
+        </div>
+      </div>
+
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-023</span><span class="badge b-must">Must</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">데이터 CSV 내보내기</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-023</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 운영자 데이터 자립성 지원. 플랫폼 의존도 완화, 엑셀 병행 가능</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ===== TAB: 기능 상세 ===== -->
+<div class="tab-panel" id="panel-detail">
+<div class="container">
+  <div class="inner-section">
+    <div class="s-label">Function Detail</div>
+    <div class="s-title">기능 상세 정의</div>
+    <div class="fn-list">
+
+      <!-- FN-001 높음 -->
+      <div class="fn-card high">
+        <div class="fn-header"><span class="fn-id">FN-001</span><span class="badge b-must">Must</span><span class="badge b-high">높음</span></div>
+        <div class="fn-title">운영자 가입·로그인·인증</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-001</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> JWT 기반 stateless 인증으로 AWS 수평 확장 대응</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">화면 구성</div>
+          <table class="sub-table">
+            <thead><tr><th>영역</th><th>구성요소</th><th>설명</th></tr></thead>
+            <tbody>
+              <tr><td>가입 폼</td><td>이메일, 비밀번호, 비밀번호 확인, 헬스장명, 연락처</td><td>필수 항목</td></tr>
+              <tr><td>로그인 폼</td><td>이메일, 비밀번호, [자동 로그인] 체크박스</td><td></td></tr>
+              <tr><td>상태 메시지</td><td>오류/성공 인라인 표시</td><td>폼 하단</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">입력</div>
+          <table class="sub-table">
+            <thead><tr><th>항목</th><th>타입</th><th>필수</th><th>검증 규칙</th></tr></thead>
+            <tbody>
+              <tr><td>이메일</td><td>email</td><td>Y</td><td>RFC 5322 형식, 중복 불가</td></tr>
+              <tr><td>비밀번호</td><td>password</td><td>Y</td><td>8자 이상, 영문+숫자+특수문자 1개 이상</td></tr>
+              <tr><td>비밀번호 확인</td><td>password</td><td>Y</td><td>비밀번호 일치 여부</td></tr>
+              <tr><td>헬스장명</td><td>text</td><td>Y</td><td>2~50자</td></tr>
+              <tr><td>연락처</td><td>tel</td><td>Y</td><td>010-XXXX-XXXX 형식</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>이메일·비밀번호 입력</li>
+            <li>서버 검증 (RFC 5322 형식, 비밀번호 조건)</li>
+            <li>JWT Access Token(15분) + Refresh Token(7일) 발급</li>
+            <li>Access Token → localStorage, Refresh Token → httpOnly Cookie 저장</li>
+            <li>카카오 알림톡 가입 환영 메시지 발송</li>
+            <li>대시보드 이동</li>
+          </ol>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">출력</div>
+          <table class="sub-table">
+            <thead><tr><th>항목</th><th>타입</th><th>설명</th></tr></thead>
+            <tbody>
+              <tr><td>JWT Access Token</td><td>string</td><td>15분 유효</td></tr>
+              <tr><td>Refresh Token</td><td>string</td><td>7일 유효, httpOnly Cookie</td></tr>
+              <tr><td>카카오 알림톡</td><td>알림</td><td>가입 완료 환영 메시지</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal"><div class="verify-label">정상</div><p>유효한 이메일·비밀번호 → JWT 발급, 카카오 알림톡 발송, 대시보드 이동</p></div>
+            <div class="verify-item exception"><div class="verify-label">예외</div><p>중복 이메일 → "이미 사용 중인 이메일입니다" / 비밀번호 5회 오류 → 10분 잠금</p></div>
+            <div class="verify-item error"><div class="verify-label">에러</div><p>DB 연결 실패 → "일시적 오류입니다. 잠시 후 다시 시도해주세요"</p></div>
+          </div>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">기술 노트</div>
+          <div class="tech-note">
+            <div class="tn-label">Tech Note</div>
+            <p><strong>기술 선택:</strong> JWT (Access + Refresh 이중 토큰), bcrypt 해시</p>
+            <p><strong>대안:</strong> Session 기반 인증 (Redis 세션 스토어)</p>
+            <p><strong>선택 사유:</strong> AWS EC2 수평 확장 시 stateless 필요 → JWT 선택. 세션은 스케일아웃 시 세션 공유 문제 발생</p>
+            <p><strong>제약:</strong> Refresh Token 탈취 방지를 위해 httpOnly Cookie 필수, XSS 방어 병행</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FN-002 높음 -->
+      <div class="fn-card high">
+        <div class="fn-header"><span class="fn-id">FN-002</span><span class="badge b-must">Must</span><span class="badge b-high">높음</span></div>
+        <div class="fn-title">사용자 역할 권한 제어</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-002</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 3종 역할별 UI 분기 및 API 접근 제어</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">화면 구성</div>
+          <table class="sub-table">
+            <thead><tr><th>역할</th><th>접근 범위</th></tr></thead>
+            <tbody>
+              <tr><td>운영자</td><td>전체 사이드바 메뉴 — 회원관리·수업·결제·리포트 전체 접근</td></tr>
+              <tr><td>강사</td><td>내 수업·스케줄 메뉴만 (회원 결제 접근 불가)</td></tr>
+              <tr><td>회원</td><td>수업 예약·내 예약 (관리 기능 전체 비노출)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>JWT payload의 role 클레임 파싱</li>
+            <li>역할별 라우트 가드 적용</li>
+            <li>허용 UI 렌더링 / 비허용 경로 차단</li>
+            <li>API 레벨에서 역할 재검증 (403 Forbidden)</li>
+          </ol>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal"><div class="verify-label">정상</div><p>강사 계정 로그인 → 내 수업·스케줄 메뉴만 표시</p></div>
+            <div class="verify-item exception"><div class="verify-label">예외</div><p>강사가 회원 결제 API 직접 호출 → 403 반환, 접근 거부</p></div>
+            <div class="verify-item error"><div class="verify-label">에러</div><p>JWT payload 위조 시도 → 강제 로그아웃, 세션 무효화</p></div>
+          </div>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">기술 노트</div>
+          <div class="tech-note">
+            <div class="tn-label">Tech Note</div>
+            <p><strong>기술 선택:</strong> RBAC (Role-Based Access Control), JWT role 클레임</p>
+            <p><strong>대안:</strong> ABAC (Attribute-Based), DB role 조회</p>
+            <p><strong>선택 사유:</strong> 3종 고정 역할이므로 RBAC로 충분. DB 조회 없이 JWT에서 즉시 판별 가능</p>
+            <p><strong>제약:</strong> 역할 변경 시 기존 JWT 즉시 무효화 필요 (Refresh Token 블랙리스트 관리)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FN-003 중간 -->
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-003</span><span class="badge b-must">Must</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">강사·스태프 이메일 초대</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-003</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 초대 수락 전까지 계정 미활성화</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>운영자 이메일 입력</li>
+            <li>UUID 기반 초대 토큰 생성 (24시간 유효)</li>
+            <li>초대 이메일 발송</li>
+            <li>수락 시 강사 계정 활성화</li>
+            <li>운영자에게 알림 발송</li>
+          </ol>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal"><div class="verify-label">정상</div><p>미가입 이메일 초대 → 24시간 내 수락 시 강사 계정 활성화</p></div>
+            <div class="verify-item exception"><div class="verify-label">예외</div><p>초대 링크 24시간 초과 → "초대 링크가 만료되었습니다. 운영자에게 재초대 요청하세요"</p></div>
+            <div class="verify-item error"><div class="verify-label">에러</div><p>SMTP 서버 오류 → "이메일 발송에 실패했습니다"</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FN-004 높음 -->
+      <div class="fn-card high">
+        <div class="fn-header"><span class="fn-id">FN-004</span><span class="badge b-must">Must</span><span class="badge b-high">높음</span></div>
+        <div class="fn-title">그룹 수업 목록·예약</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-004</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> BG-003 예약 전환율 70%+ 달성 핵심. 3클릭 이내 예약 완료 UX</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">화면 구성</div>
+          <table class="sub-table">
+            <thead><tr><th>영역</th><th>구성요소</th><th>설명</th></tr></thead>
+            <tbody>
+              <tr><td>수업 목록</td><td>날짜 탭, 수업 카드 (수업명·강사·시간·정원·잔여석)</td><td>기본: 오늘 날짜</td></tr>
+              <tr><td>예약 확인 모달</td><td>수업 정보 요약, [예약하기] [취소]</td><td></td></tr>
+              <tr><td>상태 뱃지</td><td>예약가능(green) / 마감(red) / 대기(orange)</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">입력</div>
+          <table class="sub-table">
+            <thead><tr><th>항목</th><th>타입</th><th>필수</th><th>검증 규칙</th></tr></thead>
+            <tbody>
+              <tr><td>수업 선택</td><td>select</td><td>Y</td><td>활성화 수업만 선택 가능</td></tr>
+              <tr><td>회원 확인</td><td>auto</td><td>Y</td><td>JWT에서 회원 ID 자동 추출</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>수업 목록 조회 (날짜별 필터)</li>
+            <li>수업 선택</li>
+            <li>유효 회원권 확인 (BR-001)</li>
+            <li>정원 확인 (BR-002)</li>
+            <li>예약 생성</li>
+            <li>FN-017 카카오 알림톡 발송 트리거</li>
+          </ol>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">출력</div>
+          <table class="sub-table">
+            <thead><tr><th>항목</th><th>타입</th><th>설명</th></tr></thead>
+            <tbody>
+              <tr><td>예약 확인 화면</td><td>page</td><td>예약 번호, 수업명, 일시, 강사</td></tr>
+              <tr><td>카카오 알림톡</td><td>알림</td><td>예약 확인 메시지 (FN-017)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal"><div class="verify-label">정상</div><p>유효 회원권 + 잔여석 있는 수업 → 예약 생성, 알림톡 발송, 예약 목록 표시</p></div>
+            <div class="verify-item exception"><div class="verify-label">예외</div><p>정원 마감 → "마감된 수업입니다. 대기 등록하시겠습니까?" / 만료 회원권 → "결제 후 이용해주세요"</p></div>
+            <div class="verify-item error"><div class="verify-label">에러</div><p>DB 저장 실패 → 예약 롤백, "예약 처리 중 오류, 다시 시도해주세요"</p></div>
+          </div>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">기술 노트</div>
+          <div class="tech-note">
+            <div class="tn-label">Tech Note</div>
+            <p><strong>기술 선택:</strong> Optimistic UI (예약 즉시 UI 반영) + 서버 확인 후 롤백 패턴</p>
+            <p><strong>대안:</strong> Pessimistic UI (서버 응답 후 UI 업데이트)</p>
+            <p><strong>선택 사유:</strong> 모바일 체감 속도 향상. 3클릭 예약 UX 목표 달성</p>
+            <p><strong>제약:</strong> 동시 예약 race condition 방지를 위해 DB 트랜잭션 잠금 필수</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FN-005 높음 -->
+      <div class="fn-card high">
+        <div class="fn-header"><span class="fn-id">FN-005</span><span class="badge b-must">Must</span><span class="badge b-high">높음</span></div>
+        <div class="fn-title">PT 1:1 세션 예약</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-005</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 강사-회원 1:1 매칭. 부재 시간대 자동 차단으로 예약 충돌 방지</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">화면 구성</div>
+          <table class="sub-table">
+            <thead><tr><th>영역</th><th>구성요소</th><th>설명</th></tr></thead>
+            <tbody>
+              <tr><td>강사 선택</td><td>강사 목록 카드 (프로필·전공)</td><td></td></tr>
+              <tr><td>날짜·시간 선택</td><td>캘린더 + 시간 슬롯 (가용 시간대만 활성화)</td><td>강사 부재 시간 회색 처리</td></tr>
+              <tr><td>예약 확인 모달</td><td>강사·날짜·시간 요약</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>강사 선택</li>
+            <li>강사 가용 시간 조회 (FN-009 참조)</li>
+            <li>날짜·시간 선택</li>
+            <li>유효 회원권 확인</li>
+            <li>PT 예약 생성</li>
+            <li>강사+회원 양쪽 알림 발송 (FN-017)</li>
+          </ol>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal"><div class="verify-label">정상</div><p>가용 강사·시간 선택 → PT 예약 생성, 강사+회원 알림 발송</p></div>
+            <div class="verify-item exception"><div class="verify-label">예외</div><p>강사 부재 시간대 선택 시도 → 해당 슬롯 비활성화, 선택 불가</p></div>
+            <div class="verify-item error"><div class="verify-label">에러</div><p>동시 예약 충돌 → 후발 예약자에게 "이미 예약된 시간" 안내, 트랜잭션 롤백</p></div>
+          </div>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">기술 노트</div>
+          <div class="tech-note">
+            <div class="tn-label">Tech Note</div>
+            <p><strong>기술 선택:</strong> DB row-level locking (FOR UPDATE) 트랜잭션</p>
+            <p><strong>대안:</strong> Optimistic locking (version 컬럼)</p>
+            <p><strong>선택 사유:</strong> PT 예약은 동시 충돌 빈도가 낮아 비관적 잠금의 오버헤드 감수 가능. 데이터 정합성 우선</p>
+            <p><strong>제약:</strong> 잠금 유지 시간 최소화 (인덱스 최적화 필수)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FN-006 중간 -->
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-006</span><span class="badge b-must">Must</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">예약 취소·변경</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-006</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> BR-003 취소 정책 적용. 회원 직접 취소 + 운영자 강제 취소 이원화</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>내 예약 목록에서 예약 선택</li>
+            <li>취소 가능 여부 확인 (BR-003: 시작 2시간 전)</li>
+            <li>취소 처리 (회원권 미차감 복원)</li>
+            <li>알림 발송 (FN-017)</li>
+            <li>대기자 자동 통보 (FN-007)</li>
+          </ol>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal"><div class="verify-label">정상</div><p>수업 시작 3시간 전 취소 → 예약 취소, 알림톡 발송, 대기자 자동 통보</p></div>
+            <div class="verify-item exception"><div class="verify-label">예외</div><p>수업 시작 1시간 전 직접 취소 → "취소 불가 기간. 운영자에게 문의" / 운영자는 기한 무관 강제 취소 가능</p></div>
+            <div class="verify-item error"><div class="verify-label">에러</div><p>취소 처리 DB 실패 → 롤백, "취소 처리 중 오류"</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FN-007 중간 -->
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-007</span><span class="badge b-must">Must</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">대기자 명단 관리</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-007</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 정원 초과 시 수요 손실 방지. 취소 발생 시 자동 전환으로 운영자 개입 최소화</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>정원 마감 수업에 대기 등록 (순번 부여)</li>
+            <li>취소 발생 시 1번 대기자 카카오 알림톡 발송</li>
+            <li>1시간 내 미확인 시 2번 대기자로 자동 전환</li>
+            <li>전원 무응답 시 잔여석 공석 처리</li>
+          </ol>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal"><div class="verify-label">정상</div><p>1번 대기자가 1시간 내 수락 → 예약 자동 전환, 알림 발송</p></div>
+            <div class="verify-item exception"><div class="verify-label">예외</div><p>1번 대기자 1시간 내 미응답 → 2번 대기자에게 자동 알림 전달</p></div>
+            <div class="verify-item error"><div class="verify-label">에러</div><p>알림 발송 실패 → SMS 대체 후 다음 대기자로 진행</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FN-008 중간 -->
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-008</span><span class="badge b-must">Must</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">수업 일정 등록·관리</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-008</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 운영자가 반복 수업을 일괄 등록하여 수작업 감소 (BG-004)</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>수업명·강사·시작시간·종료시간·정원 입력</li>
+            <li>반복 설정 (1회/매주/격주)</li>
+            <li>강사 스케줄 충돌 검사</li>
+            <li>저장 후 수업 캘린더에 표시</li>
+          </ol>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal"><div class="verify-label">정상</div><p>매주 월요일 반복 수업 일괄 등록 → 4주 수업 캘린더에 일괄 표시</p></div>
+            <div class="verify-item exception"><div class="verify-label">예외</div><p>강사 시간 중복 → "해당 강사가 같은 시간에 다른 수업을 담당하고 있습니다"</p></div>
+            <div class="verify-item error"><div class="verify-label">에러</div><p>배치 등록 실패 → 부분 성공 건 롤백 후 전체 재등록 안내</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FN-009 중간 -->
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-009</span><span class="badge b-must">Must</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">강사 스케줄·부재 관리</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-009</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 강사 부재 시간대 PT 예약 자동 차단으로 예약 충돌 방지</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>강사 본인 → 내 스케줄 캘린더 조회</li>
+            <li>부재 시간대 등록</li>
+            <li>FN-005 예약 가능 슬롯에서 자동 제외</li>
+          </ol>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal"><div class="verify-label">정상</div><p>강사가 특정 날짜 오전 부재 등록 → FN-005에서 해당 슬롯 비활성화</p></div>
+            <div class="verify-item exception"><div class="verify-label">예외</div><p>기존 PT 예약 시간대에 부재 등록 → "예약 충돌" 경고, 먼저 취소 처리 안내</p></div>
+            <div class="verify-item error"><div class="verify-label">에러</div><p>저장 실패 → 이전 스케줄 유지</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FN-010 중간 -->
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-010</span><span class="badge b-must">Must</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">회원 등록·검색·관리</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-010</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 엑셀 수작업 관리 대체. 회원 데이터 중앙화로 BG-004 운영 효율 향상</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>운영자 → 이름·연락처·회원권 유형 입력</li>
+            <li>동일 연락처 중복 검사</li>
+            <li>회원 생성</li>
+            <li>회원 목록 갱신 (이름/연락처 실시간 검색 debounce 300ms)</li>
+          </ol>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal"><div class="verify-label">정상</div><p>새 회원 정보 입력 후 등록 → 회원 목록에 즉시 표시</p></div>
+            <div class="verify-item exception"><div class="verify-label">예외</div><p>동일 연락처 재등록 → "이미 등록된 회원입니다"</p></div>
+            <div class="verify-item error"><div class="verify-label">에러</div><p>저장 실패 → "회원 등록 실패"</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FN-011 높음 -->
+      <div class="fn-card high">
+        <div class="fn-header"><span class="fn-id">FN-011</span><span class="badge b-must">Must</span><span class="badge b-high">높음</span></div>
+        <div class="fn-title">회원권 설정·유효성 관리</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-011</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> BR-001/005 핵심 비즈니스 규칙 적용. 회원권 유효성이 예약 가능 여부를 결정</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">화면 구성</div>
+          <table class="sub-table">
+            <thead><tr><th>영역</th><th>구성요소</th><th>설명</th></tr></thead>
+            <tbody>
+              <tr><td>회원권 설정</td><td>유형(월정액/횟수권/기간권), 가격, 유효 기간/횟수</td><td>운영자 관리 페이지</td></tr>
+              <tr><td>회원 회원권 현황</td><td>현재 회원권, 만료일/잔여 횟수, 구매 이력</td><td>회원 상세 페이지</td></tr>
+              <tr><td>만료 알림</td><td>7일 전 자동 알림 배지</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>운영자 회원권 유형 생성</li>
+            <li>회원에게 회원권 배정</li>
+            <li>결제 완료 시 활성화 (FN-014/015 연계)</li>
+            <li>예약 시 BR-001 유효성 검증</li>
+            <li>횟수권 출석 시 BR-005 차감</li>
+            <li>만료 7일 전 FN-017 알림 발송</li>
+          </ol>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">출력</div>
+          <table class="sub-table">
+            <thead><tr><th>항목</th><th>타입</th><th>설명</th></tr></thead>
+            <tbody>
+              <tr><td>회원권 상태</td><td>enum</td><td>ACTIVE / EXPIRED / PENDING</td></tr>
+              <tr><td>잔여 정보</td><td>number/date</td><td>잔여 횟수 또는 만료일</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal"><div class="verify-label">정상</div><p>횟수권 10회 활성 → 출석 1회 → 잔여 9회로 감소</p></div>
+            <div class="verify-item exception"><div class="verify-label">예외</div><p>잔여 0회 상태에서 예약 시도 → "잔여 횟수가 없습니다" + 결제 안내</p></div>
+            <div class="verify-item error"><div class="verify-label">에러</div><p>차감 트랜잭션 실패 → 롤백, 횟수 유지, "오류 발생" 안내</p></div>
+          </div>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">기술 노트</div>
+          <div class="tech-note">
+            <div class="tn-label">Tech Note</div>
+            <p><strong>기술 선택:</strong> MySQL 트랜잭션 (ACID 보장), Scheduled Job (만료 알림)</p>
+            <p><strong>대안:</strong> NoSQL (Redis) 잔여 횟수 관리</p>
+            <p><strong>선택 사유:</strong> 횟수 차감의 ACID 보장 필수. MySQL이 기술 스택 확정이므로 트랜잭션 활용</p>
+            <p><strong>제약:</strong> 동시 출석 처리 시 race condition 방지를 위해 SELECT FOR UPDATE 적용</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FN-012 중간 -->
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-012</span><span class="badge b-must">Must</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">출석 체크·이력 기록</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-012</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 출석 데이터 기반 회원 이탈 예측. 횟수권 차감 자동화</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>운영자/강사 → 수업별 회원 목록 조회</li>
+            <li>출석/결석/지각 선택</li>
+            <li>저장</li>
+            <li>횟수권 회원 자동 차감 (FN-011)</li>
+          </ol>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal"><div class="verify-label">정상</div><p>출석 체크 완료 → 이력 기록, 횟수권 차감</p></div>
+            <div class="verify-item exception"><div class="verify-label">예외</div><p>동일 수업 중복 출석 처리 → "이미 출석 처리된 회원입니다"</p></div>
+            <div class="verify-item error"><div class="verify-label">에러</div><p>저장 실패 → "출석 기록 저장 실패"</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FN-013 중간 -->
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-013</span><span class="badge b-must">Must</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">회원 통합 이력 조회</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-013</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 운영자가 회원별 예약·결제·출석 데이터를 통합 조회하여 의사결정 지원</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>회원 상세 페이지 진입</li>
+            <li>탭 선택 (예약이력/결제이력/출석이력)</li>
+            <li>날짜 범위 필터 (기본: 최근 30일)</li>
+            <li>데이터 표시 / CSV 내보내기 (FN-023 연계)</li>
+          </ol>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal"><div class="verify-label">정상</div><p>날짜 범위 필터 적용 → 해당 기간 이력만 표시</p></div>
+            <div class="verify-item exception"><div class="verify-label">예외</div><p>이력 없는 신규 회원 조회 → "이력이 없습니다" 안내</p></div>
+            <div class="verify-item error"><div class="verify-label">에러</div><p>조회 실패 → "데이터를 불러오지 못했습니다"</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FN-014 높음 -->
+      <div class="fn-card high">
+        <div class="fn-header"><span class="fn-id">FN-014</span><span class="badge b-must">Must</span><span class="badge b-high">높음</span></div>
+        <div class="fn-title">포트원 온라인 결제</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-014</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 포트원 PG 연동으로 온라인 회원권 결제 처리. 결제 실패 시 안전한 롤백</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">화면 구성</div>
+          <table class="sub-table">
+            <thead><tr><th>영역</th><th>구성요소</th></tr></thead>
+            <tbody>
+              <tr><td>결제 선택</td><td>신용카드, 카카오페이, 토스페이</td></tr>
+              <tr><td>금액 요약</td><td>회원권명, 금액, 유효기간/횟수</td></tr>
+              <tr><td>결제 완료</td><td>영수증 번호, 내역 요약</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">입력</div>
+          <table class="sub-table">
+            <thead><tr><th>항목</th><th>타입</th><th>필수</th><th>검증 규칙</th></tr></thead>
+            <tbody>
+              <tr><td>결제 수단</td><td>select</td><td>Y</td><td>카드/간편결제 중 선택</td></tr>
+              <tr><td>회원권 ID</td><td>string</td><td>Y</td><td>유효한 회원권 유형</td></tr>
+              <tr><td>금액</td><td>number</td><td>Y</td><td>서버에서 재검증 (클라이언트 변조 방지)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>포트원 SDK 초기화</li>
+            <li>결제창 호출</li>
+            <li>결제 완료 (imp_uid 수신)</li>
+            <li>포트원 서버 결제 검증 (imp_uid 검증)</li>
+            <li>DB 결제 기록 저장</li>
+            <li>회원권 활성화</li>
+            <li>알림톡 영수증 발송 (FN-017)</li>
+          </ol>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal"><div class="verify-label">정상</div><p>카카오페이 결제 완료 → 포트원 검증 → 회원권 활성화 → 영수증 알림톡</p></div>
+            <div class="verify-item exception"><div class="verify-label">예외</div><p>사용자 결제창 취소 → "결제가 취소되었습니다" + 선택 화면 / 금액 변조 → "결제 금액 오류" + 취소 처리</p></div>
+            <div class="verify-item error"><div class="verify-label">에러</div><p>포트원 서버 오류 → "결제 서비스 오류, 잠시 후 재시도" / DB 저장 실패 시 포트원 자동 환불 요청</p></div>
+          </div>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">기술 노트</div>
+          <div class="tech-note">
+            <div class="tn-label">Tech Note</div>
+            <p><strong>기술 선택:</strong> 포트원 V2 SDK (JavaScript), 서버사이드 결제 검증</p>
+            <p><strong>대안:</strong> 직접 PG 계약 (KG이니시스, 나이스페이)</p>
+            <p><strong>선택 사유:</strong> 포트원이 PROJECT.md 필수 연동으로 지정. 여러 PG 동시 지원 가능, 개발 공수 절감</p>
+            <p><strong>제약:</strong> imp_uid 서버 검증 필수 (클라이언트 단독 결제 완료 처리 절대 금지)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FN-015 중간 -->
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-015</span><span class="badge b-should">Should</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">오프라인 결제 기록</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-015</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 현금/단말기 현장 결제를 플랫폼에 기록하여 매출 통합 관리</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>운영자 → 결제 수단(현금/단말기) + 금액 + 회원권 유형 선택</li>
+            <li>금액 유효성 검사 (0원 불가)</li>
+            <li>저장 → 회원권 활성화</li>
+            <li>매출 리포트 반영 (FN-016)</li>
+          </ol>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal"><div class="verify-label">정상</div><p>현금 결제 기록 → 회원권 활성화, 매출 리포트에 포함</p></div>
+            <div class="verify-item exception"><div class="verify-label">예외</div><p>금액 0원 입력 → "금액을 입력해주세요"</p></div>
+            <div class="verify-item error"><div class="verify-label">에러</div><p>저장 실패 → "기록 저장 실패"</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FN-016 중간 -->
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-016</span><span class="badge b-should">Should</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">정산·매출 리포트</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-016</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 엑셀 수작업 매출 집계 대체. 기간별 트렌드로 경영 의사결정 지원</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>기간 선택 (일/주/월/년)</li>
+            <li>온오프 결제 합산</li>
+            <li>회원권 유형별 분포 차트 렌더링</li>
+            <li>PDF/CSV 내보내기 (FN-023 연계)</li>
+          </ol>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal"><div class="verify-label">정상</div><p>월별 매출 조회 → 합계 + 차트 + CSV 다운로드 가능</p></div>
+            <div class="verify-item exception"><div class="verify-label">예외</div><p>데이터 없는 기간 조회 → "해당 기간 매출 데이터가 없습니다"</p></div>
+            <div class="verify-item error"><div class="verify-label">에러</div><p>리포트 생성 실패 → "리포트 생성 중 오류"</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FN-017 높음 -->
+      <div class="fn-card high">
+        <div class="fn-header"><span class="fn-id">FN-017</span><span class="badge b-must">Must</span><span class="badge b-high">높음</span></div>
+        <div class="fn-title">카카오 알림톡 자동 발송</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-017</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 예약·취소·결제 등 이벤트 발생 시 즉시 알림. SMS 대체 발송으로 미발송 방지</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">이벤트별 발송 트리거</div>
+          <table class="sub-table">
+            <thead><tr><th>이벤트</th><th>발송 대상</th><th>메시지 유형</th><th>발송 시점</th></tr></thead>
+            <tbody>
+              <tr><td>예약 생성</td><td>회원</td><td>예약 확인</td><td>즉시</td></tr>
+              <tr><td>예약 취소</td><td>회원</td><td>취소 확인</td><td>즉시</td></tr>
+              <tr><td>PT 예약 생성</td><td>강사+회원</td><td>예약 확인</td><td>즉시</td></tr>
+              <tr><td>결제 완료</td><td>회원</td><td>영수증</td><td>즉시</td></tr>
+              <tr><td>회원권 만료 7일 전</td><td>회원</td><td>만료 알림</td><td>스케줄</td></tr>
+              <tr><td>수업 수정/취소</td><td>예약 회원 전체</td><td>변경 알림</td><td>즉시</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>이벤트 발생</li>
+            <li>Bull Queue에 알림 작업 적재 (비동기)</li>
+            <li>카카오 알림톡 API 요청</li>
+            <li>성공 응답 → 발송 이력 기록</li>
+            <li>실패(3초 타임아웃) → SMS 대체 발송 → 실패 이력 기록</li>
+          </ol>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal"><div class="verify-label">정상</div><p>예약 완료 후 알림톡 → 3분 이내 발송</p></div>
+            <div class="verify-item exception"><div class="verify-label">예외</div><p>카카오 미연동 회원 → SMS 대체 발송</p></div>
+            <div class="verify-item error"><div class="verify-label">에러</div><p>카카오 API 장애 → SMS 대체 + 실패 이력 기록</p></div>
+          </div>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">기술 노트</div>
+          <div class="tech-note">
+            <div class="tn-label">Tech Note</div>
+            <p><strong>기술 선택:</strong> 카카오 알림톡 API (비즈니스 채널), Bull Queue 비동기 처리</p>
+            <p><strong>대안:</strong> 동기 직접 API 호출</p>
+            <p><strong>선택 사유:</strong> 알림 발송이 API 응답을 블록하지 않도록 비동기 큐 처리. 재시도 로직 내장</p>
+            <p><strong>제약:</strong> 카카오 알림톡 템플릿 사전 승인 필요 (런칭 2주 전 신청 권장)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FN-018 중간 -->
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-018</span><span class="badge b-should">Should</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">예약 리마인더 스케줄러</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-018</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 수업 전 자동 리마인더로 노쇼 감소. 운영자 설정 가능한 발송 시점</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>Cron Job 매 5분 실행</li>
+            <li>24시간/1시간 전 예약 조회</li>
+            <li>리마인더 미발송 건 필터</li>
+            <li>FN-017 알림 트리거</li>
+            <li>발송 완료 표시</li>
+          </ol>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal"><div class="verify-label">정상</div><p>수업 24시간 전 리마인더 → 정확한 시점에 알림톡 발송</p></div>
+            <div class="verify-item exception"><div class="verify-label">예외</div><p>알림 수신 거부 회원 → 리마인더 스킵, 발송 이력에 "거부" 기록</p></div>
+            <div class="verify-item error"><div class="verify-label">에러</div><p>Job 실패 → 로그 기록 + 관리자 알림 (슬랙/이메일)</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FN-019 중간 -->
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-019</span><span class="badge b-should">Should</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">운영자 메인 대시보드</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-019</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 오늘 현황을 한눈에 파악. 운영 의사결정 속도 향상 (BG-004)</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>로그인 후 대시보드 진입</li>
+            <li>집계 쿼리 실행 (오늘 예약, 총 회원, 이번달 매출)</li>
+            <li>카드 데이터 표시 (7일/30일 예약 트렌드 라인 차트)</li>
+            <li>30초마다 자동 갱신</li>
+          </ol>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal"><div class="verify-label">정상</div><p>대시보드 진입 → LCP ≤2.0초, 지표 정확히 표시</p></div>
+            <div class="verify-item exception"><div class="verify-label">예외</div><p>데이터 없는 경우 → 0으로 표시 (오류 아님)</p></div>
+            <div class="verify-item error"><div class="verify-label">에러</div><p>DB 오류 → 캐시 데이터 표시 + "실시간 데이터를 불러오지 못했습니다"</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FN-020 중간 -->
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-020</span><span class="badge b-should">Should</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">예약 현황 캘린더·조회</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-020</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 날짜별·수업별 예약 현황 시각화. 명단 인쇄로 현장 운영 지원</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>캘린더 뷰에서 날짜 선택</li>
+            <li>해당 날짜 수업 목록 표시</li>
+            <li>수업 선택 → 예약자 명단 표시</li>
+            <li>PDF 인쇄/내보내기 (리스트 뷰 전환 가능)</li>
+          </ol>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal"><div class="verify-label">정상</div><p>수업 선택 후 명단 조회 → 예약자 명단 표시, PDF 인쇄 가능</p></div>
+            <div class="verify-item exception"><div class="verify-label">예외</div><p>예약자 없는 수업 → "예약자가 없습니다" 표시</p></div>
+            <div class="verify-item error"><div class="verify-label">에러</div><p>조회 실패 → "데이터를 불러오지 못했습니다"</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FN-021 높음 -->
+      <div class="fn-card high">
+        <div class="fn-header"><span class="fn-id">FN-021</span><span class="badge b-must">Must</span><span class="badge b-high">높음</span></div>
+        <div class="fn-title">SaaS 구독 플랜 관리</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-021</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 플랫폼 수익화 핵심. 구독 만료 시 자동 기능 비활성화로 BR-004 적용</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">화면 구성</div>
+          <table class="sub-table">
+            <thead><tr><th>영역</th><th>구성요소</th><th>설명</th></tr></thead>
+            <tbody>
+              <tr><td>플랜 선택</td><td>플랜 카드 (기능 비교표)</td><td>가입 시 필수</td></tr>
+              <tr><td>구독 현황</td><td>현재 플랜, 다음 갱신일, 결제 수단</td><td>설정 페이지</td></tr>
+              <tr><td>만료 경고</td><td>7일 전 배너 표시</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>운영자 가입 → 구독 플랜 선택</li>
+            <li>FN-014 결제</li>
+            <li>구독 활성화</li>
+            <li>만료 7일 전 알림 (FN-017)</li>
+            <li>만료 시 BR-004 기능 비활성화</li>
+            <li>갱신 결제 실패 → 3일 유예 후 기능 비활성화</li>
+          </ol>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal"><div class="verify-label">정상</div><p>구독 플랜 결제 완료 → 구독 활성화, 모든 기능 사용 가능</p></div>
+            <div class="verify-item exception"><div class="verify-label">예외</div><p>구독 만료 → 회원 예약 기능 비활성화, 관리자에게 만료 알림 / 갱신 결제 실패 → 3일 유예 후 비활성화</p></div>
+            <div class="verify-item error"><div class="verify-label">에러</div><p>구독 상태 변경 실패 → 캐시 즉시 무효화 후 재시도</p></div>
+          </div>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">기술 노트</div>
+          <div class="tech-note">
+            <div class="tn-label">Tech Note</div>
+            <p><strong>기술 선택:</strong> Cron Job (만료 감지), DB flag (subscription_status)</p>
+            <p><strong>대안:</strong> 이벤트 드리븐 (Webhook 기반 만료 처리)</p>
+            <p><strong>선택 사유:</strong> 초기 SaaS는 수동 갱신으로 충분. 자동 갱신은 v2에서 포트원 정기결제 연동 예정</p>
+            <p><strong>제약:</strong> subscription_status 변경 시 캐시 즉시 무효화 필요</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FN-022 낮음 -->
+      <div class="fn-card low">
+        <div class="fn-header"><span class="fn-id">FN-022</span><span class="badge b-could">Could</span><span class="badge b-low">낮음</span></div>
+        <div class="fn-title">서비스 랜딩 페이지</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-022</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-desc">헬스장 운영자 대상 서비스 소개 페이지. 주요 기능 소개 섹션, 요금제 비교표, 고객 후기, "무료 체험 시작" CTA 버튼(→ 가입 페이지)으로 구성. SEO 메타태그 및 OG 태그 필수 적용.</div>
+        </div>
+      </div>
+
+      <!-- FN-023 중간 -->
+      <div class="fn-card mid">
+        <div class="fn-header"><span class="fn-id">FN-023</span><span class="badge b-must">Must</span><span class="badge b-mid">중간</span></div>
+        <div class="fn-title">데이터 CSV 내보내기</div>
+        <div class="fn-meta">
+          <span class="fn-meta-item"><strong>FR:</strong> FR-023</span>
+          <span class="fn-meta-item"><strong>기획 근거:</strong> 운영자 데이터 자립성 지원. 플랫폼 의존도 완화, 엑셀 병행 가능</span>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">처리 흐름</div>
+          <ol class="flow-list">
+            <li>데이터 유형 선택 (회원목록/예약이력/매출)</li>
+            <li>날짜 범위 필터</li>
+            <li>CSV 생성 (UTF-8 BOM 포함, Excel 호환)</li>
+            <li>10,000건+ 시 백그라운드 처리 → 완료 시 이메일 다운로드 링크 발송</li>
+          </ol>
+        </div>
+        <div class="fn-section">
+          <div class="fn-section-title">검증 기준</div>
+          <div class="verify-grid">
+            <div class="verify-item normal"><div class="verify-label">정상</div><p>회원 목록 CSV 내보내기 → UTF-8 BOM 포함 CSV, Excel에서 한글 정상 표시</p></div>
+            <div class="verify-item exception"><div class="verify-label">예외</div><p>10,000건 이상 내보내기 → 백그라운드 처리 + 이메일 링크 발송</p></div>
+            <div class="verify-item error"><div class="verify-label">에러</div><p>CSV 생성 실패 → "내보내기 처리 중 오류"</p></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="report-footer">
+  <div class="container">&copy; 2026 엘루오 (ELUO)</div>
+</div>
+
+<script>
+(function() {
+  var btns = document.querySelectorAll('.tab-btn');
+  var panels = document.querySelectorAll('.tab-panel');
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var target = btn.dataset.tab;
+      btns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      panels.forEach(function(p) {
+        p.classList.toggle('active', p.id === 'panel-' + target);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+})();
+</script>
+</body>
+</html>
