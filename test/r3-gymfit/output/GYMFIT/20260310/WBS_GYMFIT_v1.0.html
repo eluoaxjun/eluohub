@@ -491,6 +491,7 @@ var WBS_ROWS = [
       btn.classList.add('active');
       panels.forEach(function(p) { p.classList.toggle('active', p.id === 'panel-' + target); });
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (target === 'gantt') scrollGanttToToday();
     });
   });
 
@@ -534,7 +535,10 @@ var WBS_ROWS = [
   if (!table) return;
   var projStart  = new Date(table.dataset.projStart  || '2026-01-01');
   var totalWeeks = parseInt(table.dataset.totalWeeks) || 12;
-  var todayWeek  = parseInt(table.dataset.todayWeek)  || 0;
+  /* 오늘 날짜 기준으로 현재 주차 자동 계산 (data-today-week 하드코딩 불필요) */
+  var _today = new Date(); _today.setHours(0,0,0,0);
+  var _diff  = _today - projStart;
+  var todayWeek = (_diff < 0) ? 0 : Math.min(Math.floor(_diff / 604800000) + 1, totalWeeks);
 
   var weeks = [];
   for (var w = 1; w <= totalWeeks; w++) {
@@ -602,18 +606,17 @@ var WBS_ROWS = [
   });
 
   /* ── 오늘 주차 가운데 스크롤 ── */
-  if (todayWeek > 0) {
-    requestAnimationFrame(function() {
-      var outer = document.querySelector('.gantt-outer');
-      var weekThs = thead.querySelectorAll('tr.week-hdr th');
-      var todayTh = weekThs[3 + todayWeek - 1]; /* 고정 4열 + W(n-1) */
-      if (outer && todayTh) {
-        var outerLeft = outer.getBoundingClientRect().left;
-        var thLeft    = todayTh.getBoundingClientRect().left;
-        outer.scrollLeft = outer.scrollLeft + (thLeft - outerLeft) - (outer.clientWidth / 2) + (todayTh.offsetWidth / 2);
-      }
-    });
+  /* display:none 상태에서 getBoundingClientRect()가 0을 반환하므로 오프셋 직접 계산 */
+  var FIXED_W = 80 + 230 + 58 + 46; /* g-id + g-name + g-owner + g-dur */
+  var COL_W   = 28;                   /* g-wk 너비 */
+  function scrollGanttToToday() {
+    if (!todayWeek) return;
+    var outer = document.querySelector('.gantt-outer');
+    if (!outer) return;
+    var todayOffset = FIXED_W + (todayWeek - 1) * COL_W + COL_W / 2;
+    outer.scrollLeft = todayOffset - outer.clientWidth / 2;
   }
+  scrollGanttToToday();
 
   /* ── WBS 상세 tbody 렌더링 ── */
   var wbsTbody = document.getElementById('wbsBody');
