@@ -72,7 +72,19 @@ async function main() {
     playwright = require('playwright');
   }
 
-  const browser = await playwright.chromium.launch({ headless: true });
+  let browser;
+  try {
+    browser = await playwright.chromium.launch({ headless: true });
+  } catch (launchErr) {
+    if (launchErr.message && launchErr.message.includes('Executable')) {
+      console.log('[INFO] Chromium 바이너리 미설치. 자동 설치 중...');
+      const { execSync } = require('child_process');
+      execSync('npx playwright install chromium', { stdio: 'inherit' });
+      browser = await playwright.chromium.launch({ headless: true });
+    } else {
+      throw launchErr;
+    }
+  }
   const page = await browser.newPage();
 
   const fileUrl = 'file:///' + htmlPath.replace(/\\/g, '/');

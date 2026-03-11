@@ -49,7 +49,7 @@ async function main() {
       const filename = path.basename(screen.uiImagePath);
       const inputPath = path.join(inputDir, filename);
       if (fs.existsSync(inputPath)) {
-        screen.uiImagePath = `../input/${filename}`;
+        screen.uiImagePath = `../../../input/${filename}`;
         console.log(`[INPUT] ${filename} → input/ 폴더 사용`);
       } else {
         console.log(`[CAPTURE] ${filename} → 기존 경로 유지`);
@@ -59,9 +59,10 @@ async function main() {
 
   // 2. HTML 생성
   const html = generateHTML(data, theme);
+  const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
   const outputDir = process.argv[3]
     ? path.resolve(process.argv[3])
-    : path.join(projectRoot, 'output', data.project.id || outputPrefix);
+    : path.join(projectRoot, 'output', data.project.id || outputPrefix, today);
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
   const htmlPath = path.join(outputDir, `${outputPrefix}.html`);
@@ -81,22 +82,34 @@ async function main() {
     playwright = require('playwright');
   }
 
-  const browser = await playwright.chromium.launch({ headless: true });
+  let browser;
+  try {
+    browser = await playwright.chromium.launch({ headless: true });
+  } catch (launchErr) {
+    if (launchErr.message && launchErr.message.includes('Executable')) {
+      console.log('[INFO] Chromium 바이너리 미설치. 자동 설치 중...');
+      const { execSync } = require('child_process');
+      execSync('npx playwright install chromium', { stdio: 'inherit' });
+      browser = await playwright.chromium.launch({ headless: true });
+    } else {
+      throw launchErr;
+    }
+  }
   const page = await browser.newPage();
+  await page.setViewportSize({ width: 1920, height: 1080 });
 
   const fileUrl = 'file:///' + htmlPath.replace(/\\/g, '/');
   await page.goto(fileUrl, { waitUntil: 'networkidle' });
 
-  // 16:9 landscape 고정 PDF (1280×720)
+  // 16:9 landscape 고정 PDF (1920×1080)
   const frameCount = await page.evaluate(() => document.querySelectorAll('.slide').length);
-  console.log(`[PDF] 슬라이드 ${frameCount}개, 1280×720 landscape`);
+  console.log(`[PDF] 슬라이드 ${frameCount}개, 1920×1080 landscape`);
 
   const pdfPath = path.join(outputDir, `${outputPrefix}.pdf`);
   await page.pdf({
     path: pdfPath,
-    width: '1280px',
-    height: '720px',
-    landscape: true,
+    width: '1920px',
+    height: '1080px',
     printBackground: true,
     margin: { top: '0', right: '0', bottom: '0', left: '0' }
   });

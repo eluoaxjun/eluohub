@@ -22,10 +22,11 @@
 추가 스캔:
 - `output/{프로젝트명}/context/project.md` 존재 시 프로젝트 기본 정보 로드
 - `_context.md` 존재 시 "context/ 폴더로 마이그레이션 권장" 메시지 출력 후 context/ 기준으로 진행
+- **참조 URL**: 프롬프트에 URL 포함 시 → Playwright MCP로 방문·스크린샷·구조 분석 (GNB·주요기능·레이아웃 파악). 미포함 시 → 프로젝트명으로 공식 사이트 웹 검색 시도. 접속/검색 모두 실패 시 → "현행 사이트 미확인" 표기 후 진행.
 
 **모드 판정 출력**:
 ```
-[QST Step 0] 모드: {초기작성/재작성} | context/qst.md: {있음/없음} | REQ:{n} FN:{n} IA:{n} WBS:{n}
+[QST Step 0] 모드: {초기작성/재작성} | context/qst.md: {있음/없음} | REQ:{n} FN:{n} IA:{n} WBS:{n} | 참조사이트: {URL/검색결과/미확인}
 ```
 
 ### Step 1: 기확정 항목 식별
