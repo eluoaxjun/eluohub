@@ -135,19 +135,19 @@ thead .g-id,thead .g-name,thead .g-owner,thead .g-dur{z-index:4;background:var(-
   <div class="container">
     <div class="summary-strip">
       <div class="summary-card">
-        <div class="summary-value" id="sc-weeks">27주</div>
+        <div class="summary-value" id="sc-weeks">—</div>
         <div class="summary-label">총 기간</div>
       </div>
       <div class="summary-card accent">
-        <div class="summary-value" id="sc-tasks">63건</div>
+        <div class="summary-value" id="sc-tasks">—</div>
         <div class="summary-label">전체 작업</div>
       </div>
       <div class="summary-card warn">
-        <div class="summary-value" id="sc-cp">62일</div>
+        <div class="summary-value" id="sc-cp">—</div>
         <div class="summary-label">크리티컬 패스</div>
       </div>
       <div class="summary-card green">
-        <div class="summary-value" id="sc-waves">3</div>
+        <div class="summary-value" id="sc-waves">—</div>
         <div class="summary-label">Wave</div>
       </div>
     </div>
@@ -180,8 +180,7 @@ thead .g-id,thead .g-name,thead .g-owner,thead .g-dur{z-index:4;background:var(-
 <div class="gantt-outer">
   <table class="gantt-table" id="ganttTable"
          data-proj-start="2026-01-12"
-         data-total-weeks="27"
-         data-today-week="9">
+         data-total-weeks="27">
     <thead id="ganttHead"></thead>
     <tbody id="ganttBody">
       <!-- JS가 GANTT_ROWS 배열로 자동 생성 -->
@@ -209,9 +208,9 @@ thead .g-id,thead .g-name,thead .g-owner,thead .g-dur{z-index:4;background:var(-
     <div class="s-title">프로젝트 개요</div>
     <table class="info-table">
       <tr><th>프로젝트명</th><td>GymFit (짐핏) — 헬스클럽 관리 SaaS 플랫폼 (운영자·강사·회원 3역할)</td></tr>
-      <tr><th>총 기간</th><td>2026-01-12 ~ 2026-07-22 (27주) | Phase 3~5 순수 개발 78 working days (62일 CP + 16일 버퍼)</td></tr>
+      <tr><th>총 기간</th><td>2026-01-12 ~ 2026-07-22 (27주) | Phase 3~5 순수 개발 78 working days (66일 CP + 12일 버퍼)</td></tr>
       <tr><th>총 작업 수</th><td>63건 — 기획 6 / 디자인 8 / 개발 36 / QA 8 / 런칭 5</td></tr>
-      <tr><th>크리티컬 패스</th><td>62일 / 18단계 — DB스키마 → JWT → RBAC → 회원CRUD → 회원권 → 포트원결제 → 환불 → 대시보드 → 반응형PWA → 통합E2E → 성능최적화 → 버그수정 → 기능QA → 성능QA → 결함수정 → AWS프로덕션 → 데이터이관 → 정식런칭</td></tr>
+      <tr><th>크리티컬 패스</th><td>66일 / 19단계 — DB스키마 → JWT → RBAC → 회원CRUD → 회원권 → 포트원결제 → 환불 → 구독플랜 → 대시보드 → 반응형PWA → 통합E2E → 성능최적화 → 버그수정 → 기능QA → 성능QA → 결함수정 → AWS프로덕션 → 데이터이관 → 정식런칭</td></tr>
       <tr><th>상위 문서</th><td>FN_GYMFIT_v1.0 (FN 23개) · IA_GYMFIT_v1.0 (페이지 38개)</td></tr>
     </table>
   </div>
@@ -248,7 +247,7 @@ thead .g-id,thead .g-name,thead .g-owner,thead .g-dur{z-index:4;background:var(-
 
 <script>
 /* ================================================================
-   ★ 데이터 섹션 — 스킬이 이 두 배열만 채우면 됩니다 ★
+   ★ 데이터 섹션
 ================================================================ */
 
 var GANTT_ROWS = [
@@ -440,9 +439,12 @@ var WBS_ROWS = [
    렌더링 엔진 — 수정 불필요
 ================================================================ */
 (function() {
-  /* ── 유틸 ── */
-  function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-  function fmtDate(d) { var m=d.getMonth()+1,dd=d.getDate(); return d.getFullYear()+'.'+(m<10?'0':'')+m+'.'+(dd<10?'0':'')+dd; }
+  function esc(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function fmtDate(d) {
+    return d.getFullYear() + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + String(d.getDate()).padStart(2,'0');
+  }
   var ownerCls = {'PM':'role-plan','기획':'role-plan','디자인':'role-design','FE':'role-pub','BE':'role-dev','QA':'role-qa'};
   function ownerBadge(o) { return '<span class="badge '+(ownerCls[o]||'role-dev')+'">'+esc(o)+'</span>'; }
 
@@ -454,7 +456,7 @@ var WBS_ROWS = [
   var _diff  = _today - projStart;
   var todayWeek = (_diff < 0) ? 0 : Math.min(Math.floor(_diff / 604800000) + 1, totalWeeks);
 
-  /* ── Summary 카드 자동 계산 (WBS_ROWS 기반) ── */
+  /* ── Summary 카드 자동 계산 ── */
   var taskRows = WBS_ROWS.filter(function(r){ return r.t === 'task'; });
   var cpDays   = taskRows.filter(function(r){ return r.cp; }).reduce(function(s,r){ return s+(r.dur||0); }, 0);
   var waves    = taskRows.map(function(r){ return r.wave; }).filter(function(v,i,a){ return v && a.indexOf(v)===i; });
@@ -464,7 +466,7 @@ var WBS_ROWS = [
   scEl = document.getElementById('sc-cp');    if(scEl) scEl.textContent = cpDays + '일';
   scEl = document.getElementById('sc-waves'); if(scEl) scEl.textContent = waves.length;
 
-  /* ── 마일스톤 그리드 자동 렌더링 (GANTT_ROWS ms 항목 기반) ── */
+  /* ── 마일스톤 그리드 자동 렌더링 ── */
   var msGrid = document.getElementById('msGrid');
   if (msGrid) {
     var msItems = GANTT_ROWS.filter(function(r){ return r.t === 'ms'; });
@@ -473,9 +475,9 @@ var WBS_ROWS = [
       var msDate = new Date(projStart);
       msDate.setDate(msDate.getDate() + (ms.week - 1) * 7 + 6);
       var status;
-      if (msDate < _today)  { status = 'm-done'; }
-      else if (!foundCurr)  { status = 'm-curr'; foundCurr = true; }
-      else                  { status = 'm-plan'; }
+      if (msDate < _today)       { status = 'm-done'; }
+      else if (!foundCurr)       { status = 'm-curr'; foundCurr = true; }
+      else                       { status = 'm-plan'; }
       var idMatch = ms.name.match(/M(\d+)/);
       var msId    = idMatch ? 'M' + idMatch[1] : 'M';
       var msName  = ms.name.replace(/^M\d+[\s:：·\-]+/, '');
@@ -600,7 +602,6 @@ var WBS_ROWS = [
   } /* end if (table) */
 
   /* ── 오늘 주차 가운데 스크롤 ── */
-  /* display:none 상태에서 getBoundingClientRect()가 0을 반환하므로 오프셋 직접 계산 */
   var FIXED_W = 80 + 230 + 58 + 46; /* g-id + g-name + g-owner + g-dur */
   var COL_W   = 28;                   /* g-wk 너비 */
   function scrollGanttToToday() {
