@@ -17,7 +17,7 @@ function normalizeSchema(raw, defaults = {}) {
   let result;
 
   if (raw.$schema === SCHEMA_VERSION) {
-    result = raw;
+    result = { ...raw, screens: (raw.screens || []).map(normalizeScreen) };
   } else if (raw.assignment) {
     result = normalizeV1(raw);
   } else {
@@ -150,10 +150,12 @@ function normalizeScreen(s) {
     wireframe: s.wireframe || null,
     // P0-3: Header/Footer/LNB 맥락
     persistent: s.persistent || null,
-    // P0-1: 강화된 Description
-    descriptions: (s.descriptions || []).map(d => ({
+    // P0-1: 강화된 Description (notes 필드도 허용: text → label 자동 매핑)
+    descriptions: (s.descriptions || s.notes || []).map(d => ({
       marker: d.marker || 0,
-      label: d.label || '',
+      label: d.label || d.text || '',
+      // section|issue|'' 타입 분기
+      type: d.type || '',
       overlay: d.overlay || null,
       details: d.details || [],
       commonNote: d.commonNote || '',
@@ -173,6 +175,8 @@ function normalizeScreen(s) {
     // P1-3: 수정일/버전
     modifiedDate: s.modifiedDate || '',
     version: s.version || '',
+    // 슬라이드 변경이력 메모 (우측 절대위치 노트)
+    changeLog: s.changeLog || [],
     pmComments: (s.pmComments || []).map(c => ({
       marker: c.marker || null,
       type: c.type || 'question',

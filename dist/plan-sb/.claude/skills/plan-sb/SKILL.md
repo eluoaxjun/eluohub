@@ -19,6 +19,14 @@ argument-hint: "[JSON 데이터 파일경로 또는 프로젝트 요구사항]"
 | **참조** | FN-### ID + 기능명 (기능명만), IA 페이지 경로(location) |
 | **금지** | FN 처리 로직·알고리즘 복사, REQ AC 수치 기준 직접 기재 |
 
+## JSON 작성 전 필수 체크
+
+JSON 데이터를 새로 작성하거나 새 필드를 추가할 때는 반드시 아래 파일을 먼저 읽는다:
+- `scripts/template.js` — `renderWfElement`, `renderDescriptionTableV2`, `renderComponentGuide`, `renderScreen` 함수에서 실제 지원 필드 확인
+- `scripts/lib/schema.js` — `normalizeScreen`에서 passthrough 필드 확인
+
+문서에 없는 필드는 template.js에서 렌더링되지 않는다.
+
 ## JSON 데이터 구조 (v2 스키마)
 
 ### project 필수 필드
@@ -60,14 +68,14 @@ argument-hint: "[JSON 데이터 파일경로 또는 프로젝트 요구사항]"
 
 - HTML 파일명: `{outputPrefix}.html` (outputPrefix 미설정 시: `{프로젝트명}_SB_{YYYYMMDD}_{버전}.html`)
 - PDF 파일명: `{outputPrefix}.pdf`
-- 저장 경로: `output/{프로젝트명}/`
+- 저장 경로: `output/{프로젝트명}/{YYYYMMDD}/`
 - 생성 커맨드: `node .claude/skills/plan-sb/scripts/generate.js <data-file.json>`
 
 ## 16:9 슬라이드 명세 (v2)
 
-- **화면 규격**: 1280×720px 고정 (overflow:hidden)
-- **PDF 출력**: landscape, margin:0 (`@page { size: 1280px 720px landscape; }`)
-- **슬라이드 구조**: slide-header(36px) + slide-body(flex:1) + slide-footer(24px)
+- **화면 규격**: 1920×1080px 고정 (overflow:hidden)
+- **PDF 출력**: margin:0 (`@page { size: 1920px 1080px; }`)
+- **슬라이드 구조**: slide-header(54px) + slide-body(flex:1) + slide-footer(36px)
 - **Design 레이아웃**: 좌 60% wireframe-area + 우 40% description-panel
 - **MSG Case 자동 분리**: `screenType:'design'` + `msgCases` 동시 존재 시 별도 슬라이드 자동 생성 (인라인 혼재 금지)
 
@@ -146,7 +154,7 @@ argument-hint: "[JSON 데이터 파일경로 또는 프로젝트 요구사항]"
 | 7 | 메타 테이블 완전성 | Viewport·Interface·Location 표시 |
 | 8 | Description 완전성 | design/description 타입: marker + label 존재 |
 | 9 | 와이어프레임 마커 일치 | `wireframe[].marker` ↔ `descriptions[].marker` 매핑 |
-| 10 | PDF 출력 정상 | 1280×720 landscape, 슬라이드 간 페이지 구분 |
+| 10 | PDF 출력 정상 | 1920×1080, 슬라이드 간 페이지 구분 |
 | 11 | 정보 소유 경계 준수 | FN 처리 로직·REQ AC 직접 복사 0건 |
 | 12 | MSG Case 분리 | design 슬라이드 내 msgCases 인라인 혼재 0건 (verify.js ERROR 0건) |
 

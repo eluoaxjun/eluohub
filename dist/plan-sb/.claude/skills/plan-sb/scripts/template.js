@@ -2,8 +2,8 @@
  * 화면설계서 HTML 템플릿 생성기 v2 (16:9 슬라이드 덱)
  *
  * v2 변경사항:
- * - .frame → .slide (1280×720px, overflow:hidden)
- * - @page { size: 1280px 720px landscape; margin: 0; }
+ * - .frame → .slide (1920×1080px, overflow:hidden)
+ * - @page { size: 1920px 1080px landscape; margin: 0; }
  * - Design 레이아웃: 좌 60% 와이어프레임 / 우 40% Description
  * - fnRef 렌더링: Description 패널 하단 [FN 참조] 섹션
  * - msgCases 자동 별도 슬라이드 분리 (인라인 혼재 금지)
@@ -15,14 +15,14 @@ function css(theme) {
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: ${theme.fonts.primary}; background: #fff; }
 
-  /* 화면용: 가로 나열 */
+  /* 화면용: 가로 나열 (수평 스크롤) */
   @media screen {
-    body { background: #4a4a4a; display: flex; flex-wrap: wrap; gap: 40px; padding: 40px; overflow-x: auto; }
+    body { background: #4a4a4a; display: flex; flex-wrap: nowrap; gap: 40px; padding: 40px; overflow-x: auto; min-width: max-content; }
   }
 
   /* 인쇄/PDF용: 16:9 landscape */
   @page {
-    size: 1280px 720px landscape;
+    size: 1920px 1080px landscape;
     margin: 0;
   }
   @media print {
@@ -31,10 +31,10 @@ function css(theme) {
     .slide:last-child { page-break-after: auto; }
   }
 
-  /* 슬라이드 컨테이너: 1280×720 고정 */
+  /* 슬라이드 컨테이너: 1920×1080 고정 */
   .slide {
-    width: 1280px;
-    height: 720px;
+    width: 1920px;
+    height: 1080px;
     overflow: hidden;
     position: relative;
     background: #fff;
@@ -44,24 +44,24 @@ function css(theme) {
     flex-shrink: 0;
   }
 
-  /* 슬라이드 헤더: 36px */
+  /* 슬라이드 헤더: 54px */
   .slide-header {
     background: ${theme.primaryColor};
     color: #fff;
-    padding: 0 16px;
-    height: 36px;
-    min-height: 36px;
+    padding: 0 24px;
+    height: 54px;
+    min-height: 54px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-shrink: 0;
-    font-size: 11px;
+    font-size: 16px;
   }
-  .slide-header .hd-left { display: flex; align-items: center; gap: 10px; }
-  .slide-header .hd-id { font-weight: 700; font-size: 12px; letter-spacing: 0.5px; }
+  .slide-header .hd-left { display: flex; align-items: center; gap: 14px; }
+  .slide-header .hd-id { font-weight: 700; font-size: 18px; letter-spacing: 0.5px; }
   .slide-header .hd-sep { opacity: 0.5; }
   .slide-header .hd-name { opacity: 0.9; }
-  .slide-header .hd-right { opacity: 0.8; font-size: 10px; }
+  .slide-header .hd-right { opacity: 0.8; font-size: 14px; }
 
   /* 슬라이드 본문: 남은 영역 전부 */
   .slide-body {
@@ -72,47 +72,47 @@ function css(theme) {
     min-height: 0;
   }
 
-  /* 슬라이드 푸터: 24px */
+  /* 슬라이드 푸터: 36px */
   .slide-footer {
     background: #f8f9fa;
     border-top: 1px solid #e0e0e0;
-    padding: 0 16px;
-    height: 24px;
-    min-height: 24px;
+    padding: 0 24px;
+    height: 36px;
+    min-height: 36px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 10px;
+    font-size: 14px;
     color: #999;
     flex-shrink: 0;
   }
 
   /* Tables */
-  table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  th { background: #f5f5f5; font-weight: 600; padding: 8px 10px; border: 1px solid #ddd; text-align: center; }
-  td { padding: 8px 10px; border: 1px solid #ddd; vertical-align: top; }
-  .section-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #333; }
+  table { width: 100%; border-collapse: collapse; font-size: 16px; }
+  th { background: #f5f5f5; font-weight: 600; padding: 10px 14px; border: 1px solid #ddd; text-align: center; }
+  td { padding: 10px 14px; border: 1px solid #ddd; vertical-align: top; }
+  .section-title { font-size: 22px; font-weight: 700; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #333; }
 
   /* Cover */
-  .cover-body { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; gap: 8px; }
-  .cover-logo { font-size: 18px; font-weight: 700; color: #666; letter-spacing: 2px; margin-bottom: 16px; }
-  .cover-logo-img { max-height: 64px; margin-bottom: 16px; }
-  .cover-title { font-size: 28px; font-weight: 700; color: #1a1a2e; text-align: center; }
-  .cover-version { font-size: 13px; color: #888; }
-  .cover-meta { width: 60%; max-width: 520px; border-collapse: collapse; margin-top: 24px; font-size: 11px; }
-  .cover-meta th { background: #f0f0f0; font-weight: 600; padding: 5px 8px; border: 1px solid #ddd; text-align: center; width: 80px; }
-  .cover-meta td { padding: 5px 8px; border: 1px solid #ddd; text-align: center; }
+  .cover-body { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; gap: 12px; }
+  .cover-logo { font-size: 26px; font-weight: 700; color: #666; letter-spacing: 3px; margin-bottom: 24px; }
+  .cover-logo-img { max-height: 96px; margin-bottom: 24px; }
+  .cover-title { font-size: 40px; font-weight: 700; color: #1a1a2e; text-align: center; }
+  .cover-version { font-size: 18px; color: #888; }
+  .cover-meta { width: 60%; max-width: 780px; border-collapse: collapse; margin-top: 36px; font-size: 16px; }
+  .cover-meta th { background: #f0f0f0; font-weight: 600; padding: 8px 12px; border: 1px solid #ddd; text-align: center; width: 120px; }
+  .cover-meta td { padding: 8px 12px; border: 1px solid #ddd; text-align: center; }
 
   /* Design 레이아웃: 좌 60% / 우 40% */
   .design-layout { display: flex; flex: 1; overflow: hidden; min-height: 0; }
   .wireframe-area { flex: 0 0 60%; overflow: hidden; border-right: 1px solid #ddd; position: relative; }
-  .description-panel { flex: 0 0 40%; overflow-y: auto; padding: 12px 14px; display: flex; flex-direction: column; }
+  .description-panel { flex: 0 0 40%; overflow-y: auto; padding: 18px 20px; display: flex; flex-direction: column; }
 
   /* Description */
-  .desc-table { width: 100%; border-collapse: collapse; font-size: 11px; line-height: 1.6; }
-  .desc-table th { background: #f5f5f5; font-weight: 600; padding: 5px 7px; border: 1px solid #ddd; text-align: center; font-size: 11px; }
-  .desc-table td { padding: 5px 7px; border: 1px solid #ddd; vertical-align: top; font-size: 11px; }
-  .desc-table .desc-num-cell { width: 44px; text-align: center; font-weight: 700; color: #333; }
+  .desc-table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.6; }
+  .desc-table th { background: #f5f5f5; font-weight: 600; padding: 7px 10px; border: 1px solid #ddd; text-align: center; font-size: 14px; }
+  .desc-table td { padding: 7px 10px; border: 1px solid #ddd; vertical-align: top; font-size: 14px; }
+  .desc-table .desc-num-cell { width: 56px; text-align: center; font-weight: 700; color: #333; }
   .desc-table .desc-content-cell { color: #333; }
   .desc-table .desc-common-row td { background: #fafafa; }
   .desc-indent-1 { }
@@ -137,12 +137,12 @@ function css(theme) {
 
   /* Wireframe 영역 */
   .wf-container { height: 100%; display: flex; flex-direction: column; overflow: hidden; }
-  .wf-scroll { flex: 1; overflow-y: auto; overflow-x: clip; padding: 8px 10px 8px 32px; }
-  .wf-el { border: 1px dashed #ccc; background: #fafafa; padding: 8px 10px; margin: 0 0 5px 0; font-size: 10px; color: #666; position: relative; display: flex; flex-direction: column; }
+  .wf-scroll { flex: 1; overflow-y: auto; padding: 12px 15px; }
+  .wf-el { border: 1px dashed #ccc; background: #fafafa; padding: 10px 14px; margin: 0 0 7px 0; font-size: 13px; color: #666; position: relative; display: flex; flex-direction: column; }
   .wf-el:last-child { margin-bottom: 0; }
-  .wf-el--header { background: #e8e8e8; border: 1px solid #bbb; min-height: 36px; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #555; }
-  .wf-el--nav { background: #f0f0f0; border: 1px solid #ccc; min-height: 30px; display: flex; align-items: center; gap: 12px; padding: 0 12px; }
-  .wf-el--nav span { font-size: 10px; color: #888; }
+  .wf-el--header { background: #e8e8e8; border: 1px solid #bbb; min-height: 48px; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #555; font-size: 14px; }
+  .wf-el--nav { background: #f0f0f0; border: 1px solid #ccc; min-height: 40px; display: flex; align-items: center; gap: 16px; padding: 0 16px; }
+  .wf-el--nav span { font-size: 13px; color: #888; }
   .wf-el--text { background: #fff; border: 1px dashed #ddd; padding: 8px 10px; }
   .wf-el--text .wf-content { color: #333; font-size: 11px; margin-top: 3px; }
   .wf-el--input { background: #fff; border: 1px solid #ccc; border-radius: 3px; min-height: 30px; display: flex; align-items: center; padding: 0 8px; color: #aaa; font-size: 11px; }
@@ -150,11 +150,11 @@ function css(theme) {
   .wf-el--button-primary { background: #333; color: #fff; border-color: #333; }
   .wf-el--button-outline { background: transparent; border: 1px solid #999; color: #666; }
   .wf-el--card { background: #fff; border: 1px solid #ddd; border-radius: 5px; padding: 10px; }
-  .wf-el--image { background: #f0f0f0; border: 1px dashed #ccc; display: flex; align-items: center; justify-content: center; color: #aaa; min-height: 60px; }
+  .wf-el--image { background: #f0f0f0; border: 1px dashed #ccc; display: flex; align-items: center; justify-content: center; color: #aaa; min-height: 80px; }
   .wf-el--image::before { content: '\\1F5BC'; font-size: 16px; margin-right: 5px; }
   .wf-el--list { background: #fff; border: 1px dashed #ddd; padding: 6px 10px 6px 24px; }
   .wf-el--list li { font-size: 10px; color: #555; margin-bottom: 3px; list-style: disc; }
-  .wf-el--banner { background: linear-gradient(135deg, #e8e8e8, #f5f5f5); border: 1px solid #ccc; min-height: 60px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #888; font-weight: 600; }
+  .wf-el--banner { background: linear-gradient(135deg, #e8e8e8, #f5f5f5); border: 1px solid #ccc; min-height: 80px; display: flex; align-items: center; justify-content: center; font-size: 15px; color: #888; font-weight: 600; }
   .wf-el--divider { border: none; border-top: 1px solid #ddd; margin: 6px 0; padding: 0; min-height: 0; background: transparent; }
   .wf-el--group { border: 1px dashed #bbb; background: #fcfcfc; padding: 6px; gap: 5px; }
   .wf-el--group--horizontal { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
@@ -193,21 +193,21 @@ function css(theme) {
   .wf-el--table table { width: 100%; border-collapse: collapse; font-size: 9px; }
   .wf-el--table th { background: #f0f0f0; padding: 3px 5px; border: 1px solid #ddd; font-size: 9px; }
   .wf-el--table td { padding: 3px 5px; border: 1px solid #ddd; font-size: 9px; }
-  .wf-label { font-size: 9px; color: #999; font-weight: 600; text-transform: uppercase; margin-bottom: 2px; }
-  .wf-marker { position: absolute; top: 50%; left: -22px; transform: translateY(-50%); width: 18px; height: 18px; background: ${theme.accentColor}; color: #fff; border-radius: 50%; text-align: center; line-height: 18px; font-size: 9px; font-weight: 700; z-index: 2; }
+  .wf-label { font-size: 12px; color: #999; font-weight: 600; text-transform: uppercase; margin-bottom: 3px; }
+  .wf-marker { position: absolute; top: 50%; left: -28px; transform: translateY(-50%); width: 24px; height: 24px; background: ${theme.accentColor}; color: #fff; border-radius: 50%; text-align: center; line-height: 24px; font-size: 12px; font-weight: 700; z-index: 2; }
   .wf-el--marked { border: 2px dashed ${theme.accentColor} !important; background: rgba(204, 51, 51, 0.03); }
-  .wf-viewport { padding: 0; }
+  .wf-viewport { padding: 0 0 0 34px; }
 
   /* 이미지 UI 캡처 */
   .ui-capture { flex: 1; background: #f9f9f9; border-right: 1px solid #ddd; display: flex; align-items: center; justify-content: center; color: #999; font-size: 13px; overflow: hidden; }
   .ui-capture-inner { position: relative; display: inline-block; max-width: 100%; max-height: 100%; }
-  .ui-capture-inner img { display: block; max-width: 100%; max-height: 640px; }
+  .ui-capture-inner img { display: block; max-width: 100%; max-height: 1000px; }
   .marker-overlay { position: absolute; border: 2px dashed ${theme.accentColor}; pointer-events: none; z-index: 1; }
   .marker-number { position: absolute; top: -10px; left: -10px; width: 20px; height: 20px; background: ${theme.accentColor}; color: #fff; border-radius: 50%; text-align: center; line-height: 20px; font-size: 10px; font-weight: 700; z-index: 2; }
 
   /* Persistent */
-  .wf-persistent-header { background: #e0e0e0; border-bottom: 2px solid #bbb; padding: 5px 12px; min-height: 36px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-  .wf-persistent-header .site-logo { font-weight: 700; font-size: 11px; color: #333; }
+  .wf-persistent-header { background: #e0e0e0; border-bottom: 2px solid #bbb; padding: 8px 18px; min-height: 48px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  .wf-persistent-header .site-logo { font-weight: 700; font-size: 15px; color: #333; }
   .wf-persistent-gnb { display: flex; gap: 14px; }
   .wf-persistent-gnb span { font-size: 10px; color: #666; }
   .wf-persistent-breadcrumb { font-size: 9px; color: #999; padding: 4px 12px; background: #fafafa; border-bottom: 1px solid #eee; flex-shrink: 0; }
@@ -261,7 +261,30 @@ function css(theme) {
   .pm-author { font-size: 9px; color: #999; margin-left: 3px; }
 
   /* 일반 콘텐츠 패딩 */
-  .slide-content { padding: 16px 20px; overflow-y: auto; flex: 1; }
+  .slide-content { padding: 24px 30px; overflow-y: auto; flex: 1; }
+
+  /* Description: section 소제목 행 */
+  .desc-section-row td { background: #efefef; font-weight: 700; font-size: 13px; color: #333; border-top: 2px solid #ccc; text-align: left; padding: 5px 10px; letter-spacing: 0.3px; }
+
+  /* Description: ISSUE 행 */
+  .desc-issue-row td { background: #fff8f8; }
+  .desc-issue-label { color: #c00000 !important; font-weight: 700 !important; font-size: 11px !important; text-align: center; }
+
+  /* Description: standalone continuation 행 */
+  .desc-cont-row td { background: #f8f8ff; text-align: center; font-size: 11px; color: #666; font-style: italic; padding: 4px 10px; border-top: 1px dashed #bbb; }
+
+  /* 슬라이드 우측 변경이력 메모 */
+  .slide-changelog { position: absolute; right: 10px; top: 64px; width: 210px; background: #fffdf0; border: 1px solid #d4aa00; border-radius: 4px; padding: 8px 10px; font-size: 10px; z-index: 100; box-shadow: 2px 2px 6px rgba(0,0,0,0.12); }
+  .slide-changelog-title { font-weight: 700; color: #8a6800; margin-bottom: 6px; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .slide-changelog-item { margin-bottom: 5px; border-left: 2px solid #d4aa00; padding-left: 6px; }
+  .slide-changelog-ver { font-weight: 700; color: #555; margin-bottom: 1px; }
+  .slide-changelog-date { color: #999; font-size: 9px; margin-left: 3px; }
+  .slide-changelog-desc { color: #333; line-height: 1.5; }
+
+  /* 헤더 2행 (location 존재 시) */
+  .slide-header--2row { height: auto; min-height: 54px; flex-direction: column; padding: 0; align-items: stretch; }
+  .slide-header--2row .hd-row1 { display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 54px; width: 100%; box-sizing: border-box; }
+  .slide-header--2row .hd-row2 { display: flex; align-items: center; padding: 0 24px; height: 26px; min-height: 26px; width: 100%; background: rgba(0,0,0,0.18); font-size: 12px; opacity: 0.9; border-top: 1px solid rgba(255,255,255,0.15); box-sizing: border-box; }
   `;
 }
 
@@ -283,7 +306,22 @@ function renderSlideHeader(screen, data, title) {
   const id = screen.interfaceId || '';
   const name = screen.interfaceName || '';
   const page = screen.pageName || '';
-  const parts = [id, name, page].filter(Boolean);
+  const location = screen.location || '';
+  const rightHtml = `${companyName}${p.writer && p.writer !== companyName ? ' | ' + p.writer : ''}${p.date ? ' | ' + p.date : ''}`;
+
+  if (location) {
+    return `<div class="slide-header slide-header--2row">
+  <div class="hd-row1">
+    <div class="hd-left">
+      ${id ? `<span class="hd-id">${id}</span>` : ''}
+      ${name ? `<span class="hd-sep">|</span><span class="hd-name">${name}</span>` : ''}
+      ${page ? `<span class="hd-sep">|</span><span>${page}</span>` : ''}
+    </div>
+    <div class="hd-right">${rightHtml}</div>
+  </div>
+  <div class="hd-row2">${location}</div>
+</div>`;
+  }
 
   return `<div class="slide-header">
   <div class="hd-left">
@@ -291,7 +329,7 @@ function renderSlideHeader(screen, data, title) {
     ${name ? `<span class="hd-sep">|</span><span class="hd-name">${name}</span>` : ''}
     ${page ? `<span class="hd-sep">|</span><span>${page}</span>` : ''}
   </div>
-  <div class="hd-right">${companyName}${p.writer && p.writer !== companyName ? ' | ' + p.writer : ''}${p.date ? ' | ' + p.date : ''}</div>
+  <div class="hd-right">${rightHtml}</div>
 </div>`;
 }
 
@@ -788,6 +826,19 @@ function renderDescriptionTableV2(descriptions, pmComments) {
   }
 
   for (const d of descriptions) {
+    // section 타입: 전체 colspan 소제목 행
+    if (d.type === 'section') {
+      rows += `<tr class="desc-section-row"><td colspan="2">${d.label || ''}</td></tr>`;
+      continue;
+    }
+
+    // standalone continuation: marker/label/items 없고 continuation만 있음
+    if (!d.marker && !d.label && !(d.items && d.items.length) && d.continuation) {
+      const contText = d.continuation === 'next' ? '▶ 다음 슬라이드에 계속됨' : '◀ 이전 슬라이드에서 이어짐';
+      rows += `<tr class="desc-cont-row"><td colspan="2">${contText}</td></tr>`;
+      continue;
+    }
+
     let content = '';
     if (d.label) {
       content += `<div style="font-weight:700; margin-bottom:3px;">${d.label}</div>`;
@@ -828,6 +879,16 @@ function renderDescriptionTableV2(descriptions, pmComments) {
       const contText = d.continuation === 'next' ? '▶ 다음 슬라이드에 계속됨' : '◀ 이전 슬라이드에서 이어짐';
       content += `<div class="desc-continuation">${contText}</div>`;
     }
+
+    // issue 타입: ISSUE 레이블 행
+    if (d.type === 'issue') {
+      rows += `<tr class="desc-issue-row">
+      <td class="desc-num-cell desc-issue-label">ISSUE</td>
+      <td class="desc-content-cell">${content}</td>
+    </tr>`;
+      continue;
+    }
+
     rows += `<tr>
       <td class="desc-num-cell">${d.marker}${renderChangeTag(d.changeType)}</td>
       <td class="desc-content-cell">${content}</td>
@@ -931,6 +992,14 @@ function renderDesignLayout(screen) {
   // Description 패널 (fnRef 포함)
   const descContent = renderDescriptionTableV2(screen.descriptions, screen.pmComments);
   const fnRefHtml = renderFnRef(screen.descriptions);
+
+  // descriptions가 없으면 wireframe-area 100% (가로형 전체 와이어프레임)
+  const hasDesc = (screen.descriptions && screen.descriptions.length > 0) || (screen.pmComments && screen.pmComments.length > 0);
+  if (!hasDesc) {
+    return `<div class="design-layout">
+  <div class="wireframe-area" style="flex:1; border-right:none;">${wireframeHtml}</div>
+</div>`;
+  }
 
   return `<div class="design-layout">
   <div class="wireframe-area">${wireframeHtml}</div>
@@ -1043,24 +1112,44 @@ function renderMsgCaseTable(msgCases) {
 function renderComponentGuide(components) {
   if (!components || components.length === 0) return '';
 
-  const rows = components.map(c => {
-    const stateLabels = (c.states || []).map(s => {
-      const cls = s.toLowerCase() === 'default' ? 'comp-state-default'
-        : s.toLowerCase().includes('focus') ? 'comp-state-focus'
-        : s.toLowerCase() === 'error' ? 'comp-state-error'
-        : s.toLowerCase() === 'disabled' ? 'comp-state-disabled' : 'comp-state-default';
-      return `<span class="comp-state-label ${cls}">${s}</span>`;
-    }).join('');
-    const guideImg = c.guideImagePath
-      ? `<img src="${c.guideImagePath}" alt="${c.phase} ${c.sub}" style="max-width:110px; max-height:55px;">`
-      : '<span style="color:#bbb; font-size:10px;">[이미지]</span>';
-    return `<tr>
-      <td style="font-weight:600">${c.phase || ''}</td>
+  // Phase 기준으로 그룹화 (rowspan)
+  const phaseGroups = [];
+  let currentPhase = null;
+  let currentGroup = null;
+  for (const c of components) {
+    if (c.phase !== currentPhase) {
+      currentPhase = c.phase;
+      currentGroup = { phase: c.phase, items: [c] };
+      phaseGroups.push(currentGroup);
+    } else {
+      currentGroup.items.push(c);
+    }
+  }
+
+  let rows = '';
+  for (const group of phaseGroups) {
+    group.items.forEach((c, idx) => {
+      const stateLabels = (c.states || []).map(s => {
+        const cls = s.toLowerCase() === 'default' ? 'comp-state-default'
+          : s.toLowerCase().includes('focus') ? 'comp-state-focus'
+          : s.toLowerCase() === 'error' ? 'comp-state-error'
+          : s.toLowerCase() === 'disabled' ? 'comp-state-disabled' : 'comp-state-default';
+        return `<span class="comp-state-label ${cls}">${s}</span>`;
+      }).join('');
+      const guideImg = c.guideImagePath
+        ? `<img src="${c.guideImagePath}" alt="${c.phase} ${c.sub}" style="max-width:110px; max-height:55px;">`
+        : '<span style="color:#bbb; font-size:10px;">[이미지]</span>';
+      const phaseCell = idx === 0
+        ? `<td rowspan="${group.items.length}" style="font-weight:600; vertical-align:middle; text-align:center;">${c.phase || ''}</td>`
+        : '';
+      rows += `<tr>
+      ${phaseCell}
       <td>${c.sub || ''}</td>
       <td style="text-align:center">${guideImg}</td>
       <td>${c.description || ''}${stateLabels ? '<br>' + stateLabels : ''}</td>
     </tr>`;
-  }).join('');
+    });
+  }
 
   return `<table class="comp-guide-table">
     <thead><tr><th style="width:90px">Phase</th><th style="width:70px">Sub</th><th style="width:120px">Guide UI</th><th>Guide Description</th></tr></thead>
@@ -1082,6 +1171,19 @@ function renderScreen(screen, data) {
 
   const modifiedHtml = screen.modifiedDate
     ? `<div class="modified-marker">수정일: ${screen.modifiedDate}</div>` : '';
+
+  // changeLog 변경이력 메모 (우측 절대위치 노트)
+  let changeLogHtml = '';
+  if (screen.changeLog && screen.changeLog.length > 0) {
+    const logItems = screen.changeLog.map(log => `<div class="slide-changelog-item">
+      <div><span class="slide-changelog-ver">${log.version || ''}</span><span class="slide-changelog-date">${log.date || ''}</span></div>
+      <div class="slide-changelog-desc">${log.detail || log.description || ''}</div>
+    </div>`).join('');
+    changeLogHtml = `<div class="slide-changelog">
+      <div class="slide-changelog-title">변경이력</div>
+      ${logItems}
+    </div>`;
+  }
 
   const screenType = screen.screenType || 'design';
   const header = renderSlideHeader(screen, data, null);
@@ -1125,6 +1227,7 @@ function renderScreen(screen, data) {
 <div class="slide" data-slide-type="${screenType}" style="position:relative;">
   ${header}
   ${modifiedHtml}
+  ${changeLogHtml}
   ${bodyHtml}
   ${footer}
 </div>`);
@@ -1169,15 +1272,17 @@ function renderEndOfDocument(data) {
  * HTML 최종 생성
  */
 function generateHTML(data, theme) {
-  // 공통 정의(MSG/COMP/DESC prefix) → 화면 정의 순서로 정렬
-  const commonPrefixes = ['MSG', 'COMP', 'DESC'];
-  const isCommon = (s) => {
+  // 전역/공통 컴포넌트 → 슬라이드 말미에 배치 (메인 화면 먼저)
+  // UI-000, MSG-*, COMP-*, DESC-*, isGlobalComponent:true 모두 포함
+  const globalPrefixes = ['MSG', 'COMP', 'DESC'];
+  const isGlobal = (s) => {
     const id = (s.interfaceId || '').toUpperCase();
-    return commonPrefixes.some(prefix => id.startsWith(prefix + '-'));
+    return globalPrefixes.some(p => id.startsWith(p + '-')) ||
+           id === 'UI-000' || s.isGlobalComponent === true;
   };
   const sortedScreens = [
-    ...data.screens.filter(s => isCommon(s)),
-    ...data.screens.filter(s => !isCommon(s)),
+    ...data.screens.filter(s => !isGlobal(s)),  // 메인 화면 먼저
+    ...data.screens.filter(s => isGlobal(s)),   // 공통 컴포넌트 뒤
   ];
   const screens = sortedScreens.map(s => renderScreen(s, data)).join('\n');
   const title = data.project.serviceName || data.project.title || '화면설계서';
@@ -1186,7 +1291,7 @@ function generateHTML(data, theme) {
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=1280">
+<meta name="viewport" content="width=1920">
 <title>화면설계서 - ${title}</title>
 <style>${css(theme)}</style>
 </head>
