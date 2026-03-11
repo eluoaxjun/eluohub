@@ -11,6 +11,8 @@ color: blue
 skills:
   - pm-router
   - plan-sb
+agents:
+  - sb-wf-design
 ---
 
 > **generate.js 호출은 CLAUDE.md Step 2에서 전담합니다. 이 에이전트가 직접 호출하지 않습니다.**
@@ -84,6 +86,30 @@ pm-router 스킬을 실행합니다.
 plan-sb 스킬을 실행합니다.
 - 선행 산출물 확인 → 연계/독립 모드 자동 감지
 - JSON 데이터 준비 (자동 또는 대화형)
+
+> **generate.js 실행 전 반드시 Step 2.5를 완료해야 합니다.**
+
+### Step 2.5: 와이어프레임 UX 강화 (sb-wf-design)
+
+**Step 2에서 JSON 구성 완료 직후, generate.js 실행 전** 반드시 수행합니다.
+
+`sb-wf-design` 에이전트를 호출합니다:
+- wireframe[] group 빈 박스 → description 기반 children 자동 보강
+- 레이블 공백 해소, 마커 정합성 검증
+- 정보 계층(헤더→콘텐츠→푸터) 순서 확인
+
+**WF Design Gate**:
+```
+[WF Design Gate]
+보강 완료: {n}건 | WARN: {n}건
+→ PASS 시 generate.js 진행 | WARN 시 사용자 확인 후 진행
+```
+
+- WARN이 있으면 사용자에게 항목을 보고하고 확인 후 generate.js 진행
+- PASS이면 즉시 generate.js 진행
+
+### Step 2 완료: generate.js 실행
+
 - generate.js 실행 → HTML/PDF 생성
 - Self-Check 자동 실행 (내부 품질 검증)
 - PM 챌린지 3대 자동 실행

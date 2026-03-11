@@ -15,9 +15,9 @@ function css(theme) {
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: ${theme.fonts.primary}; background: #fff; }
 
-  /* 화면용: 가로 나열 (수평 스크롤) */
+  /* 화면용: 세로 나열 (수직 스크롤) */
   @media screen {
-    body { background: #4a4a4a; display: flex; flex-wrap: nowrap; gap: 40px; padding: 40px; overflow-x: auto; min-width: max-content; }
+    body { background: #4a4a4a; display: flex; flex-direction: column; align-items: center; gap: 40px; padding: 40px; overflow-y: auto; }
   }
 
   /* 인쇄/PDF용: 16:9 landscape */
@@ -752,8 +752,9 @@ function renderWfElement(el) {
       // default layout
       const dirCls = el.direction === 'horizontal' ? ' wf-el--group--horizontal' : '';
       const children = (el.children || []).map(c => renderWfElement(c)).join('');
-      // group label은 와이어프레임에서 완전히 숨김 — description 패널에서 설명
-      return `<div class="wf-el wf-el--group${dirCls}${markedCls}" style="${h}">${markerHtml}${children}</div>`;
+      // children 없을 때 label fallback — description 패널에서 설명하는 경우에도 빈 박스만 보이는 것을 방지
+      const groupFallback = (!children && el.label) ? `<span class="wf-label">${el.label}</span>` : '';
+      return `<div class="wf-el wf-el--group${dirCls}${markedCls}" style="${h}">${markerHtml}${groupFallback}${children}</div>`;
     }
     default:
       return `<div class="wf-el${markedCls}" style="${h}">${markerHtml}${labelHtml}${el.content || el.type}</div>`;
@@ -804,9 +805,10 @@ function renderFnRef(descriptions) {
     }
   }
   if (allFnRefs.length === 0) return '';
+  const uniqueFnRefs = [...new Set(allFnRefs)];
   return `<div class="fn-ref-section">
   <div class="fn-ref-title">FN 참조</div>
-  <div class="fn-ref-list">${allFnRefs.join(', ')}</div>
+  <div class="fn-ref-list">${uniqueFnRefs.join(', ')}</div>
 </div>`;
 }
 
