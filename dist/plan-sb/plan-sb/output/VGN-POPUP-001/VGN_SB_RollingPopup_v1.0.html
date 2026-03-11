@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>화면설계서 - 비짓강남 (visitgangnam.net)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; background: #fff; }
+
+  /* 화면용: 가로 나열 */
+  @media screen {
+    body { background: #4a4a4a; display: flex; flex-wrap: wrap; gap: 40px; padding: 40px; overflow-x: auto; }
+  }
+
+  /* 인쇄/PDF용: 16:9 landscape */
+  @page {
+    size: 1280px 720px landscape;
+    margin: 0;
+  }
+  @media print {
+    body { display: block; padding: 0; background: #fff; margin: 0; }
+    .slide { page-break-after: always; border: none !important; }
+    .slide:last-child { page-break-after: auto; }
+  }
+
+  /* 슬라이드 컨테이너: 1280×720 고정 */
+  .slide {
+    width: 1280px;
+    height: 720px;
+    overflow: hidden;
+    position: relative;
+    background: #fff;
+    border: 2px solid #3366CC;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  /* 슬라이드 헤더: 36px */
+  .slide-header {
+    background: #3366CC;
+    color: #fff;
+    padding: 0 16px;
+    height: 36px;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    font-size: 11px;
+  }
+  .slide-header .hd-left { display: flex; align-items: center; gap: 10px; }
+  .slide-header .hd-id { font-weight: 700; font-size: 12px; letter-spacing: 0.5px; }
+  .slide-header .hd-sep { opacity: 0.5; }
+  .slide-header .hd-name { opacity: 0.9; }
+  .slide-header .hd-right { opacity: 0.8; font-size: 10px; }
+
+  /* 슬라이드 본문: 남은 영역 전부 */
+  .slide-body {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  /* 슬라이드 푸터: 24px */
+  .slide-footer {
+    background: #f8f9fa;
+    border-top: 1px solid #e0e0e0;
+    padding: 0 16px;
+    height: 24px;
+    min-height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 10px;
+    color: #999;
+    flex-shrink: 0;
+  }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: #f5f5f5; font-weight: 600; padding: 8px 10px; border: 1px solid #ddd; text-align: center; }
+  td { padding: 8px 10px; border: 1px solid #ddd; vertical-align: top; }
+  .section-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #333; }
+
+  /* Cover */
+  .cover-body { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; gap: 8px; }
+  .cover-logo { font-size: 18px; font-weight: 700; color: #666; letter-spacing: 2px; margin-bottom: 16px; }
+  .cover-logo-img { max-height: 64px; margin-bottom: 16px; }
+  .cover-title { font-size: 28px; font-weight: 700; color: #1a1a2e; text-align: center; }
+  .cover-version { font-size: 13px; color: #888; }
+  .cover-meta { width: 60%; max-width: 520px; border-collapse: collapse; margin-top: 24px; font-size: 11px; }
+  .cover-meta th { background: #f0f0f0; font-weight: 600; padding: 5px 8px; border: 1px solid #ddd; text-align: center; width: 80px; }
+  .cover-meta td { padding: 5px 8px; border: 1px solid #ddd; text-align: center; }
+
+  /* Design 레이아웃: 좌 60% / 우 40% */
+  .design-layout { display: flex; flex: 1; overflow: hidden; min-height: 0; }
+  .wireframe-area { flex: 0 0 60%; overflow: hidden; border-right: 1px solid #ddd; position: relative; }
+  .description-panel { flex: 0 0 40%; overflow-y: auto; padding: 12px 14px; display: flex; flex-direction: column; }
+
+  /* Description */
+  .desc-table { width: 100%; border-collapse: collapse; font-size: 11px; line-height: 1.6; }
+  .desc-table th { background: #f5f5f5; font-weight: 600; padding: 5px 7px; border: 1px solid #ddd; text-align: center; font-size: 11px; }
+  .desc-table td { padding: 5px 7px; border: 1px solid #ddd; vertical-align: top; font-size: 11px; }
+  .desc-table .desc-num-cell { width: 44px; text-align: center; font-weight: 700; color: #333; }
+  .desc-table .desc-content-cell { color: #333; }
+  .desc-table .desc-common-row td { background: #fafafa; }
+  .desc-indent-1 { }
+  .desc-indent-2 { padding-left: 14px; }
+  .desc-indent-3 { padding-left: 28px; }
+  .desc-indent-4 { padding-left: 42px; }
+  .desc-var { color: #e67700; font-weight: 600; }
+  .desc-important { color: #c00000; font-weight: 600; }
+  .desc-continuation { font-size: 10px; color: #999; font-style: italic; text-align: center; padding: 5px 0; border-top: 1px dashed #ddd; }
+  .desc-change-tag { display: inline-block; font-size: 8px; font-weight: 700; padding: 1px 4px; border-radius: 2px; margin-left: 3px; vertical-align: middle; }
+  .desc-change-tag--modify { background: #fff3f3; color: #c00; border: 1px solid #c00; }
+  .desc-change-tag--add { background: #f0f7ff; color: #0070c0; border: 1px solid #0070c0; }
+  .desc-change-tag--delete { background: #f5f5f5; color: #666; border: 1px solid #999; text-decoration: line-through; }
+  .desc-label { font-size: 9px; font-weight: 700; color: #888; margin: 2px 0; }
+  .desc-before { background: #fff3f3; padding: 5px 7px; margin: 3px 0; border-left: 2px solid #CC3333; font-size: 10px; }
+  .desc-after { background: #f0fff0; padding: 5px 7px; margin: 3px 0; border-left: 2px solid #2e8b57; font-size: 10px; }
+
+  /* fnRef 섹션 */
+  .fn-ref-section { margin-top: auto; padding-top: 8px; border-top: 1px dashed #ddd; }
+  .fn-ref-title { font-size: 10px; font-weight: 700; color: #888; margin-bottom: 4px; }
+  .fn-ref-list { font-size: 10px; color: #3366CC; font-family: monospace; line-height: 1.6; }
+
+  /* Wireframe 영역 */
+  .wf-container { height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+  .wf-scroll { flex: 1; overflow-y: auto; overflow-x: clip; padding: 8px 10px 8px 32px; }
+  .wf-el { border: 1px dashed #ccc; background: #fafafa; padding: 8px 10px; margin: 0 0 5px 0; font-size: 10px; color: #666; position: relative; display: flex; flex-direction: column; }
+  .wf-el:last-child { margin-bottom: 0; }
+  .wf-el--header { background: #e8e8e8; border: 1px solid #bbb; min-height: 36px; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #555; }
+  .wf-el--nav { background: #f0f0f0; border: 1px solid #ccc; min-height: 30px; display: flex; align-items: center; gap: 12px; padding: 0 12px; }
+  .wf-el--nav span { font-size: 10px; color: #888; }
+  .wf-el--text { background: #fff; border: 1px dashed #ddd; padding: 8px 10px; }
+  .wf-el--text .wf-content { color: #333; font-size: 11px; margin-top: 3px; }
+  .wf-el--input { background: #fff; border: 1px solid #ccc; border-radius: 3px; min-height: 30px; display: flex; align-items: center; padding: 0 8px; color: #aaa; font-size: 11px; }
+  .wf-el--button { display: inline-flex; align-items: center; justify-content: center; min-height: 30px; padding: 0 16px; border-radius: 3px; font-size: 11px; font-weight: 600; border: 1px solid #999; background: #f5f5f5; color: #333; cursor: default; }
+  .wf-el--button-primary { background: #333; color: #fff; border-color: #333; }
+  .wf-el--button-outline { background: transparent; border: 1px solid #999; color: #666; }
+  .wf-el--card { background: #fff; border: 1px solid #ddd; border-radius: 5px; padding: 10px; }
+  .wf-el--image { background: #f0f0f0; border: 1px dashed #ccc; display: flex; align-items: center; justify-content: center; color: #aaa; min-height: 60px; }
+  .wf-el--image::before { content: '\1F5BC'; font-size: 16px; margin-right: 5px; }
+  .wf-el--list { background: #fff; border: 1px dashed #ddd; padding: 6px 10px 6px 24px; }
+  .wf-el--list li { font-size: 10px; color: #555; margin-bottom: 3px; list-style: disc; }
+  .wf-el--banner { background: linear-gradient(135deg, #e8e8e8, #f5f5f5); border: 1px solid #ccc; min-height: 60px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #888; font-weight: 600; }
+  .wf-el--divider { border: none; border-top: 1px solid #ddd; margin: 6px 0; padding: 0; min-height: 0; background: transparent; }
+  .wf-el--group { border: 1px dashed #bbb; background: #fcfcfc; padding: 6px; gap: 5px; }
+  .wf-el--group--horizontal { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
+  .wf-el--group--horizontal > .wf-el { flex: 1; min-width: 0; margin: 0 3px 3px 0; }
+
+  /* group layout: popup */
+  .wf-el--group--popup { position: relative; background: #fff; border: 2px solid #aaa !important; border-radius: 6px; padding: 0; gap: 0; }
+  .wf-grp-close { position: absolute; top: 6px; right: 8px; display: flex; align-items: center; gap: 3px; z-index: 3; }
+  .wf-grp-close-btn { width: 22px; height: 22px; background: rgba(0,0,0,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; font-weight: 700; flex-shrink: 0; }
+  .wf-grp-image { min-height: 90px; background: #e0e0e0; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #999; position: relative; flex: 1; }
+  .wf-grp-image::before { content: '\1F5BC'; font-size: 18px; margin-right: 5px; }
+  .wf-grp-nav { display: flex; align-items: center; justify-content: space-between; padding: 4px 10px; border-top: 1px solid #eee; position: relative; }
+  .wf-grp-footer { display: flex; align-items: center; gap: 6px; padding: 6px 10px; border-top: 1px solid #eee; background: #fafafa; position: relative; }
+  .wf-grp-footer > .wf-el { flex: 1; }
+  .wf-marker-inline { display: inline-flex; width: 16px; height: 16px; background: #CC3333; color: #fff; border-radius: 50%; font-size: 8px; font-weight: 700; align-items: center; justify-content: center; flex-shrink: 0; }
+
+  /* popup */
+  .wf-el--popup { background: #fff; border: 2px solid #aaa; border-radius: 6px; padding: 0; overflow: hidden; position: relative; min-height: 180px; gap: 0; }
+  .wf-popup-close { position: absolute; top: 6px; right: 8px; width: 22px; height: 22px; background: rgba(0,0,0,0.25); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; z-index: 2; font-weight: 700; }
+  .wf-popup-image { background: #e0e0e0; min-height: 110px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #aaa; }
+  .wf-popup-image::before { content: '\1F5BC'; font-size: 20px; margin-right: 6px; }
+  .wf-popup-nav { display: flex; align-items: center; justify-content: space-between; padding: 4px 10px; }
+  .wf-popup-nav-btn { width: 22px; height: 22px; border: 1px solid #ccc; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #666; background: #fff; }
+  .wf-popup-dots { display: flex; gap: 5px; align-items: center; }
+  .wf-popup-dots span { width: 7px; height: 7px; border-radius: 50%; background: #ccc; display: inline-block; }
+  .wf-popup-dots span.active { background: #555; }
+  .wf-popup-actions { display: flex; gap: 6px; padding: 6px 10px; border-top: 1px solid #eee; background: #fafafa; }
+  .wf-popup-actions > * { flex: 1; }
+
+  /* card with thumbnail */
+  .wf-el--card { background: #fff; border: 1px solid #ddd; border-radius: 5px; padding: 0; overflow: hidden; }
+  .wf-card-thumb { background: #e8e8e8; min-height: 70px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #aaa; border-bottom: 1px solid #ddd; }
+  .wf-card-thumb::before { content: '\1F5BC'; font-size: 16px; margin-right: 4px; }
+  .wf-card-body { padding: 8px 10px; }
+  .wf-el--table { background: #fff; }
+  .wf-el--table table { width: 100%; border-collapse: collapse; font-size: 9px; }
+  .wf-el--table th { background: #f0f0f0; padding: 3px 5px; border: 1px solid #ddd; font-size: 9px; }
+  .wf-el--table td { padding: 3px 5px; border: 1px solid #ddd; font-size: 9px; }
+  .wf-label { font-size: 9px; color: #999; font-weight: 600; text-transform: uppercase; margin-bottom: 2px; }
+  .wf-marker { position: absolute; top: 50%; left: -22px; transform: translateY(-50%); width: 18px; height: 18px; background: #CC3333; color: #fff; border-radius: 50%; text-align: center; line-height: 18px; font-size: 9px; font-weight: 700; z-index: 2; }
+  .wf-el--marked { border: 2px dashed #CC3333 !important; background: rgba(204, 51, 51, 0.03); }
+  .wf-viewport { padding: 0; }
+
+  /* 이미지 UI 캡처 */
+  .ui-capture { flex: 1; background: #f9f9f9; border-right: 1px solid #ddd; display: flex; align-items: center; justify-content: center; color: #999; font-size: 13px; overflow: hidden; }
+  .ui-capture-inner { position: relative; display: inline-block; max-width: 100%; max-height: 100%; }
+  .ui-capture-inner img { display: block; max-width: 100%; max-height: 640px; }
+  .marker-overlay { position: absolute; border: 2px dashed #CC3333; pointer-events: none; z-index: 1; }
+  .marker-number { position: absolute; top: -10px; left: -10px; width: 20px; height: 20px; background: #CC3333; color: #fff; border-radius: 50%; text-align: center; line-height: 20px; font-size: 10px; font-weight: 700; z-index: 2; }
+
+  /* Persistent */
+  .wf-persistent-header { background: #e0e0e0; border-bottom: 2px solid #bbb; padding: 5px 12px; min-height: 36px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  .wf-persistent-header .site-logo { font-weight: 700; font-size: 11px; color: #333; }
+  .wf-persistent-gnb { display: flex; gap: 14px; }
+  .wf-persistent-gnb span { font-size: 10px; color: #666; }
+  .wf-persistent-breadcrumb { font-size: 9px; color: #999; padding: 4px 12px; background: #fafafa; border-bottom: 1px solid #eee; flex-shrink: 0; }
+  .wf-persistent-lnb { width: 130px; background: #f7f7f7; border-right: 1px solid #ddd; padding: 8px 0; font-size: 10px; flex-shrink: 0; }
+  .wf-persistent-lnb ul { list-style: none; padding: 0; margin: 0; }
+  .wf-persistent-lnb li { padding: 6px 12px; color: #666; }
+  .wf-persistent-lnb li.active { color: #333; font-weight: 700; background: #e8e8e8; }
+  .wf-persistent-footer { background: #e0e0e0; border-top: 2px solid #bbb; padding: 8px 12px; min-height: 36px; font-size: 9px; color: #888; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .wf-with-lnb { display: flex; flex: 1; overflow: hidden; min-height: 0; }
+  .wf-main-content { flex: 1; overflow-y: auto; }
+
+  /* Divider 슬라이드 */
+  .divider-section-no { font-size: 56px; font-weight: 900; color: rgba(255,255,255,0.15); margin-bottom: 8px; }
+  .divider-toc { list-style: none; padding: 0; margin-top: 20px; text-align: left; display: inline-block; }
+  .divider-toc li { font-size: 12px; color: #bbb; margin-bottom: 6px; display: flex; gap: 10px; align-items: baseline; }
+  .divider-toc .toc-id { color: #777; font-size: 10px; min-width: 80px; font-family: monospace; }
+  .divider-toc .toc-name { color: #ddd; }
+
+  /* MSG Case table */
+  .msg-case-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; }
+  .msg-case-table th { background: #f5f5f5; font-weight: 600; padding: 5px 7px; border: 1px solid #ddd; text-align: center; font-size: 11px; }
+  .msg-case-table td { padding: 5px 7px; border: 1px solid #ddd; vertical-align: top; font-size: 11px; }
+  .msg-type-error { color: #c00000; font-weight: 600; }
+  .msg-type-process { color: #0070c0; font-weight: 600; }
+  .msg-type-positive { color: #2e8b57; font-weight: 600; }
+  .msg-type-negative { color: #e67700; font-weight: 600; }
+
+  /* Component guide */
+  .comp-guide-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; }
+  .comp-guide-table th { background: #f5f5f5; font-weight: 600; padding: 5px 7px; border: 1px solid #ddd; text-align: center; font-size: 11px; }
+  .comp-guide-table td { padding: 5px 7px; border: 1px solid #ddd; vertical-align: top; font-size: 11px; }
+  .comp-state-label { display: inline-block; font-size: 9px; padding: 1px 5px; border-radius: 3px; font-weight: 600; margin-right: 3px; }
+  .comp-state-default { background: #e8f5e9; color: #2e7d32; }
+  .comp-state-focus { background: #e3f2fd; color: #1565c0; }
+  .comp-state-error { background: #ffebee; color: #c62828; }
+  .comp-state-disabled { background: #f5f5f5; color: #9e9e9e; }
+
+  /* Modified marker + Version stamp */
+  .modified-marker { position: absolute; top: 8px; right: 10px; background: #fff3f3; color: #c00; font-size: 8px; font-weight: 700; padding: 2px 6px; border: 1px solid #c00; border-radius: 2px; z-index: 3; }
+  .version-stamp { font-size: 9px; color: #999; }
+
+  /* PM Comments */
+  .pm-comment-section { margin-top: 10px; padding-top: 8px; border-top: 1px dashed #e0a030; }
+  .pm-comment-section h5 { font-size: 10px; font-weight: 700; color: #b07800; margin-bottom: 6px; }
+  .pm-comment { background: #fffbf0; border-left: 3px solid #e0a030; padding: 6px 8px; margin-bottom: 6px; font-size: 10px; line-height: 1.5; }
+  .pm-badge { display: inline-block; font-size: 8px; font-weight: 700; padding: 1px 4px; border-radius: 3px; margin-right: 4px; vertical-align: middle; }
+  .pm-badge--risk { background: #ffdddd; color: #c00; }
+  .pm-badge--question { background: #fff3cd; color: #856404; }
+  .pm-badge--suggestion { background: #d4edda; color: #155724; }
+  .pm-badge--reject { background: #e0e0e0; color: #333; }
+  .pm-author { font-size: 9px; color: #999; margin-left: 3px; }
+
+  /* 일반 콘텐츠 패딩 */
+  .slide-content { padding: 16px 20px; overflow-y: auto; flex: 1; }
+  </style>
+</head>
+<body>
+
+<div class="slide" data-slide-type="cover">
+  <div class="slide-header" style="background: #3366CC;">
+    <div class="hd-left"><span class="hd-id">화면설계서</span></div>
+    <div class="hd-right">강남구청 | 기획팀</div>
+  </div>
+  <div class="slide-body cover-body">
+    <div class="cover-logo">강남구청</div>
+    <div class="cover-title">비짓강남 (visitgangnam.net)</div>
+    <div class="cover-version">Ver 1.0 &nbsp;|&nbsp; 2026-03-10</div>
+    
+    
+  </div>
+  <div class="slide-footer"><span>강남구청</span><span>2026-03-10</span></div>
+</div>
+
+<div class="slide" data-slide-type="history">
+  <div class="slide-header">
+  <div class="hd-left"><span class="hd-id">History</span></div>
+  <div class="hd-right">강남구청 | 기획팀 | 2026-03-10</div>
+</div>
+  <div class="slide-body slide-content">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:70px">Version</th>
+          <th style="width:100px">Update Date</th>
+          <th>Update Detail</th>
+          <th style="width:50px">page</th>
+          <th style="width:60px">Writer</th>
+          <th>Remarkers</th>
+        </tr>
+      </thead>
+      <tbody>
+    <tr>
+      <td style="text-align:center">1.0</td>
+      <td style="text-align:center">2026-03-10</td>
+      <td>메인 롤링 팝업 신규 기획 초안</td>
+      <td style="text-align:center">전체</td>
+      <td style="text-align:center">기획팀</td>
+      <td></td>
+    </tr></tbody>
+    </table>
+  </div>
+  <div class="slide-footer">
+  <span>강남구청</span>
+  <span>기획팀</span>
+</div>
+</div>
+
+<div class="slide" data-slide-type="overview">
+  <div class="slide-header">
+  <div class="hd-left"><span class="hd-id">메인 롤링 팝업 개요</span></div>
+  <div class="hd-right">강남구청 | 기획팀 | 2026-03-10</div>
+</div>
+  <div class="slide-body slide-content">
+    <table style="width:100%; border-collapse:collapse; margin-bottom:16px;"><tr><td style="width:100px; padding:6px 10px; font-weight:600; color:#555; background:#f8f9fa; border:1px solid #e0e0e0; font-size:11px;">프로젝트명</td><td style="padding:6px 10px; border:1px solid #e0e0e0; font-size:11px; color:#333;">비짓강남 (visitgangnam.net)</td></tr><tr><td style="width:100px; padding:6px 10px; font-weight:600; color:#555; background:#f8f9fa; border:1px solid #e0e0e0; font-size:11px;">버전</td><td style="padding:6px 10px; border:1px solid #e0e0e0; font-size:11px; color:#333;">Ver 1.0</td></tr><tr><td style="width:100px; padding:6px 10px; font-weight:600; color:#555; background:#f8f9fa; border:1px solid #e0e0e0; font-size:11px;">작성일</td><td style="padding:6px 10px; border:1px solid #e0e0e0; font-size:11px; color:#333;">2026-03-10</td></tr><tr><td style="width:100px; padding:6px 10px; font-weight:600; color:#555; background:#f8f9fa; border:1px solid #e0e0e0; font-size:11px;">작성자</td><td style="padding:6px 10px; border:1px solid #e0e0e0; font-size:11px; color:#333;">기획팀</td></tr></table>
+    <div style="font-size:12px; line-height:1.8; color:#333; padding:10px 14px; background:#f8f9fa; border-left:3px solid #1a1a1a;">
+      비짓강남(visitgangnam.net) 메인 페이지 진입 시 노출되는 롤링 팝업을 신규 추가한다. 기존 단일 이미지 팝업(main-popup)을 대체하며, 관리자 페이지에서 등록한 이미지 수에 따라 슬라이드 수가 동적으로 결정된다. PC 및 모바일 뷰포트를 각각 지원하며, 오늘 하루 보지 않기(24시간) 노출 제어 방식을 적용한다.
+    </div>
+  </div>
+  <div class="slide-footer">
+  <span>강남구청</span>
+  <span>기획팀</span>
+</div>
+</div>
+
+<div class="slide" data-slide-type="divider" style="background:#1a1a1a; color:#fff;">
+  <div class="slide-header" style="background:#111; color:#fff; border-bottom:1px solid #333;">
+    <div class="hd-left"><span class="hd-id" style="color:#fff;">Section</span></div>
+    <div class="hd-right" style="color:#888;">강남구청</div>
+  </div>
+  <div class="slide-body cover-body">
+    <div class="divider-section-no">01</div><div style="font-size:13px; color:#aaa; margin-bottom:10px;">Section 01</div><div style="font-size:26px; font-weight:700; margin-bottom:20px;">롤링 팝업 — PC 뷰</div><ul class="divider-toc"><li><span class="toc-id">UI-001</span><span class="toc-name">메인 롤링 팝업 (PC)</span></li><li><span class="toc-id">UI-002</span><span class="toc-name">메인 롤링 팝업 (Mobile)</span></li><li><span class="toc-id">UI-003</span><span class="toc-name">MSG Case — 팝업 노출 조건</span></li><li><span class="toc-id">UI-004</span><span class="toc-name">컴포넌트 가이드 — 이미지 슬롯</span></li></ul>
+  </div>
+  <div class="slide-footer" style="background:#111; border-top:1px solid #333; color:#666;">
+    <span>강남구청</span><span>기획팀</span>
+  </div>
+</div>
+
+<div class="slide" data-slide-type="design" style="position:relative;">
+  <div class="slide-header">
+  <div class="hd-left">
+    <span class="hd-id">UI-001</span>
+    <span class="hd-sep">|</span><span class="hd-name">메인 롤링 팝업 (PC)</span>
+    <span class="hd-sep">|</span><span>메인 페이지 — 롤링 팝업 (PC)</span>
+  </div>
+  <div class="hd-right">강남구청 | 기획팀 | 2026-03-10</div>
+</div>
+  
+  <div class="slide-body">
+        <div class="design-layout">
+  <div class="wireframe-area"><div class="wf-container">
+      <div class="wf-persistent-header">
+  <div class="site-logo">비짓강남</div>
+  <div class="wf-persistent-gnb"><span>여행코스</span><span>관광명소</span><span>문화행사</span><span>가이드북</span><span>강남소식</span></div>
+</div><div class="wf-scroll"><div class="wf-viewport" style="max-width:100%;"><div class="wf-el wf-el--group" style="min-height:100%;"><div class="wf-el wf-el--group wf-el--group--popup wf-el--marked" style="">
+          <span class="wf-marker">1</span><div class="wf-grp-close"><span class="wf-marker-inline">2</span><div class="wf-grp-close-btn">✕</div></div><div class="wf-grp-image wf-el--marked"><span class="wf-marker">3</span>팝업 이미지 슬라이드 (Admin 등록 순서)</div><div class="wf-grp-nav"><div class="wf-el wf-el--button" style="">◀</div><div class="wf-el wf-el--list" style=""><span class="wf-label">● ○ ○</span><ul></ul></div><div class="wf-el wf-el--button" style="">▶</div></div><div class="wf-grp-footer wf-el--marked"><span class="wf-marker">4</span><div class="wf-el wf-el--button" style="">[오늘 하루 보지 않기]</div><div class="wf-el wf-el--button" style="">[닫기]</div></div>
+        </div></div></div></div><div class="wf-persistent-footer">© 2022 GANGNAM-GU OFFICE, ALL RIGHTS RESERVED.</div>
+    </div></div>
+  <div class="description-panel">
+    
+  <table class="desc-table">
+    <thead><tr><th colspan="2">Description</th></tr></thead>
+    <tbody><tr class="desc-common-row">
+      <td class="desc-num-cell" style="font-weight:600;">공통</td>
+      <td class="desc-content-cell">- 슬라이드 이미지 수는 Admin 등록 건수에 따라 동적으로 결정됨</td>
+    </tr><tr>
+      <td class="desc-num-cell">1<span class="desc-change-tag desc-change-tag--modify">신규</span></td>
+      <td class="desc-content-cell"><div style="font-weight:700; margin-bottom:3px;">팝업 컨테이너</div><div class="desc-indent-1">- 1) 팝업은 메인 진입 시 화면 중앙에 고정(fixed) 노출된다</div><div class="desc-indent-2">1-1) 팝업 배경: 딤드 오버레이 rgba(0,0,0,0.7) 전체 화면 덮음</div><div class="desc-indent-2">1-2) 팝업 컨테이너 최대 너비: PC 600px / z-index: 10000</div><div class="desc-indent-2">1-3) 오버레이 영역 클릭 시 팝업 닫힘</div></td>
+    </tr><tr>
+      <td class="desc-num-cell">2</td>
+      <td class="desc-content-cell"><div style="font-weight:700; margin-bottom:3px;">닫기 버튼 (X)</div><div class="desc-indent-1">- 2) X 버튼은 팝업 컨테이너 우측 상단에 고정 배치</div><div class="desc-indent-2">2-1) 아이콘: × 또는 xmark 이미지 (현행 xmark.png 재사용)</div><div class="desc-indent-2">2-2) 클릭 시 팝업 즉시 닫힘 (24시간 제어 미적용)</div></td>
+    </tr><tr>
+      <td class="desc-num-cell">3</td>
+      <td class="desc-content-cell"><div style="font-weight:700; margin-bottom:3px;">이미지 슬라이드 영역</div><div class="desc-indent-1">- 3) Admin에 등록된 이미지를 순서대로 슬라이드 형태로 표시</div><div class="desc-indent-2">3-1) 자동 롤링: 등록 이미지가 2장 이상일 때만 활성화</div><div class="desc-indent-2">3-2) 자동 롤링 간격: [미확인: 클라이언트 확인 필요 — 권장 3~5초]</div><div class="desc-indent-2">3-3) 좌/우 화살표 네비게이션 버튼: 이미지 1장만 등록 시 숨김 처리</div><div class="desc-indent-2">3-4) 하단 인디케이터(도트): 현재 슬라이드 위치 표시, 클릭 이동 가능</div><div class="desc-indent-2">3-5) 각 슬라이드 이미지에 링크 URL 설정 가능 (Admin 등록 시 입력)</div><div class="desc-indent-2">3-6) 이미지 클릭 시 설정된 링크로 이동 (target: _blank 또는 _self, Admin 설정)</div></td>
+    </tr><tr>
+      <td class="desc-num-cell">4</td>
+      <td class="desc-content-cell"><div style="font-weight:700; margin-bottom:3px;">팝업 푸터 — 노출 제어 버튼</div><div class="desc-indent-1">- 4) 팝업 하단에 [오늘 하루 보지 않기]와 [닫기] 버튼 2종 배치</div><div class="desc-indent-2">4-1) [오늘 하루 보지 않기]: 클릭 시 localStorage에 현재 시각 저장, 24시간 재노출 방지</div><div class="desc-indent-2">4-2) [닫기]: 즉시 닫기, localStorage 저장 없음 (새로고침 시 재노출)</div><div class="desc-indent-2">4-3) 버튼 배치: [오늘 하루 보지 않기] 좌측 / [닫기] 우측</div></td>
+    </tr></tbody>
+  </table>
+  
+    
+  </div>
+</div>
+      </div>
+  <div class="slide-footer">
+  <span>강남구청</span>
+  <span>기획팀</span>
+</div>
+</div>
+
+<div class="slide" data-slide-type="design" style="position:relative;">
+  <div class="slide-header">
+  <div class="hd-left">
+    <span class="hd-id">UI-002</span>
+    <span class="hd-sep">|</span><span class="hd-name">메인 롤링 팝업 (Mobile)</span>
+    <span class="hd-sep">|</span><span>메인 페이지 — 롤링 팝업 (Mobile)</span>
+  </div>
+  <div class="hd-right">강남구청 | 기획팀 | 2026-03-10</div>
+</div>
+  
+  <div class="slide-body">
+        <div class="design-layout">
+  <div class="wireframe-area"><div class="wf-container">
+      <div class="wf-persistent-header">
+  <div class="site-logo">비짓강남</div>
+  <div class="wf-persistent-gnb"><span>햄버거 메뉴</span><span>검색</span></div>
+</div><div class="wf-scroll"><div class="wf-viewport" style="max-width:375px;"><div class="wf-el wf-el--group" style=""><div class="wf-el wf-el--group wf-el--group--popup wf-el--marked" style="">
+          <span class="wf-marker">1</span><div class="wf-grp-close"><span class="wf-marker-inline">2</span><div class="wf-grp-close-btn">✕</div></div><div class="wf-grp-image wf-el--marked"><span class="wf-marker">3</span>모바일 팝업 이미지 (Admin 등록, 세로형 권장)</div><div class="wf-grp-nav"><div class="wf-el wf-el--list" style=""><span class="wf-label">● ○ ○ (스와이프 지원, 화살표 숨김)</span><ul></ul></div></div><div class="wf-grp-footer wf-el--marked"><span class="wf-marker">4</span><div class="wf-el wf-el--button" style="">[오늘 하루 보지 않기]</div><div class="wf-el wf-el--button" style="">[닫기]</div></div>
+        </div></div></div></div>
+    </div></div>
+  <div class="description-panel">
+    
+  <table class="desc-table">
+    <thead><tr><th colspan="2">Description</th></tr></thead>
+    <tbody><tr class="desc-common-row">
+      <td class="desc-num-cell" style="font-weight:600;">공통</td>
+      <td class="desc-content-cell">- 모바일 이미지는 PC 이미지와 별도 등록 가능 (Admin 설정)</td>
+    </tr><tr>
+      <td class="desc-num-cell">1<span class="desc-change-tag desc-change-tag--modify">신규</span></td>
+      <td class="desc-content-cell"><div style="font-weight:700; margin-bottom:3px;">팝업 컨테이너 (Mobile)</div><div class="desc-indent-1">- 1) 모바일 팝업 너비: 화면 너비의 90%, 최대 440px (현행 준용)</div><div class="desc-indent-2">1-1) 팝업은 화면 수직 중앙 배치 (max-height: 80vh 권장)</div><div class="desc-indent-2">1-2) 오버레이 영역 터치 시 팝업 닫힘</div></td>
+    </tr><tr>
+      <td class="desc-num-cell">2</td>
+      <td class="desc-content-cell"><div style="font-weight:700; margin-bottom:3px;">닫기 버튼 (Mobile)</div><div class="desc-indent-1">- 2) X 버튼 위치: 팝업 컨테이너 우측 상단 외부 (top: -40px, right: 0)</div><div class="desc-indent-2">2-1) 터치 영역 최소 44×44px 확보 (접근성)</div></td>
+    </tr><tr>
+      <td class="desc-num-cell">3</td>
+      <td class="desc-content-cell"><div style="font-weight:700; margin-bottom:3px;">이미지 슬라이드 (Mobile)</div><div class="desc-indent-1">- 3) 모바일 전용 이미지 미등록 시 PC 이미지 대체 사용</div><div class="desc-indent-2">3-1) 이미지 비율: 세로형(9:16) 또는 정방형(1:1) 권장</div><div class="desc-indent-2">3-2) 스와이프(swipe) 제스처로 슬라이드 전환 지원</div><div class="desc-indent-2">3-3) 모바일에서는 좌/우 화살표 버튼 숨김 처리 (인디케이터 도트만 노출)</div></td>
+    </tr><tr>
+      <td class="desc-num-cell">4</td>
+      <td class="desc-content-cell"><div style="font-weight:700; margin-bottom:3px;">팝업 푸터 (Mobile)</div><div class="desc-indent-1">- 4) PC와 동일한 버튼 2종([오늘 하루 보지 않기], [닫기]) 배치</div><div class="desc-indent-2">4-1) 버튼 폰트 사이즈: 13px 이상 (가독성 확보)</div></td>
+    </tr></tbody>
+  </table>
+  
+    
+  </div>
+</div>
+      </div>
+  <div class="slide-footer">
+  <span>강남구청</span>
+  <span>기획팀</span>
+</div>
+</div>
+
+<div class="slide" data-slide-type="msgCase" style="position:relative;">
+  <div class="slide-header">
+  <div class="hd-left">
+    <span class="hd-id">UI-003</span>
+    <span class="hd-sep">|</span><span class="hd-name">팝업 노출 조건 MSG Case</span>
+    <span class="hd-sep">|</span><span>메인 롤링 팝업 — 노출 조건 케이스</span>
+  </div>
+  <div class="hd-right">강남구청 | 기획팀 | 2026-03-10</div>
+</div>
+  
+  <div class="slide-body slide-content">
+        <table class="msg-case-table">
+    <thead><tr><th style="width:55px">Type</th><th style="width:36px">No</th><th>Situation Case</th><th>Message</th></tr></thead>
+    <tbody><tr>
+      <td class="">정상</td>
+      <td style="text-align:center">1-1</td>
+      <td>최초 방문 또는 24시간 경과 후 재방문 / localStorage 'rollingPopupHide' 없음 또는 24시간 초과</td>
+      <td>팝업 노출 — 자동 슬라이드 시작 (Admin 이미지 1건 이상 조건)</td>
+    </tr><tr>
+      <td class="">정상</td>
+      <td style="text-align:center">1-2</td>
+      <td>[오늘 하루 보지 않기] 클릭 후 24시간 이내 재방문 / localStorage 저장 시각 24시간 미경과</td>
+      <td>팝업 미노출 — 바로 메인 페이지 표시</td>
+    </tr><tr>
+      <td class="">정상</td>
+      <td style="text-align:center">1-3</td>
+      <td>[닫기] 또는 X 버튼 클릭 후 새로고침 또는 재방문 / localStorage 값 없음</td>
+      <td>팝업 재노출 (단순 닫기는 24시간 제어 미적용)</td>
+    </tr><tr>
+      <td class="">안내</td>
+      <td style="text-align:center">2-1</td>
+      <td>Admin 등록 이미지 0건 / 이미지 슬롯 데이터 없음</td>
+      <td>팝업 미노출 — DOM 렌더링 없음</td>
+    </tr><tr>
+      <td class="">안내</td>
+      <td style="text-align:center">2-2</td>
+      <td>Admin 등록 이미지 1건 / 슬라이드 수 = 1</td>
+      <td>팝업 노출 — 단일 이미지 표시 (화살표 버튼·인디케이터 도트 숨김, 자동 롤링 비활성)</td>
+    </tr><tr>
+      <td class="">안내</td>
+      <td style="text-align:center">2-3</td>
+      <td>Admin 등록 이미지 2건 이상 / 슬라이드 수 >= 2</td>
+      <td>팝업 노출 — 자동 롤링 활성 (화살표·인디케이터 표시, 마지막 슬라이드 → 첫 번째 슬라이드 순환)</td>
+    </tr></tbody>
+  </table>
+      </div>
+  <div class="slide-footer">
+  <span>강남구청</span>
+  <span>기획팀</span>
+</div>
+</div>
+
+<div class="slide" data-slide-type="component" style="position:relative;">
+  <div class="slide-header">
+  <div class="hd-left">
+    <span class="hd-id">UI-004</span>
+    <span class="hd-sep">|</span><span class="hd-name">팝업 이미지 슬롯 컴포넌트</span>
+    <span class="hd-sep">|</span><span>컴포넌트 가이드 — 롤링 팝업 이미지 슬롯</span>
+  </div>
+  <div class="hd-right">강남구청 | 기획팀 | 2026-03-10</div>
+</div>
+  
+  <div class="slide-body slide-content">
+        <table class="comp-guide-table">
+    <thead><tr><th style="width:90px">Phase</th><th style="width:70px">Sub</th><th style="width:120px">Guide UI</th><th>Guide Description</th></tr></thead>
+    <tbody><tr>
+      <td style="font-weight:600">Popup Slide</td>
+      <td>Image Slot</td>
+      <td style="text-align:center"><span style="color:#bbb; font-size:10px;">[이미지]</span></td>
+      <td>Admin 등록 단위 이미지 슬롯. PC용 imageUrl_pc (필수), Mobile용 imageUrl_mobile (선택, 미등록 시 PC 이미지 대체), linkUrl (선택), linkTarget (_blank/_self), altText (필수, 접근성), order (노출 순서), isActive (노출 여부).<br><span class="comp-state-label comp-state-default">Active</span><span class="comp-state-label comp-state-default">Inactive</span><span class="comp-state-label comp-state-default">Transitioning</span></td>
+    </tr><tr>
+      <td style="font-weight:600">Popup Slide</td>
+      <td>Prev/Next Button</td>
+      <td style="text-align:center"><span style="color:#bbb; font-size:10px;">[이미지]</span></td>
+      <td>슬라이드 이전/다음 이동 버튼. 이미지 1건 시 숨김(display:none). 모바일에서는 숨김 처리(스와이프 대체).<br><span class="comp-state-label comp-state-default">Default</span><span class="comp-state-label comp-state-default">Hover</span><span class="comp-state-label comp-state-default">Hidden</span></td>
+    </tr><tr>
+      <td style="font-weight:600">Popup Slide</td>
+      <td>Indicator Dot</td>
+      <td style="text-align:center"><span style="color:#bbb; font-size:10px;">[이미지]</span></td>
+      <td>현재 슬라이드 위치 표시 인디케이터. 이미지 1건 시 숨김. 클릭 시 해당 슬라이드로 이동. 활성 도트: 강조색 / 비활성: 회색.<br><span class="comp-state-label comp-state-default">Active</span><span class="comp-state-label comp-state-default">Inactive</span><span class="comp-state-label comp-state-default">Hidden</span></td>
+    </tr><tr>
+      <td style="font-weight:600">NotToday Button</td>
+      <td>오늘 하루 보지 않기</td>
+      <td style="text-align:center"><span style="color:#bbb; font-size:10px;">[이미지]</span></td>
+      <td>클릭 시 localStorage 'rollingPopupHide' 키에 현재 시각(timestamp) 저장 후 팝업 닫음. 다음 방문 시 24시간 미경과 확인 후 팝업 미노출.<br><span class="comp-state-label comp-state-default">Default</span><span class="comp-state-label comp-state-default">Hover</span></td>
+    </tr><tr>
+      <td style="font-weight:600">Close Button</td>
+      <td>X (닫기)</td>
+      <td style="text-align:center"><span style="color:#bbb; font-size:10px;">[이미지]</span></td>
+      <td>팝업 컨테이너 우측 상단 고정 배치. 클릭 시 팝업 즉시 닫힘. localStorage 저장 없음. 아이콘: × 문자 또는 xmark 이미지. 터치 영역 최소 44×44px 확보(접근성).<br><span class="comp-state-label comp-state-default">Default</span><span class="comp-state-label comp-state-default">Hover</span></td>
+    </tr></tbody>
+  </table>
+      </div>
+  <div class="slide-footer">
+  <span>강남구청</span>
+  <span>기획팀</span>
+</div>
+</div>
+
+<div class="slide" data-slide-type="end">
+  <div class="slide-header">
+  <div class="hd-left"><span class="hd-id">END</span></div>
+  <div class="hd-right">강남구청 | 기획팀 | 2026-03-10</div>
+</div>
+  <div class="slide-body cover-body">
+    <div style="font-size:32px; font-weight:700; color:#999; margin-bottom:10px;">END</div>
+    <div style="font-size:13px; color:#bbb;">감사합니다</div>
+  </div>
+  <div class="slide-footer">
+  <span>강남구청</span>
+  <span>기획팀</span>
+</div>
+</div>
+</body>
+</html>
