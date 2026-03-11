@@ -89,20 +89,49 @@ description: FN/IA 기반으로 작업을 분해하고 공수·리스크·크리
 
 **파일명**: `WBS_{프로젝트코드}_{버전}.html`
 
-**HTML 직접 출력**: `template.html`을 참조하여 동일한 디자인 시스템으로 HTML을 직접 작성합니다.
-MD 파일은 생성하지 않습니다.
+**HTML 출력 방식 (데이터 드리븐)**:
+`template.html`을 복사 후 **GANTT_ROWS / WBS_ROWS 배열과 플레이스홀더만 채웁니다.**
+HTML/CSS/JS 렌더링 엔진은 수정하지 않습니다. MD 파일은 생성하지 않습니다.
 
-**HTML 필수 구조**:
+**스킬이 수정해야 할 구역**:
 
 ```
-1. Cover — 프로젝트명, 문서 유형(작업분해구조), 버전, 작성일
-2. summary-area (4카드)
-   - 총 기간(주) / 전체 작업 수 / 크리티컬 패스(P0) 수 / Wave 수
-3. sticky tab
-   - 탭1 "개요": 프로젝트 정보 테이블 (총 작업, 기간, 버퍼율, 업종 보정계수)
-   - 탭2 "마일스톤": milestone-card 그리드 (m-done/m-curr/m-plan 상태)
-   - 탭3 "WBS 상세": wbs-table (Phase 헤더 행 .phase-row, Wave/우선순위/역할 배지)
-4. footer — 버전 이력
+1. Cover 플레이스홀더
+   {프로젝트명} / {기간} (예: 2026-01-12 ~ 2026-07-13) / {작성일} / {버전}
+   data-proj-start="{YYYY-MM-DD}" data-total-weeks="{N}" data-today-week="{N}"
+
+2. Summary 카드 4개 값
+   총 기간(주) / 전체 작업 수 / 크리티컬 패스(P0) 수 / Wave 수
+
+3. GANTT_ROWS 배열 (간트 차트 데이터)
+   {t:'ph',   ph:1, name:'Phase 1: 기획'}
+   {t:'sub',  name:'서브그룹명'}
+   {t:'task', id:'WBS-1.1', name:'작업명', owner:'기획', dur:'3일', ph:1, sw:1, ew:2, cp:true}
+   {t:'ms',   week:2, name:'M1: 기획 완료'}
+
+4. WBS_ROWS 배열 (WBS 상세 데이터)
+   {t:'phase', name:'Phase 1: 기획'}
+   {t:'sub',   name:'서브그룹명'}
+   {t:'task',  id:'WBS-1.1', name:'작업명', fn:'FN-001',
+               owners:['기획'], dur:3, pred:'-', wave:'W1', pri:'P0',
+               output:'산출물명', cp:false}
+
+5. 마일스톤 카드 HTML (panel-ms 내부)
+   milestone-card m-done / m-curr / m-plan 상태 직접 작성
+
+6. footer 버전 이력
+
+owner / owners 허용값: 'PM' | '기획' | '디자인' | 'FE' | 'BE' | 'QA'
+```
+
+**HTML 탭 구조**:
+
+```
+1. Cover + summary-area (4카드)
+2. 탭1 "간트 차트" (기본 active): ganttTable — JS 자동 렌더링
+3. 탭2 "마일스톤": milestone-card 그리드
+4. 탭3 "WBS 상세": wbs-table(JS 렌더링) + 개요 info-table + 리스크 레지스터
+5. footer — 버전 이력
 ```
 
 **추가 출력 (파이프라인 SSOT)**:

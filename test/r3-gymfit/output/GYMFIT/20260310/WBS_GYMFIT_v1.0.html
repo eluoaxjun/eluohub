@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>작업분해구조 (WBS) — GymFit</title>
+<title>작업분해구조 (WBS) — GymFit (짐핏)</title>
 <style>
 :root {
   --c-primary: #1a1a2e; --c-primary-mid: #1B3A5C; --c-primary-light: #2A5580;
@@ -29,22 +29,16 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,'Segoe UI','Ma
 .summary-area{background:var(--c-surface);border-bottom:1px solid var(--c-border);padding:20px 0;}
 .summary-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
 .summary-card{background:var(--c-bg-alt);border-radius:var(--radius);padding:14px 16px;text-align:center;border-top:3px solid var(--c-primary-mid);}
-.summary-card.green{border-top-color:var(--c-success);}
-.summary-card.warn{border-top-color:var(--c-warning);}
-.summary-card.accent{border-top-color:var(--c-accent);}
+.summary-card.green{border-top-color:var(--c-success);} .summary-card.warn{border-top-color:var(--c-warning);} .summary-card.accent{border-top-color:var(--c-accent);}
 .summary-value{font-size:26px;font-weight:800;color:var(--c-primary-mid);line-height:1.2;}
-.summary-card.green .summary-value{color:var(--c-success);}
-.summary-card.warn .summary-value{color:var(--c-warning);}
-.summary-card.accent .summary-value{color:var(--c-accent);}
+.summary-card.green .summary-value{color:var(--c-success);} .summary-card.warn .summary-value{color:var(--c-warning);} .summary-card.accent .summary-value{color:var(--c-accent);}
 .summary-label{font-size:12px;color:var(--c-text-sub);margin-top:2px;}
 .tab-wrap{position:sticky;top:0;z-index:100;background:var(--c-surface);border-bottom:1px solid var(--c-border);box-shadow:0 2px 8px rgba(0,0,0,0.04);}
 .tab-nav{max-width:var(--max-w);margin:0 auto;padding:0 24px;display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 .tab-nav::-webkit-scrollbar{display:none;}
 .tab-btn{flex-shrink:0;padding:13px 22px;font-size:14px;font-weight:600;color:var(--c-text-sub);background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:inherit;}
-.tab-btn:hover{color:var(--c-text);}
-.tab-btn.active{color:var(--c-accent);border-bottom-color:var(--c-accent);}
-.tab-panel{display:none;}
-.tab-panel.active{display:block;}
+.tab-btn:hover{color:var(--c-text);} .tab-btn.active{color:var(--c-accent);border-bottom-color:var(--c-accent);}
+.tab-panel{display:none;} .tab-panel.active{display:block;}
 .inner-section{padding:32px 0 24px;border-bottom:1px solid var(--c-border);}
 .inner-section:last-child{border-bottom:none;padding-bottom:48px;}
 .s-label{font-size:11px;font-weight:700;color:var(--c-accent);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;}
@@ -55,9 +49,7 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,'Segoe UI','Ma
 .info-table tr:last-child th,.info-table tr:last-child td{border-bottom:none;}
 .milestone-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
 .milestone-card{background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);border-top:3px solid var(--c-primary-mid);}
-.milestone-card.m-done{border-top-color:var(--c-success);}
-.milestone-card.m-curr{border-top-color:var(--c-accent);}
-.milestone-card.m-plan{border-top-color:var(--c-blue);}
+.milestone-card.m-done{border-top-color:var(--c-success);} .milestone-card.m-curr{border-top-color:var(--c-accent);} .milestone-card.m-plan{border-top-color:var(--c-blue);}
 .ms-id{font-size:11px;font-weight:700;color:var(--c-text-sub);margin-bottom:4px;}
 .ms-name{font-size:14px;font-weight:700;color:var(--c-text);margin-bottom:6px;}
 .ms-date{font-size:12px;color:var(--c-text-sub);margin-bottom:6px;}
@@ -65,8 +57,7 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,'Segoe UI','Ma
 .wbs-table{width:100%;border-collapse:collapse;font-size:13px;border:1px solid var(--c-border);border-radius:var(--radius);overflow:hidden;min-width:700px;}
 .wbs-table thead th{background:var(--c-bg-alt);color:var(--c-text-sub);font-weight:600;text-align:left;padding:9px 10px;border-bottom:2px solid var(--c-border);font-size:11px;white-space:nowrap;}
 .wbs-table tbody td{padding:8px 10px;border-bottom:1px solid var(--c-border);vertical-align:middle;font-size:12px;}
-.wbs-table tbody tr:last-child td{border-bottom:none;}
-.wbs-table tbody tr:nth-child(even){background:var(--c-bg-alt);}
+.wbs-table tbody tr:last-child td{border-bottom:none;} .wbs-table tbody tr:nth-child(even){background:var(--c-bg-alt);}
 .table-scroll{overflow-x:auto;}
 .phase-row td{background:var(--c-primary-mid) !important;color:#fff;font-weight:700;font-size:12px;padding:8px 10px;}
 .badge{display:inline-block;font-size:10px;font-weight:600;padding:1px 6px;border-radius:3px;white-space:nowrap;}
@@ -86,8 +77,7 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,'Segoe UI','Ma
 .gantt-outer{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--c-border) transparent;}
 .gantt-table{border-collapse:collapse;white-space:nowrap;font-size:12px;table-layout:fixed;}
 .g-id,.g-name,.g-owner,.g-dur{position:sticky;z-index:2;background:var(--c-surface);}
-.g-id{left:0;width:80px;min-width:80px;}
-.g-name{left:80px;width:230px;min-width:230px;overflow:hidden;text-overflow:ellipsis;}
+.g-id{left:0;width:80px;min-width:80px;} .g-name{left:80px;width:230px;min-width:230px;overflow:hidden;text-overflow:ellipsis;}
 .g-owner{left:310px;width:58px;min-width:58px;text-align:center;}
 .g-dur{left:368px;width:46px;min-width:46px;text-align:center;border-right:2px solid var(--c-border);}
 thead .g-id,thead .g-name,thead .g-owner,thead .g-dur{z-index:4;background:var(--c-primary-mid);}
@@ -132,7 +122,7 @@ thead .g-id,thead .g-name,thead .g-owner,thead .g-dur{z-index:4;background:var(-
   <div class="container">
     <div class="cover-label">Work Breakdown Structure</div>
     <h1 class="cover-title">작업분해구조 (WBS)<br>GymFit (짐핏)</h1>
-    <p class="cover-subtitle">헬스클럽 관리 SaaS 플랫폼 · 신규 구축</p>
+    <p class="cover-subtitle">ELUO · 헬스클럽 관리 SaaS 플랫폼 신규 구축</p>
     <div class="meta-grid">
       <div>문서 코드 <span>WBS_GYMFIT_v1.0</span></div>
       <div>작성일 <span>2026-03-10</span></div>
@@ -191,466 +181,8 @@ thead .g-id,thead .g-name,thead .g-owner,thead .g-dur{z-index:4;background:var(-
            data-total-weeks="27"
            data-today-week="9">
       <thead id="ganttHead"></thead>
-      <tbody>
-        <!-- Phase 1: 기획 -->
-        <tr class="g-phase-row" data-phase="1">
-          <td class="g-id"></td><td class="g-name">Phase 1: 기획</td><td class="g-owner"></td><td class="g-dur"></td>
-        </tr>
-        <tr class="g-task" data-phase="1" data-sw="1" data-ew="1">
-          <td class="g-id"><span class="wbs-id">WBS-1.1</span></td>
-          <td class="g-name">QST 고객질의서 작성</td>
-          <td class="g-owner"><span class="badge role-plan">기획</span></td>
-          <td class="g-dur">2일</td>
-        </tr>
-        <tr class="g-task" data-phase="1" data-sw="1" data-ew="1">
-          <td class="g-id"><span class="wbs-id">WBS-1.2</span></td>
-          <td class="g-name">REQ 요구사항정의서 작성</td>
-          <td class="g-owner"><span class="badge role-plan">기획</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="1" data-sw="2" data-ew="2">
-          <td class="g-id"><span class="wbs-id">WBS-1.3</span></td>
-          <td class="g-name">FN 기능정의서 작성</td>
-          <td class="g-owner"><span class="badge role-plan">기획</span></td>
-          <td class="g-dur">5일</td>
-        </tr>
-        <tr class="g-task" data-phase="1" data-sw="3" data-ew="3">
-          <td class="g-id"><span class="wbs-id">WBS-1.4</span></td>
-          <td class="g-name">IA 정보구조설계</td>
-          <td class="g-owner"><span class="badge role-plan">기획</span></td>
-          <td class="g-dur">5일</td>
-        </tr>
-        <tr class="g-task" data-phase="1" data-sw="4" data-ew="4">
-          <td class="g-id"><span class="wbs-id">WBS-1.5</span></td>
-          <td class="g-name">WBS 작업분해구조</td>
-          <td class="g-owner"><span class="badge role-plan">기획</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="1" data-sw="8" data-ew="9">
-          <td class="g-id"><span class="wbs-id">WBS-1.6</span></td>
-          <td class="g-name">기획 검수 완료 (planning-reviewer)</td>
-          <td class="g-owner"><span class="badge role-plan">기획</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-milestone" data-week="9">
-          <td class="g-id"></td><td class="g-name" style="font-weight:700;">▶ M1: 기획 완료 (완료)</td><td class="g-owner"></td><td class="g-dur"></td>
-        </tr>
-
-        <!-- Phase 2: 디자인 -->
-        <tr class="g-phase-row" data-phase="2">
-          <td class="g-id"></td><td class="g-name">Phase 2: 디자인</td><td class="g-owner"></td><td class="g-dur"></td>
-        </tr>
-        <tr class="g-task" data-phase="2" data-sw="9" data-ew="9">
-          <td class="g-id"><span class="wbs-id">WBS-2.1</span></td>
-          <td class="g-name">디자인 시스템 수립 (컬러/타입/컴포넌트)</td>
-          <td class="g-owner"><span class="badge role-design">디자인</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="2" data-sw="10" data-ew="10">
-          <td class="g-id"><span class="wbs-id">WBS-2.2</span></td>
-          <td class="g-name">운영자 대시보드 UX 설계</td>
-          <td class="g-owner"><span class="badge role-design">디자인</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="2" data-sw="10" data-ew="10">
-          <td class="g-id"><span class="wbs-id">WBS-2.3</span></td>
-          <td class="g-name">운영자 회원/수업/회원권 관리 UX</td>
-          <td class="g-owner"><span class="badge role-design">디자인</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="2" data-sw="10" data-ew="10">
-          <td class="g-id"><span class="wbs-id">WBS-2.4</span></td>
-          <td class="g-name">강사 포털 UX 설계</td>
-          <td class="g-owner"><span class="badge role-design">디자인</span></td>
-          <td class="g-dur">2일</td>
-        </tr>
-        <tr class="g-task" data-phase="2" data-sw="10" data-ew="11">
-          <td class="g-id"><span class="wbs-id">WBS-2.5</span></td>
-          <td class="g-name">회원 앱 UX 설계 (예약/회원권)</td>
-          <td class="g-owner"><span class="badge role-design">디자인</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="2" data-sw="11" data-ew="11">
-          <td class="g-id"><span class="wbs-id">WBS-2.6</span></td>
-          <td class="g-name">결제/회원권/구독 UI 설계</td>
-          <td class="g-owner"><span class="badge role-design">디자인</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="2" data-sw="11" data-ew="12">
-          <td class="g-id"><span class="wbs-id">WBS-2.7</span></td>
-          <td class="g-name">UI 명세서 통합 작성</td>
-          <td class="g-owner"><span class="badge role-design">디자인</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="2" data-sw="12" data-ew="12">
-          <td class="g-id"><span class="wbs-id">WBS-2.8</span></td>
-          <td class="g-name">디자인 검수 및 고객 승인</td>
-          <td class="g-owner"><span class="badge role-design">디자인</span></td>
-          <td class="g-dur">2일</td>
-        </tr>
-        <tr class="g-milestone" data-week="12">
-          <td class="g-id"></td><td class="g-name" style="font-weight:700;">▶ M2: 디자인 완료</td><td class="g-owner"></td><td class="g-dur"></td>
-        </tr>
-
-        <!-- Phase 3: 개발 -->
-        <tr class="g-phase-row" data-phase="3">
-          <td class="g-id"></td><td class="g-name">Phase 3: 개발</td><td class="g-owner"></td><td class="g-dur"></td>
-        </tr>
-        <!-- 3-A -->
-        <tr class="g-sub-row">
-          <td class="g-id"></td><td class="g-name" style="padding-left:20px;">3-A. 환경 설정</td><td class="g-owner"></td><td class="g-dur"></td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="13" data-ew="13">
-          <td class="g-id"><span class="wbs-id">WBS-3.1</span></td>
-          <td class="g-name">프로젝트 초기화 (React/Vite + Node.js 모노레포)</td>
-          <td class="g-owner"><span class="badge role-dev">FE·BE</span></td>
-          <td class="g-dur">2일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="13" data-ew="13" data-cp="true">
-          <td class="g-id"><span class="wbs-id">WBS-3.2</span></td>
-          <td class="g-name"><span class="cp-badge">CP</span>DB 스키마 설계 및 구축 (MySQL, ERD)</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="14" data-ew="14">
-          <td class="g-id"><span class="wbs-id">WBS-3.3</span></td>
-          <td class="g-name">BE API 서버 기반 구축 (Express + Swagger)</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">2일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="13" data-ew="13">
-          <td class="g-id"><span class="wbs-id">WBS-3.4</span></td>
-          <td class="g-name">AWS 인프라 구성 (EC2+RDS+S3+CloudFront)</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <!-- 3-B -->
-        <tr class="g-sub-row">
-          <td class="g-id"></td><td class="g-name" style="padding-left:20px;">3-B. 인증 / RBAC</td><td class="g-owner"></td><td class="g-dur"></td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="14" data-ew="14" data-cp="true">
-          <td class="g-id"><span class="wbs-id">WBS-3.5</span></td>
-          <td class="g-name"><span class="cp-badge">CP</span>JWT 인증 시스템 구현 (Access+Refresh Token)</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">4일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="14" data-ew="15" data-cp="true">
-          <td class="g-id"><span class="wbs-id">WBS-3.6</span></td>
-          <td class="g-name"><span class="cp-badge">CP</span>RBAC 권한 시스템 구현 (운영자/강사/회원)</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="14" data-ew="14">
-          <td class="g-id"><span class="wbs-id">WBS-3.7</span></td>
-          <td class="g-name">SNS 소셜 로그인 연동 (카카오/네이버)</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">2일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="15" data-ew="15">
-          <td class="g-id"><span class="wbs-id">WBS-3.8</span></td>
-          <td class="g-name">인증/로그인 화면 퍼블리싱 (3역할)</td>
-          <td class="g-owner"><span class="badge role-pub">FE</span></td>
-          <td class="g-dur">2일</td>
-        </tr>
-        <!-- 3-C -->
-        <tr class="g-sub-row">
-          <td class="g-id"></td><td class="g-name" style="padding-left:20px;">3-C. 수업 / 스케줄</td><td class="g-owner"></td><td class="g-dur"></td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="15" data-ew="15">
-          <td class="g-id"><span class="wbs-id">WBS-3.9</span></td>
-          <td class="g-name">수업 관리 CRUD (생성/수정/삭제/조회)</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="15" data-ew="16">
-          <td class="g-id"><span class="wbs-id">WBS-3.10</span></td>
-          <td class="g-name">스케줄 캘린더 구현 (주간/월간 뷰)</td>
-          <td class="g-owner"><span class="badge role-dev">BE·FE</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="16" data-ew="16">
-          <td class="g-id"><span class="wbs-id">WBS-3.11</span></td>
-          <td class="g-name">수업 관리 화면 퍼블리싱 (운영자)</td>
-          <td class="g-owner"><span class="badge role-pub">FE</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="16" data-ew="16">
-          <td class="g-id"><span class="wbs-id">WBS-3.12</span></td>
-          <td class="g-name">스케줄 화면 퍼블리싱 (강사/회원)</td>
-          <td class="g-owner"><span class="badge role-pub">FE</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <!-- 3-D -->
-        <tr class="g-sub-row">
-          <td class="g-id"></td><td class="g-name" style="padding-left:20px;">3-D. 예약</td><td class="g-owner"></td><td class="g-dur"></td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="16" data-ew="17">
-          <td class="g-id"><span class="wbs-id">WBS-3.13</span></td>
-          <td class="g-name">그룹 수업 예약 (WebSocket 동시성 제어)</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">5일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="16" data-ew="17">
-          <td class="g-id"><span class="wbs-id">WBS-3.14</span></td>
-          <td class="g-name">PT 1:1 예약 시스템 (강사 가용 슬롯)</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">4일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="17" data-ew="17">
-          <td class="g-id"><span class="wbs-id">WBS-3.15</span></td>
-          <td class="g-name">예약 취소 / 대기 등록 처리</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="17" data-ew="17">
-          <td class="g-id"><span class="wbs-id">WBS-3.16</span></td>
-          <td class="g-name">출결 관리 (체크인 QR / 출석 현황)</td>
-          <td class="g-owner"><span class="badge role-dev">BE·FE</span></td>
-          <td class="g-dur">2일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="18" data-ew="18">
-          <td class="g-id"><span class="wbs-id">WBS-3.17</span></td>
-          <td class="g-name">예약/스케줄 화면 퍼블리싱 (회원)</td>
-          <td class="g-owner"><span class="badge role-pub">FE</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-milestone" data-week="17">
-          <td class="g-id"></td><td class="g-name" style="font-weight:700;">▶ M3: 인증/예약 개발 완료</td><td class="g-owner"></td><td class="g-dur"></td>
-        </tr>
-        <!-- 3-E -->
-        <tr class="g-sub-row">
-          <td class="g-id"></td><td class="g-name" style="padding-left:20px;">3-E. 회원 관리</td><td class="g-owner"></td><td class="g-dur"></td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="15" data-ew="15" data-cp="true">
-          <td class="g-id"><span class="wbs-id">WBS-3.18</span></td>
-          <td class="g-name"><span class="cp-badge">CP</span>회원 등록/조회/수정/등급 관리</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="15" data-ew="15">
-          <td class="g-id"><span class="wbs-id">WBS-3.19</span></td>
-          <td class="g-name">트레이너 프로필 관리 (자격증/담당 수업)</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">2일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="15" data-ew="16">
-          <td class="g-id"><span class="wbs-id">WBS-3.20</span></td>
-          <td class="g-name">신체 측정/건강 기록 관리</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="16" data-ew="16">
-          <td class="g-id"><span class="wbs-id">WBS-3.21</span></td>
-          <td class="g-name">회원 관리 화면 퍼블리싱 (운영자)</td>
-          <td class="g-owner"><span class="badge role-pub">FE</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <!-- 3-F -->
-        <tr class="g-sub-row">
-          <td class="g-id"></td><td class="g-name" style="padding-left:20px;">3-F. 회원권 / 결제</td><td class="g-owner"></td><td class="g-dur"></td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="15" data-ew="16" data-cp="true">
-          <td class="g-id"><span class="wbs-id">WBS-3.22</span></td>
-          <td class="g-name"><span class="cp-badge">CP</span>회원권 상품 관리 (타입/가격/유효기간)</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">4일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="16" data-ew="17" data-cp="true">
-          <td class="g-id"><span class="wbs-id">WBS-3.23</span></td>
-          <td class="g-name"><span class="cp-badge">CP</span>포트원 V2 결제 연동 (imp_uid 서버검증)</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">5일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="17" data-ew="18">
-          <td class="g-id"><span class="wbs-id">WBS-3.24</span></td>
-          <td class="g-name">정기 결제 / 회원권 자동 갱신</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="17" data-ew="18" data-cp="true">
-          <td class="g-id"><span class="wbs-id">WBS-3.25</span></td>
-          <td class="g-name"><span class="cp-badge">CP</span>환불 처리 / 이의제기 워크플로우</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="18" data-ew="18">
-          <td class="g-id"><span class="wbs-id">WBS-3.26</span></td>
-          <td class="g-name">회원권/결제 화면 퍼블리싱 (회원/운영자)</td>
-          <td class="g-owner"><span class="badge role-pub">FE</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-milestone" data-week="20">
-          <td class="g-id"></td><td class="g-name" style="font-weight:700;">▶ M4: 결제/회원권 개발 완료</td><td class="g-owner"></td><td class="g-dur"></td>
-        </tr>
-        <!-- 3-G -->
-        <tr class="g-sub-row">
-          <td class="g-id"></td><td class="g-name" style="padding-left:20px;">3-G. 알림</td><td class="g-owner"></td><td class="g-dur"></td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="17" data-ew="18">
-          <td class="g-id"><span class="wbs-id">WBS-3.27</span></td>
-          <td class="g-name">카카오 알림톡 연동 (예약/결제 알림)</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="18" data-ew="18">
-          <td class="g-id"><span class="wbs-id">WBS-3.28</span></td>
-          <td class="g-name">인앱 알림 시스템 (실시간 푸시)</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">2일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="18" data-ew="18">
-          <td class="g-id"><span class="wbs-id">WBS-3.29</span></td>
-          <td class="g-name">알림 설정 화면 퍼블리싱 (회원)</td>
-          <td class="g-owner"><span class="badge role-pub">FE</span></td>
-          <td class="g-dur">2일</td>
-        </tr>
-        <!-- 3-H -->
-        <tr class="g-sub-row">
-          <td class="g-id"></td><td class="g-name" style="padding-left:20px;">3-H. 구독 / 대시보드</td><td class="g-owner"></td><td class="g-dur"></td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="17" data-ew="18" data-cp="true">
-          <td class="g-id"><span class="wbs-id">WBS-3.30</span></td>
-          <td class="g-name"><span class="cp-badge">CP</span>B2B 구독 플랜 시스템 (Basic/Pro/Enterprise)</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">4일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="18" data-ew="19" data-cp="true">
-          <td class="g-id"><span class="wbs-id">WBS-3.31</span></td>
-          <td class="g-name"><span class="cp-badge">CP</span>통합 대시보드 (Bull Queue 비동기 집계)</td>
-          <td class="g-owner"><span class="badge role-dev">BE·FE</span></td>
-          <td class="g-dur">4일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="19" data-ew="19">
-          <td class="g-id"><span class="wbs-id">WBS-3.32</span></td>
-          <td class="g-name">대시보드/구독 화면 퍼블리싱 (운영자)</td>
-          <td class="g-owner"><span class="badge role-pub">FE</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <!-- 3-I -->
-        <tr class="g-sub-row">
-          <td class="g-id"></td><td class="g-name" style="padding-left:20px;">3-I. 통합 마무리</td><td class="g-owner"></td><td class="g-dur"></td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="20" data-ew="20" data-cp="true">
-          <td class="g-id"><span class="wbs-id">WBS-3.33</span></td>
-          <td class="g-name"><span class="cp-badge">CP</span>반응형 + PWA 최적화 (오프라인 캐시)</td>
-          <td class="g-owner"><span class="badge role-pub">FE</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="20" data-ew="21" data-cp="true">
-          <td class="g-id"><span class="wbs-id">WBS-3.34</span></td>
-          <td class="g-name"><span class="cp-badge">CP</span>통합 E2E 테스트 (인증/예약/결제 플로우)</td>
-          <td class="g-owner"><span class="badge role-dev">BE·FE</span></td>
-          <td class="g-dur">5일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="21" data-ew="21" data-cp="true">
-          <td class="g-id"><span class="wbs-id">WBS-3.35</span></td>
-          <td class="g-name"><span class="cp-badge">CP</span>성능 최적화 (LCP ≤1.5초 / Code Splitting)</td>
-          <td class="g-owner"><span class="badge role-pub">FE·BE</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="3" data-sw="22" data-ew="22" data-cp="true">
-          <td class="g-id"><span class="wbs-id">WBS-3.36</span></td>
-          <td class="g-name"><span class="cp-badge">CP</span>버그 수정 / 코드 리뷰 / 문서화</td>
-          <td class="g-owner"><span class="badge role-dev">BE·FE</span></td>
-          <td class="g-dur">5일</td>
-        </tr>
-        <tr class="g-milestone" data-week="22">
-          <td class="g-id"></td><td class="g-name" style="font-weight:700;">▶ M5: 전체 개발 완료</td><td class="g-owner"></td><td class="g-dur"></td>
-        </tr>
-
-        <!-- Phase 4: QA -->
-        <tr class="g-phase-row" data-phase="4">
-          <td class="g-id"></td><td class="g-name">Phase 4: QA</td><td class="g-owner"></td><td class="g-dur"></td>
-        </tr>
-        <tr class="g-task" data-phase="4" data-sw="23" data-ew="23" data-cp="true">
-          <td class="g-id"><span class="wbs-id">WBS-4.1</span></td>
-          <td class="g-name"><span class="cp-badge">CP</span>기능 테스트 (TC-F, 전체 FN 커버리지)</td>
-          <td class="g-owner"><span class="badge role-qa">QA</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="4" data-sw="23" data-ew="23">
-          <td class="g-id"><span class="wbs-id">WBS-4.2</span></td>
-          <td class="g-name">결제/회원권 전문 QA (FN-014~016)</td>
-          <td class="g-owner"><span class="badge role-qa">QA</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="4" data-sw="23" data-ew="23">
-          <td class="g-id"><span class="wbs-id">WBS-4.3</span></td>
-          <td class="g-name">접근성 테스트 (WCAG AA, TC-A)</td>
-          <td class="g-owner"><span class="badge role-qa">QA</span></td>
-          <td class="g-dur">2일</td>
-        </tr>
-        <tr class="g-task" data-phase="4" data-sw="23" data-ew="23" data-cp="true">
-          <td class="g-id"><span class="wbs-id">WBS-4.4</span></td>
-          <td class="g-name"><span class="cp-badge">CP</span>성능 테스트 (Lighthouse 90+, TC-P)</td>
-          <td class="g-owner"><span class="badge role-qa">QA</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="4" data-sw="23" data-ew="24">
-          <td class="g-id"><span class="wbs-id">WBS-4.5</span></td>
-          <td class="g-name">보안 점검 (OWASP Top 10, JWT 취약점)</td>
-          <td class="g-owner"><span class="badge role-qa">QA</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="4" data-sw="23" data-ew="23">
-          <td class="g-id"><span class="wbs-id">WBS-4.6</span></td>
-          <td class="g-name">반응형 / 브라우저 호환성 테스트</td>
-          <td class="g-owner"><span class="badge role-qa">QA</span></td>
-          <td class="g-dur">2일</td>
-        </tr>
-        <tr class="g-task" data-phase="4" data-sw="24" data-ew="24">
-          <td class="g-id"><span class="wbs-id">WBS-4.7</span></td>
-          <td class="g-name">UAT 고객 수락 테스트 (운영자/강사/회원)</td>
-          <td class="g-owner"><span class="badge role-qa">QA</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="4" data-sw="25" data-ew="25" data-cp="true">
-          <td class="g-id"><span class="wbs-id">WBS-4.8</span></td>
-          <td class="g-name"><span class="cp-badge">CP</span>QA 결함 수정 / 회귀 테스트 (TC-R)</td>
-          <td class="g-owner"><span class="badge role-qa">QA</span></td>
-          <td class="g-dur">5일</td>
-        </tr>
-        <tr class="g-milestone" data-week="26">
-          <td class="g-id"></td><td class="g-name" style="font-weight:700;">▶ M6: QA 완료</td><td class="g-owner"></td><td class="g-dur"></td>
-        </tr>
-
-        <!-- Phase 5: 런칭 -->
-        <tr class="g-phase-row" data-phase="5">
-          <td class="g-id"></td><td class="g-name">Phase 5: 런칭</td><td class="g-owner"></td><td class="g-dur"></td>
-        </tr>
-        <tr class="g-task" data-phase="5" data-sw="26" data-ew="26" data-cp="true">
-          <td class="g-id"><span class="wbs-id">WBS-5.1</span></td>
-          <td class="g-name"><span class="cp-badge">CP</span>AWS 프로덕션 환경 구성 (Auto Scaling)</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">3일</td>
-        </tr>
-        <tr class="g-task" data-phase="5" data-sw="26" data-ew="26" data-cp="true">
-          <td class="g-id"><span class="wbs-id">WBS-5.2</span></td>
-          <td class="g-name"><span class="cp-badge">CP</span>초기 데이터 세팅 및 이관</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">1일</td>
-        </tr>
-        <tr class="g-task" data-phase="5" data-sw="27" data-ew="27">
-          <td class="g-id"><span class="wbs-id">WBS-5.3</span></td>
-          <td class="g-name">소프트 런칭 (베타 피트니스센터 3곳)</td>
-          <td class="g-owner"><span class="badge role-plan">기획·BE</span></td>
-          <td class="g-dur">2일</td>
-        </tr>
-        <tr class="g-task" data-phase="5" data-sw="27" data-ew="27">
-          <td class="g-id"><span class="wbs-id">WBS-5.4</span></td>
-          <td class="g-name">모니터링 설정 (CloudWatch + Sentry)</td>
-          <td class="g-owner"><span class="badge role-dev">BE</span></td>
-          <td class="g-dur">1일</td>
-        </tr>
-        <tr class="g-task" data-phase="5" data-sw="27" data-ew="27" data-cp="true">
-          <td class="g-id"><span class="wbs-id">WBS-5.5</span></td>
-          <td class="g-name"><span class="cp-badge">CP</span>정식 런칭 및 고객 인수 서명</td>
-          <td class="g-owner"><span class="badge role-plan">기획</span></td>
-          <td class="g-dur">2일</td>
-        </tr>
-        <tr class="g-milestone" data-week="27">
-          <td class="g-id"></td><td class="g-name" style="font-weight:700;">▶ M7: 정식 런칭</td><td class="g-owner"></td><td class="g-dur"></td>
-        </tr>
+      <tbody id="ganttBody">
+        <!-- JS가 GANTT_ROWS 배열로 자동 생성 -->
       </tbody>
     </table>
   </div>
@@ -742,340 +274,8 @@ thead .g-id,thead .g-name,thead .g-owner,thead .g-dur{z-index:4;background:var(-
             <th>산출물</th>
           </tr>
         </thead>
-        <tbody>
-          <tr class="phase-row"><td colspan="9">Phase 1: 기획 (완료)</td></tr>
-          <tr>
-            <td><span class="wbs-id">WBS-1.1</span></td><td>QST 고객질의서 작성</td><td>—</td>
-            <td><span class="badge role-plan">기획</span></td><td>2</td><td>-</td>
-            <td><span class="badge b-w1">W1</span></td><td><span class="badge b-p1">P1</span></td><td>QST.md</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-1.2</span></td><td>REQ 요구사항정의서 작성</td><td>—</td>
-            <td><span class="badge role-plan">기획</span></td><td>3</td><td>WBS-1.1</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p0">P0</span></td><td>REQ.md</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-1.3</span></td><td>FN 기능정의서 작성</td><td>—</td>
-            <td><span class="badge role-plan">기획</span></td><td>5</td><td>WBS-1.2</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p0">P0</span></td><td>FN.md</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-1.4</span></td><td>IA 정보구조설계</td><td>—</td>
-            <td><span class="badge role-plan">기획</span></td><td>5</td><td>WBS-1.3</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p0">P0</span></td><td>IA.md</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-1.5</span></td><td>WBS 작업분해구조</td><td>—</td>
-            <td><span class="badge role-plan">기획</span></td><td>3</td><td>WBS-1.4</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p0">P0</span></td><td>WBS.md</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-1.6</span></td><td>기획 검수 완료 (planning-reviewer)</td><td>—</td>
-            <td><span class="badge role-plan">기획</span></td><td>3</td><td>WBS-1.5</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>검수보고서</td>
-          </tr>
-
-          <tr class="phase-row"><td colspan="9">Phase 2: 디자인</td></tr>
-          <tr>
-            <td><span class="wbs-id">WBS-2.1</span></td><td>디자인 시스템 수립 (컬러/타입/컴포넌트)</td><td>—</td>
-            <td><span class="badge role-design">디자인</span></td><td>3</td><td>WBS-1.6</td>
-            <td><span class="badge b-w1">W1</span></td><td><span class="badge b-p0">P0</span></td><td>디자인 시스템</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-2.2</span></td><td>운영자 대시보드 UX 설계</td><td>FN-019</td>
-            <td><span class="badge role-design">디자인</span></td><td>3</td><td>WBS-2.1</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p0">P0</span></td><td>대시보드 UX</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-2.3</span></td><td>운영자 회원/수업/회원권 관리 UX</td><td>FN-008, FN-010, FN-011</td>
-            <td><span class="badge role-design">디자인</span></td><td>3</td><td>WBS-2.1</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>관리 화면 UX</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-2.4</span></td><td>강사 포털 UX 설계</td><td>FN-009, FN-012</td>
-            <td><span class="badge role-design">디자인</span></td><td>2</td><td>WBS-2.2</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>강사 포털 UX</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-2.5</span></td><td>회원 앱 UX 설계 (예약/회원권)</td><td>FN-004, FN-005, FN-021</td>
-            <td><span class="badge role-design">디자인</span></td><td>3</td><td>WBS-2.2</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>회원 앱 UX</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-2.6</span></td><td>결제/회원권/구독 UI 설계</td><td>FN-014, FN-021</td>
-            <td><span class="badge role-design">디자인</span></td><td>3</td><td>WBS-2.3</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p0">P0</span></td><td>결제/구독 UI</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-2.7</span></td><td>UI 명세서 통합 작성</td><td>—</td>
-            <td><span class="badge role-design">디자인</span></td><td>3</td><td>WBS-2.4, WBS-2.5, WBS-2.6</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p0">P0</span></td><td>UI 명세서</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-2.8</span></td><td>디자인 검수 및 고객 승인</td><td>—</td>
-            <td><span class="badge role-design">디자인</span></td><td>2</td><td>WBS-2.7</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p0">P0</span></td><td>디자인 검수보고서</td>
-          </tr>
-
-          <tr class="phase-row"><td colspan="9">Phase 3: 개발</td></tr>
-          <tr class="phase-row"><td colspan="9" style="background:var(--c-primary-light) !important;padding-left:24px;font-weight:600;">3-A. 환경 설정</td></tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.1</span></td><td>프로젝트 초기화 (React/Vite + Node.js 모노레포)</td><td>—</td>
-            <td><span class="badge role-pub">FE</span> <span class="badge role-dev">BE</span></td><td>2</td><td>WBS-2.8</td>
-            <td><span class="badge b-w1">W1</span></td><td><span class="badge b-p0">P0</span></td><td>프로젝트 레포</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.2</span></td><td>DB 스키마 설계 및 구축 (MySQL, ERD) ★CP</td><td>FN-001~023</td>
-            <td><span class="badge role-dev">BE</span></td><td>3</td><td>WBS-3.1</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p0">P0</span></td><td>ERD · 마이그레이션</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.3</span></td><td>BE API 서버 기반 구축 (Express + Swagger)</td><td>—</td>
-            <td><span class="badge role-dev">BE</span></td><td>2</td><td>WBS-3.2</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>API 서버 기반</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.4</span></td><td>AWS 인프라 구성 (EC2+RDS+S3+CloudFront)</td><td>—</td>
-            <td><span class="badge role-dev">BE</span></td><td>3</td><td>WBS-3.1</td>
-            <td><span class="badge b-w1">W1</span></td><td><span class="badge b-p1">P1</span></td><td>AWS 인프라</td>
-          </tr>
-          <tr class="phase-row"><td colspan="9" style="background:var(--c-primary-light) !important;padding-left:24px;font-weight:600;">3-B. 인증 / RBAC</td></tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.5</span></td><td>JWT 인증 시스템 구현 (Access+Refresh Token) ★CP</td><td>FN-001</td>
-            <td><span class="badge role-dev">BE</span></td><td>4</td><td>WBS-3.2</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p0">P0</span></td><td>JWT 모듈</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.6</span></td><td>RBAC 권한 시스템 구현 (운영자/강사/회원) ★CP</td><td>FN-002</td>
-            <td><span class="badge role-dev">BE</span></td><td>3</td><td>WBS-3.5</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p0">P0</span></td><td>RBAC 미들웨어</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.7</span></td><td>SNS 소셜 로그인 연동 (카카오/네이버)</td><td>FN-003</td>
-            <td><span class="badge role-dev">BE</span></td><td>2</td><td>WBS-3.5</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>소셜 로그인 모듈</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.8</span></td><td>인증/로그인 화면 퍼블리싱 (3역할)</td><td>FN-001, FN-002</td>
-            <td><span class="badge role-pub">FE</span></td><td>2</td><td>WBS-3.6, WBS-2.8</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>인증 화면</td>
-          </tr>
-          <tr class="phase-row"><td colspan="9" style="background:var(--c-primary-light) !important;padding-left:24px;font-weight:600;">3-C. 수업 / 스케줄</td></tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.9</span></td><td>수업 관리 CRUD (생성/수정/삭제/조회)</td><td>FN-008</td>
-            <td><span class="badge role-dev">BE</span></td><td>3</td><td>WBS-3.6</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>수업 API</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.10</span></td><td>스케줄 캘린더 구현 (주간/월간 뷰)</td><td>FN-009</td>
-            <td><span class="badge role-dev">BE</span> <span class="badge role-pub">FE</span></td><td>3</td><td>WBS-3.9</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>캘린더 컴포넌트</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.11</span></td><td>수업 관리 화면 퍼블리싱 (운영자)</td><td>FN-008, FN-009</td>
-            <td><span class="badge role-pub">FE</span></td><td>3</td><td>WBS-3.10, WBS-2.8</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>수업 관리 화면</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.12</span></td><td>스케줄 화면 퍼블리싱 (강사/회원)</td><td>FN-009</td>
-            <td><span class="badge role-pub">FE</span></td><td>3</td><td>WBS-3.10, WBS-2.8</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>스케줄 화면</td>
-          </tr>
-          <tr class="phase-row"><td colspan="9" style="background:var(--c-primary-light) !important;padding-left:24px;font-weight:600;">3-D. 예약</td></tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.13</span></td><td>그룹 수업 예약 (WebSocket 동시성 제어)</td><td>FN-004</td>
-            <td><span class="badge role-dev">BE</span></td><td>5</td><td>WBS-3.10</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>예약 API</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.14</span></td><td>PT 1:1 예약 시스템 (강사 가용 슬롯)</td><td>FN-005</td>
-            <td><span class="badge role-dev">BE</span></td><td>4</td><td>WBS-3.10</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>PT 예약 API</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.15</span></td><td>예약 취소 / 대기 등록 처리</td><td>FN-006, FN-007</td>
-            <td><span class="badge role-dev">BE</span></td><td>3</td><td>WBS-3.13</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>취소/대기 API</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.16</span></td><td>출결 관리 (체크인 QR / 출석 현황)</td><td>FN-020</td>
-            <td><span class="badge role-dev">BE</span> <span class="badge role-pub">FE</span></td><td>2</td><td>WBS-3.14</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>출결 모듈</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.17</span></td><td>예약/스케줄 화면 퍼블리싱 (회원)</td><td>FN-004, FN-005</td>
-            <td><span class="badge role-pub">FE</span></td><td>3</td><td>WBS-3.13, WBS-2.8</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>예약 화면</td>
-          </tr>
-          <tr class="phase-row"><td colspan="9" style="background:var(--c-primary-light) !important;padding-left:24px;font-weight:600;">3-E. 회원 관리</td></tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.18</span></td><td>회원 등록/조회/수정/등급 관리 ★CP</td><td>FN-010</td>
-            <td><span class="badge role-dev">BE</span></td><td>3</td><td>WBS-3.6</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p0">P0</span></td><td>회원 API</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.19</span></td><td>트레이너 프로필 관리 (자격증/담당 수업)</td><td>FN-012</td>
-            <td><span class="badge role-dev">BE</span></td><td>2</td><td>WBS-3.6</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>트레이너 API</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.20</span></td><td>신체 측정/건강 기록 관리</td><td>FN-013</td>
-            <td><span class="badge role-dev">BE</span></td><td>3</td><td>WBS-3.18</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>건강기록 API</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.21</span></td><td>회원 관리 화면 퍼블리싱 (운영자)</td><td>FN-010, FN-013</td>
-            <td><span class="badge role-pub">FE</span></td><td>3</td><td>WBS-3.20, WBS-2.8</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>회원 관리 화면</td>
-          </tr>
-          <tr class="phase-row"><td colspan="9" style="background:var(--c-primary-light) !important;padding-left:24px;font-weight:600;">3-F. 회원권 / 결제</td></tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.22</span></td><td>회원권 상품 관리 (타입/가격/유효기간) ★CP</td><td>FN-011</td>
-            <td><span class="badge role-dev">BE</span></td><td>4</td><td>WBS-3.18</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p0">P0</span></td><td>회원권 모듈</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.23</span></td><td>포트원 V2 결제 연동 (imp_uid 서버검증) ★CP</td><td>FN-014</td>
-            <td><span class="badge role-dev">BE</span></td><td>5</td><td>WBS-3.22</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p0">P0</span></td><td>포트원 결제 모듈</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.24</span></td><td>정기 결제 / 회원권 자동 갱신</td><td>FN-015</td>
-            <td><span class="badge role-dev">BE</span></td><td>3</td><td>WBS-3.23</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>자동갱신 크론</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.25</span></td><td>환불 처리 / 이의제기 워크플로우 ★CP</td><td>FN-016</td>
-            <td><span class="badge role-dev">BE</span></td><td>3</td><td>WBS-3.23</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p0">P0</span></td><td>환불 워크플로우</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.26</span></td><td>회원권/결제 화면 퍼블리싱 (회원/운영자)</td><td>FN-011, FN-014</td>
-            <td><span class="badge role-pub">FE</span></td><td>3</td><td>WBS-3.25, WBS-2.8</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>결제 화면</td>
-          </tr>
-          <tr class="phase-row"><td colspan="9" style="background:var(--c-primary-light) !important;padding-left:24px;font-weight:600;">3-G. 알림</td></tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.27</span></td><td>카카오 알림톡 연동 (예약/결제 알림)</td><td>FN-017</td>
-            <td><span class="badge role-dev">BE</span></td><td>3</td><td>WBS-3.23</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>알림톡 모듈</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.28</span></td><td>인앱 알림 시스템 (실시간 푸시)</td><td>FN-018</td>
-            <td><span class="badge role-dev">BE</span></td><td>2</td><td>WBS-3.27</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>인앱 알림 모듈</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.29</span></td><td>알림 설정 화면 퍼블리싱 (회원)</td><td>FN-017, FN-018</td>
-            <td><span class="badge role-pub">FE</span></td><td>2</td><td>WBS-3.28, WBS-2.8</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>알림 설정 화면</td>
-          </tr>
-          <tr class="phase-row"><td colspan="9" style="background:var(--c-primary-light) !important;padding-left:24px;font-weight:600;">3-H. 구독 / 대시보드</td></tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.30</span></td><td>B2B 구독 플랜 시스템 (Basic/Pro/Enterprise) ★CP</td><td>FN-021</td>
-            <td><span class="badge role-dev">BE</span></td><td>4</td><td>WBS-3.23</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p0">P0</span></td><td>구독 플랜 모듈</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.31</span></td><td>통합 대시보드 (Bull Queue 비동기 집계) ★CP</td><td>FN-019</td>
-            <td><span class="badge role-dev">BE</span> <span class="badge role-pub">FE</span></td><td>4</td><td>WBS-3.30, WBS-3.25</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p0">P0</span></td><td>대시보드 API</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.32</span></td><td>대시보드/구독 화면 퍼블리싱 (운영자)</td><td>FN-019, FN-021</td>
-            <td><span class="badge role-pub">FE</span></td><td>3</td><td>WBS-3.31, WBS-2.8</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>대시보드 화면</td>
-          </tr>
-          <tr class="phase-row"><td colspan="9" style="background:var(--c-primary-light) !important;padding-left:24px;font-weight:600;">3-I. 통합 마무리</td></tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.33</span></td><td>반응형 + PWA 최적화 (오프라인 캐시) ★CP</td><td>FN-022, FN-023</td>
-            <td><span class="badge role-pub">FE</span></td><td>3</td><td>WBS-3.32</td>
-            <td><span class="badge b-w3">W3+</span></td><td><span class="badge b-p0">P0</span></td><td>PWA 모듈</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.34</span></td><td>통합 E2E 테스트 (인증/예약/결제 플로우) ★CP</td><td>전체</td>
-            <td><span class="badge role-dev">BE</span> <span class="badge role-pub">FE</span></td><td>5</td><td>WBS-3.33</td>
-            <td><span class="badge b-w3">W3+</span></td><td><span class="badge b-p0">P0</span></td><td>E2E 테스트 결과</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.35</span></td><td>성능 최적화 (LCP ≤1.5초 / Code Splitting) ★CP</td><td>NFR-001</td>
-            <td><span class="badge role-pub">FE</span> <span class="badge role-dev">BE</span></td><td>3</td><td>WBS-3.34</td>
-            <td><span class="badge b-w3">W3+</span></td><td><span class="badge b-p0">P0</span></td><td>성능 최적화 보고</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-3.36</span></td><td>버그 수정 / 코드 리뷰 / 문서화 ★CP</td><td>전체</td>
-            <td><span class="badge role-dev">BE</span> <span class="badge role-pub">FE</span></td><td>5</td><td>WBS-3.35</td>
-            <td><span class="badge b-w3">W3+</span></td><td><span class="badge b-p0">P0</span></td><td>코드 리뷰 · 문서</td>
-          </tr>
-
-          <tr class="phase-row"><td colspan="9">Phase 4: QA</td></tr>
-          <tr>
-            <td><span class="wbs-id">WBS-4.1</span></td><td>기능 테스트 (TC-F, 전체 FN 커버리지) ★CP</td><td>TC-F-001~</td>
-            <td><span class="badge role-qa">QA</span></td><td>3</td><td>WBS-3.36</td>
-            <td><span class="badge b-w1">W1</span></td><td><span class="badge b-p0">P0</span></td><td>TC-F 문서 · 결과</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-4.2</span></td><td>결제/회원권 전문 QA (FN-014~016)</td><td>TC-F-050~</td>
-            <td><span class="badge role-qa">QA</span></td><td>3</td><td>WBS-3.36</td>
-            <td><span class="badge b-w1">W1</span></td><td><span class="badge b-p1">P1</span></td><td>결제 QA 보고서</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-4.3</span></td><td>접근성 테스트 (WCAG AA, TC-A)</td><td>TC-A-001~</td>
-            <td><span class="badge role-qa">QA</span></td><td>2</td><td>WBS-3.33</td>
-            <td><span class="badge b-w1">W1</span></td><td><span class="badge b-p1">P1</span></td><td>TC-A 문서 · 결과</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-4.4</span></td><td>성능 테스트 (Lighthouse 90+, TC-P) ★CP</td><td>TC-P-001~</td>
-            <td><span class="badge role-qa">QA</span></td><td>3</td><td>WBS-3.35</td>
-            <td><span class="badge b-w1">W1</span></td><td><span class="badge b-p0">P0</span></td><td>Lighthouse 보고서</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-4.5</span></td><td>보안 점검 (OWASP Top 10, JWT 취약점)</td><td>TC-F-100~</td>
-            <td><span class="badge role-qa">QA</span></td><td>3</td><td>WBS-4.1</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>보안 점검 보고서</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-4.6</span></td><td>반응형 / 브라우저 호환성 테스트</td><td>TC-F-120~</td>
-            <td><span class="badge role-qa">QA</span></td><td>2</td><td>WBS-4.1</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>호환성 테스트 결과</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-4.7</span></td><td>UAT 고객 수락 테스트 (운영자/강사/회원)</td><td>—</td>
-            <td><span class="badge role-qa">QA</span> <span class="badge role-plan">기획</span></td><td>3</td><td>WBS-4.5</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p0">P0</span></td><td>UAT 보고서</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-4.8</span></td><td>QA 결함 수정 / 회귀 테스트 (TC-R) ★CP</td><td>TC-R-001~</td>
-            <td><span class="badge role-qa">QA</span> <span class="badge role-dev">BE</span> <span class="badge role-pub">FE</span></td><td>5</td><td>WBS-4.7</td>
-            <td><span class="badge b-w3">W3+</span></td><td><span class="badge b-p0">P0</span></td><td>회귀 테스트 보고서</td>
-          </tr>
-
-          <tr class="phase-row"><td colspan="9">Phase 5: 런칭</td></tr>
-          <tr>
-            <td><span class="wbs-id">WBS-5.1</span></td><td>AWS 프로덕션 환경 구성 (Auto Scaling) ★CP</td><td>NFR-005</td>
-            <td><span class="badge role-dev">BE</span></td><td>3</td><td>WBS-4.8</td>
-            <td><span class="badge b-w1">W1</span></td><td><span class="badge b-p0">P0</span></td><td>AWS 인프라 설정서</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-5.2</span></td><td>초기 데이터 세팅 및 이관 ★CP</td><td>—</td>
-            <td><span class="badge role-dev">BE</span></td><td>1</td><td>WBS-5.1</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p0">P0</span></td><td>데이터 이관 완료</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-5.3</span></td><td>소프트 런칭 (베타 피트니스센터 3곳)</td><td>—</td>
-            <td><span class="badge role-plan">기획</span> <span class="badge role-dev">BE</span></td><td>2</td><td>WBS-5.2</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>소프트 런칭 보고</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-5.4</span></td><td>모니터링 설정 (CloudWatch + Sentry)</td><td>NFR-006</td>
-            <td><span class="badge role-dev">BE</span></td><td>1</td><td>WBS-5.3</td>
-            <td><span class="badge b-w2">W2</span></td><td><span class="badge b-p1">P1</span></td><td>모니터링 설정</td>
-          </tr>
-          <tr>
-            <td><span class="wbs-id">WBS-5.5</span></td><td>정식 런칭 및 고객 인수 서명 ★CP</td><td>—</td>
-            <td><span class="badge role-plan">기획</span></td><td>2</td><td>WBS-5.4</td>
-            <td><span class="badge b-w3">W3+</span></td><td><span class="badge b-p0">P0</span></td><td>런칭 보고서</td>
-          </tr>
+        <tbody id="wbsBody">
+          <!-- JS가 WBS_ROWS 배열로 자동 생성 -->
         </tbody>
       </table>
     </div>
@@ -1088,7 +288,200 @@ thead .g-id,thead .g-name,thead .g-owner,thead .g-dur{z-index:4;background:var(-
 </div>
 
 <script>
+/* ================================================================
+   ★ 데이터 섹션 — 스킬이 이 두 배열만 채우면 됩니다 ★
+================================================================ */
+
+var GANTT_ROWS = [
+  /* ── Phase 1: 기획 (완료) ── */
+  {t:'ph', ph:1, name:'Phase 1: 기획 (완료)'},
+  {t:'task', id:'WBS-1.1', name:'QST 고객질의서 작성',               owner:'기획', dur:'2일', ph:1, sw:1,  ew:1,  cp:false},
+  {t:'task', id:'WBS-1.2', name:'REQ 요구사항정의서 작성',            owner:'기획', dur:'3일', ph:1, sw:1,  ew:1,  cp:false},
+  {t:'task', id:'WBS-1.3', name:'FN 기능정의서 작성',                 owner:'기획', dur:'5일', ph:1, sw:2,  ew:2,  cp:false},
+  {t:'task', id:'WBS-1.4', name:'IA 정보구조설계',                    owner:'기획', dur:'5일', ph:1, sw:3,  ew:3,  cp:false},
+  {t:'task', id:'WBS-1.5', name:'WBS 작업분해구조',                   owner:'기획', dur:'3일', ph:1, sw:4,  ew:4,  cp:false},
+  {t:'task', id:'WBS-1.6', name:'기획 검수 완료 (planning-reviewer)', owner:'기획', dur:'3일', ph:1, sw:8,  ew:9,  cp:false},
+  {t:'ms',  week:9,  name:'M1: 기획 완료 (완료)'},
+
+  /* ── Phase 2: 디자인 ── */
+  {t:'ph', ph:2, name:'Phase 2: 디자인'},
+  {t:'task', id:'WBS-2.1', name:'디자인 시스템 수립 (컬러/타입/컴포넌트)',  owner:'디자인', dur:'3일', ph:2, sw:9,  ew:9,  cp:false},
+  {t:'task', id:'WBS-2.2', name:'운영자 대시보드 UX 설계',              owner:'디자인', dur:'3일', ph:2, sw:10, ew:10, cp:false},
+  {t:'task', id:'WBS-2.3', name:'운영자 회원/수업/회원권 관리 UX',      owner:'디자인', dur:'3일', ph:2, sw:10, ew:10, cp:false},
+  {t:'task', id:'WBS-2.4', name:'강사 포털 UX 설계',                    owner:'디자인', dur:'2일', ph:2, sw:10, ew:10, cp:false},
+  {t:'task', id:'WBS-2.5', name:'회원 앱 UX 설계 (예약/회원권)',        owner:'디자인', dur:'3일', ph:2, sw:10, ew:11, cp:false},
+  {t:'task', id:'WBS-2.6', name:'결제/회원권/구독 UI 설계',             owner:'디자인', dur:'3일', ph:2, sw:11, ew:11, cp:false},
+  {t:'task', id:'WBS-2.7', name:'UI 명세서 통합 작성',                  owner:'디자인', dur:'3일', ph:2, sw:11, ew:12, cp:false},
+  {t:'task', id:'WBS-2.8', name:'디자인 검수 및 고객 승인',             owner:'디자인', dur:'2일', ph:2, sw:12, ew:12, cp:false},
+  {t:'ms',  week:12, name:'M2: 디자인 완료'},
+
+  /* ── Phase 3: 개발 ── */
+  {t:'ph', ph:3, name:'Phase 3: 개발'},
+  {t:'sub', name:'3-A. 환경 설정'},
+  {t:'task', id:'WBS-3.1', name:'프로젝트 초기화 (React/Vite + Node.js 모노레포)', owner:'FE', dur:'2일', ph:3, sw:13, ew:13, cp:false},
+  {t:'task', id:'WBS-3.2', name:'DB 스키마 설계 및 구축 (MySQL, ERD)',             owner:'BE', dur:'3일', ph:3, sw:13, ew:13, cp:true},
+  {t:'task', id:'WBS-3.3', name:'BE API 서버 기반 구축 (Express + Swagger)',       owner:'BE', dur:'2일', ph:3, sw:14, ew:14, cp:false},
+  {t:'task', id:'WBS-3.4', name:'AWS 인프라 구성 (EC2+RDS+S3+CloudFront)',         owner:'BE', dur:'3일', ph:3, sw:13, ew:13, cp:false},
+  {t:'sub', name:'3-B. 인증 / RBAC'},
+  {t:'task', id:'WBS-3.5', name:'JWT 인증 시스템 구현 (Access+Refresh Token)',     owner:'BE', dur:'4일', ph:3, sw:14, ew:14, cp:true},
+  {t:'task', id:'WBS-3.6', name:'RBAC 권한 시스템 구현 (운영자/강사/회원)',        owner:'BE', dur:'3일', ph:3, sw:14, ew:15, cp:true},
+  {t:'task', id:'WBS-3.7', name:'SNS 소셜 로그인 연동 (카카오/네이버)',            owner:'BE', dur:'2일', ph:3, sw:14, ew:14, cp:false},
+  {t:'task', id:'WBS-3.8', name:'인증/로그인 화면 퍼블리싱 (3역할)',               owner:'FE', dur:'2일', ph:3, sw:15, ew:15, cp:false},
+  {t:'sub', name:'3-C. 수업 / 스케줄'},
+  {t:'task', id:'WBS-3.9',  name:'수업 관리 CRUD (생성/수정/삭제/조회)',           owner:'BE', dur:'3일', ph:3, sw:15, ew:15, cp:false},
+  {t:'task', id:'WBS-3.10', name:'스케줄 캘린더 구현 (주간/월간 뷰)',              owner:'BE', dur:'3일', ph:3, sw:15, ew:16, cp:false},
+  {t:'task', id:'WBS-3.11', name:'수업 관리 화면 퍼블리싱 (운영자)',               owner:'FE', dur:'3일', ph:3, sw:16, ew:16, cp:false},
+  {t:'task', id:'WBS-3.12', name:'스케줄 화면 퍼블리싱 (강사/회원)',               owner:'FE', dur:'3일', ph:3, sw:16, ew:16, cp:false},
+  {t:'sub', name:'3-D. 예약'},
+  {t:'task', id:'WBS-3.13', name:'그룹 수업 예약 (WebSocket 동시성 제어)',          owner:'BE', dur:'5일', ph:3, sw:16, ew:17, cp:false},
+  {t:'task', id:'WBS-3.14', name:'PT 1:1 예약 시스템 (강사 가용 슬롯)',            owner:'BE', dur:'4일', ph:3, sw:16, ew:17, cp:false},
+  {t:'task', id:'WBS-3.15', name:'예약 취소 / 대기 등록 처리',                     owner:'BE', dur:'3일', ph:3, sw:17, ew:17, cp:false},
+  {t:'task', id:'WBS-3.16', name:'출결 관리 (체크인 QR / 출석 현황)',              owner:'BE', dur:'2일', ph:3, sw:17, ew:17, cp:false},
+  {t:'task', id:'WBS-3.17', name:'예약/스케줄 화면 퍼블리싱 (회원)',               owner:'FE', dur:'3일', ph:3, sw:18, ew:18, cp:false},
+  {t:'ms',  week:17, name:'M3: 인증/예약 개발 완료'},
+  {t:'sub', name:'3-E. 회원 관리'},
+  {t:'task', id:'WBS-3.18', name:'회원 등록/조회/수정/등급 관리',                  owner:'BE', dur:'3일', ph:3, sw:15, ew:15, cp:true},
+  {t:'task', id:'WBS-3.19', name:'트레이너 프로필 관리 (자격증/담당 수업)',         owner:'BE', dur:'2일', ph:3, sw:15, ew:15, cp:false},
+  {t:'task', id:'WBS-3.20', name:'신체 측정/건강 기록 관리',                       owner:'BE', dur:'3일', ph:3, sw:15, ew:16, cp:false},
+  {t:'task', id:'WBS-3.21', name:'회원 관리 화면 퍼블리싱 (운영자)',               owner:'FE', dur:'3일', ph:3, sw:16, ew:16, cp:false},
+  {t:'sub', name:'3-F. 회원권 / 결제'},
+  {t:'task', id:'WBS-3.22', name:'회원권 상품 관리 (타입/가격/유효기간)',           owner:'BE', dur:'4일', ph:3, sw:15, ew:16, cp:true},
+  {t:'task', id:'WBS-3.23', name:'포트원 V2 결제 연동 (imp_uid 서버검증)',         owner:'BE', dur:'5일', ph:3, sw:16, ew:17, cp:true},
+  {t:'task', id:'WBS-3.24', name:'정기 결제 / 회원권 자동 갱신',                   owner:'BE', dur:'3일', ph:3, sw:17, ew:18, cp:false},
+  {t:'task', id:'WBS-3.25', name:'환불 처리 / 이의제기 워크플로우',                owner:'BE', dur:'3일', ph:3, sw:17, ew:18, cp:true},
+  {t:'task', id:'WBS-3.26', name:'회원권/결제 화면 퍼블리싱 (회원/운영자)',        owner:'FE', dur:'3일', ph:3, sw:18, ew:18, cp:false},
+  {t:'ms',  week:20, name:'M4: 결제/회원권 개발 완료'},
+  {t:'sub', name:'3-G. 알림'},
+  {t:'task', id:'WBS-3.27', name:'카카오 알림톡 연동 (예약/결제 알림)',            owner:'BE', dur:'3일', ph:3, sw:17, ew:18, cp:false},
+  {t:'task', id:'WBS-3.28', name:'인앱 알림 시스템 (실시간 푸시)',                 owner:'BE', dur:'2일', ph:3, sw:18, ew:18, cp:false},
+  {t:'task', id:'WBS-3.29', name:'알림 설정 화면 퍼블리싱 (회원)',                 owner:'FE', dur:'2일', ph:3, sw:18, ew:18, cp:false},
+  {t:'sub', name:'3-H. 구독 / 대시보드'},
+  {t:'task', id:'WBS-3.30', name:'B2B 구독 플랜 시스템 (Basic/Pro/Enterprise)',    owner:'BE', dur:'4일', ph:3, sw:17, ew:18, cp:true},
+  {t:'task', id:'WBS-3.31', name:'통합 대시보드 (Bull Queue 비동기 집계)',          owner:'BE', dur:'4일', ph:3, sw:18, ew:19, cp:true},
+  {t:'task', id:'WBS-3.32', name:'대시보드/구독 화면 퍼블리싱 (운영자)',           owner:'FE', dur:'3일', ph:3, sw:19, ew:19, cp:false},
+  {t:'sub', name:'3-I. 통합 마무리'},
+  {t:'task', id:'WBS-3.33', name:'반응형 + PWA 최적화 (오프라인 캐시)',            owner:'FE', dur:'3일', ph:3, sw:20, ew:20, cp:true},
+  {t:'task', id:'WBS-3.34', name:'통합 E2E 테스트 (인증/예약/결제 플로우)',        owner:'BE', dur:'5일', ph:3, sw:20, ew:21, cp:true},
+  {t:'task', id:'WBS-3.35', name:'성능 최적화 (LCP ≤1.5초 / Code Splitting)',      owner:'FE', dur:'3일', ph:3, sw:21, ew:21, cp:true},
+  {t:'task', id:'WBS-3.36', name:'버그 수정 / 코드 리뷰 / 문서화',                owner:'BE', dur:'5일', ph:3, sw:22, ew:22, cp:true},
+  {t:'ms',  week:22, name:'M5: 전체 개발 완료'},
+
+  /* ── Phase 4: QA ── */
+  {t:'ph', ph:4, name:'Phase 4: QA'},
+  {t:'task', id:'WBS-4.1', name:'기능 테스트 (TC-F, 전체 FN 커버리지)',            owner:'QA', dur:'3일', ph:4, sw:23, ew:23, cp:true},
+  {t:'task', id:'WBS-4.2', name:'결제/회원권 전문 QA (FN-014~016)',               owner:'QA', dur:'3일', ph:4, sw:23, ew:23, cp:false},
+  {t:'task', id:'WBS-4.3', name:'접근성 테스트 (WCAG AA, TC-A)',                  owner:'QA', dur:'2일', ph:4, sw:23, ew:23, cp:false},
+  {t:'task', id:'WBS-4.4', name:'성능 테스트 (Lighthouse 90+, TC-P)',             owner:'QA', dur:'3일', ph:4, sw:23, ew:23, cp:true},
+  {t:'task', id:'WBS-4.5', name:'보안 점검 (OWASP Top 10, JWT 취약점)',           owner:'QA', dur:'3일', ph:4, sw:23, ew:24, cp:false},
+  {t:'task', id:'WBS-4.6', name:'반응형 / 브라우저 호환성 테스트',                owner:'QA', dur:'2일', ph:4, sw:23, ew:23, cp:false},
+  {t:'task', id:'WBS-4.7', name:'UAT 고객 수락 테스트 (운영자/강사/회원)',        owner:'QA', dur:'3일', ph:4, sw:24, ew:24, cp:false},
+  {t:'task', id:'WBS-4.8', name:'QA 결함 수정 / 회귀 테스트 (TC-R)',             owner:'QA', dur:'5일', ph:4, sw:25, ew:25, cp:true},
+  {t:'ms',  week:26, name:'M6: QA 완료'},
+
+  /* ── Phase 5: 런칭 ── */
+  {t:'ph', ph:5, name:'Phase 5: 런칭'},
+  {t:'task', id:'WBS-5.1', name:'AWS 프로덕션 환경 구성 (Auto Scaling)',           owner:'BE', dur:'3일', ph:5, sw:26, ew:26, cp:true},
+  {t:'task', id:'WBS-5.2', name:'초기 데이터 세팅 및 이관',                       owner:'BE', dur:'1일', ph:5, sw:26, ew:26, cp:true},
+  {t:'task', id:'WBS-5.3', name:'소프트 런칭 (베타 피트니스센터 3곳)',            owner:'기획', dur:'2일', ph:5, sw:27, ew:27, cp:false},
+  {t:'task', id:'WBS-5.4', name:'모니터링 설정 (CloudWatch + Sentry)',             owner:'BE', dur:'1일', ph:5, sw:27, ew:27, cp:false},
+  {t:'task', id:'WBS-5.5', name:'정식 런칭 및 고객 인수 서명',                   owner:'기획', dur:'2일', ph:5, sw:27, ew:27, cp:true},
+  {t:'ms',  week:27, name:'M7: 정식 런칭'}
+];
+
+var WBS_ROWS = [
+  /* ── Phase 1: 기획 ── */
+  {t:'phase', name:'Phase 1: 기획 (완료)'},
+  {t:'task', id:'WBS-1.1', name:'QST 고객질의서 작성',               fn:'—',           owners:['기획'],   dur:2, pred:'-',                 wave:'W1', pri:'P1', output:'QST.md',           cp:false},
+  {t:'task', id:'WBS-1.2', name:'REQ 요구사항정의서 작성',            fn:'—',           owners:['기획'],   dur:3, pred:'WBS-1.1',            wave:'W2', pri:'P0', output:'REQ.md',           cp:false},
+  {t:'task', id:'WBS-1.3', name:'FN 기능정의서 작성',                 fn:'—',           owners:['기획'],   dur:5, pred:'WBS-1.2',            wave:'W2', pri:'P0', output:'FN.md',            cp:false},
+  {t:'task', id:'WBS-1.4', name:'IA 정보구조설계',                    fn:'—',           owners:['기획'],   dur:5, pred:'WBS-1.3',            wave:'W2', pri:'P0', output:'IA.md',            cp:false},
+  {t:'task', id:'WBS-1.5', name:'WBS 작업분해구조',                   fn:'—',           owners:['기획'],   dur:3, pred:'WBS-1.4',            wave:'W2', pri:'P0', output:'WBS.md',           cp:false},
+  {t:'task', id:'WBS-1.6', name:'기획 검수 완료 (planning-reviewer)', fn:'—',           owners:['기획'],   dur:3, pred:'WBS-1.5',            wave:'W2', pri:'P1', output:'검수보고서',       cp:false},
+
+  /* ── Phase 2: 디자인 ── */
+  {t:'phase', name:'Phase 2: 디자인'},
+  {t:'task', id:'WBS-2.1', name:'디자인 시스템 수립 (컬러/타입/컴포넌트)',  fn:'—',           owners:['디자인'], dur:3, pred:'WBS-1.6',            wave:'W1', pri:'P0', output:'디자인 시스템',   cp:false},
+  {t:'task', id:'WBS-2.2', name:'운영자 대시보드 UX 설계',              fn:'FN-019',      owners:['디자인'], dur:3, pred:'WBS-2.1',            wave:'W2', pri:'P0', output:'대시보드 UX',      cp:false},
+  {t:'task', id:'WBS-2.3', name:'운영자 회원/수업/회원권 관리 UX',      fn:'FN-008,FN-010,FN-011', owners:['디자인'], dur:3, pred:'WBS-2.1',  wave:'W2', pri:'P1', output:'관리 화면 UX',    cp:false},
+  {t:'task', id:'WBS-2.4', name:'강사 포털 UX 설계',                    fn:'FN-009,FN-012', owners:['디자인'], dur:2, pred:'WBS-2.2',          wave:'W2', pri:'P1', output:'강사 포털 UX',    cp:false},
+  {t:'task', id:'WBS-2.5', name:'회원 앱 UX 설계 (예약/회원권)',        fn:'FN-004,FN-005,FN-021', owners:['디자인'], dur:3, pred:'WBS-2.2',   wave:'W2', pri:'P1', output:'회원 앱 UX',      cp:false},
+  {t:'task', id:'WBS-2.6', name:'결제/회원권/구독 UI 설계',             fn:'FN-014,FN-021', owners:['디자인'], dur:3, pred:'WBS-2.3',          wave:'W2', pri:'P0', output:'결제/구독 UI',    cp:false},
+  {t:'task', id:'WBS-2.7', name:'UI 명세서 통합 작성',                  fn:'—',           owners:['디자인'], dur:3, pred:'WBS-2.4,WBS-2.5,WBS-2.6', wave:'W2', pri:'P0', output:'UI 명세서', cp:false},
+  {t:'task', id:'WBS-2.8', name:'디자인 검수 및 고객 승인',             fn:'—',           owners:['디자인'], dur:2, pred:'WBS-2.7',            wave:'W2', pri:'P0', output:'디자인 검수보고서', cp:false},
+
+  /* ── Phase 3: 개발 ── */
+  {t:'phase', name:'Phase 3: 개발'},
+  {t:'sub',   name:'3-A. 환경 설정'},
+  {t:'task', id:'WBS-3.1',  name:'프로젝트 초기화 (React/Vite + Node.js 모노레포)', fn:'—',           owners:['FE','BE'],  dur:2,  pred:'WBS-2.8',            wave:'W1', pri:'P0', output:'프로젝트 레포',   cp:false},
+  {t:'task', id:'WBS-3.2',  name:'DB 스키마 설계 및 구축 (MySQL, ERD)',             fn:'FN-001~023',  owners:['BE'],       dur:3,  pred:'WBS-3.1',            wave:'W2', pri:'P0', output:'ERD · 마이그레이션', cp:true},
+  {t:'task', id:'WBS-3.3',  name:'BE API 서버 기반 구축 (Express + Swagger)',       fn:'—',           owners:['BE'],       dur:2,  pred:'WBS-3.2',            wave:'W2', pri:'P1', output:'API 서버 기반',   cp:false},
+  {t:'task', id:'WBS-3.4',  name:'AWS 인프라 구성 (EC2+RDS+S3+CloudFront)',         fn:'—',           owners:['BE'],       dur:3,  pred:'WBS-3.1',            wave:'W1', pri:'P1', output:'AWS 인프라',      cp:false},
+  {t:'sub',   name:'3-B. 인증 / RBAC'},
+  {t:'task', id:'WBS-3.5',  name:'JWT 인증 시스템 구현 (Access+Refresh Token)',     fn:'FN-001',      owners:['BE'],       dur:4,  pred:'WBS-3.2',            wave:'W2', pri:'P0', output:'JWT 모듈',        cp:true},
+  {t:'task', id:'WBS-3.6',  name:'RBAC 권한 시스템 구현 (운영자/강사/회원)',        fn:'FN-002',      owners:['BE'],       dur:3,  pred:'WBS-3.5',            wave:'W2', pri:'P0', output:'RBAC 미들웨어',  cp:true},
+  {t:'task', id:'WBS-3.7',  name:'SNS 소셜 로그인 연동 (카카오/네이버)',            fn:'FN-003',      owners:['BE'],       dur:2,  pred:'WBS-3.5',            wave:'W2', pri:'P1', output:'소셜 로그인 모듈', cp:false},
+  {t:'task', id:'WBS-3.8',  name:'인증/로그인 화면 퍼블리싱 (3역할)',               fn:'FN-001,FN-002', owners:['FE'],     dur:2,  pred:'WBS-3.6,WBS-2.8',   wave:'W2', pri:'P1', output:'인증 화면',       cp:false},
+  {t:'sub',   name:'3-C. 수업 / 스케줄'},
+  {t:'task', id:'WBS-3.9',  name:'수업 관리 CRUD (생성/수정/삭제/조회)',            fn:'FN-008',      owners:['BE'],       dur:3,  pred:'WBS-3.6',            wave:'W2', pri:'P1', output:'수업 API',        cp:false},
+  {t:'task', id:'WBS-3.10', name:'스케줄 캘린더 구현 (주간/월간 뷰)',              fn:'FN-009',      owners:['BE','FE'],  dur:3,  pred:'WBS-3.9',            wave:'W2', pri:'P1', output:'캘린더 컴포넌트', cp:false},
+  {t:'task', id:'WBS-3.11', name:'수업 관리 화면 퍼블리싱 (운영자)',               fn:'FN-008,FN-009', owners:['FE'],     dur:3,  pred:'WBS-3.10,WBS-2.8',  wave:'W2', pri:'P1', output:'수업 관리 화면', cp:false},
+  {t:'task', id:'WBS-3.12', name:'스케줄 화면 퍼블리싱 (강사/회원)',               fn:'FN-009',      owners:['FE'],       dur:3,  pred:'WBS-3.10,WBS-2.8',  wave:'W2', pri:'P1', output:'스케줄 화면',     cp:false},
+  {t:'sub',   name:'3-D. 예약'},
+  {t:'task', id:'WBS-3.13', name:'그룹 수업 예약 (WebSocket 동시성 제어)',          fn:'FN-004',      owners:['BE'],       dur:5,  pred:'WBS-3.10',           wave:'W2', pri:'P1', output:'예약 API',        cp:false},
+  {t:'task', id:'WBS-3.14', name:'PT 1:1 예약 시스템 (강사 가용 슬롯)',            fn:'FN-005',      owners:['BE'],       dur:4,  pred:'WBS-3.10',           wave:'W2', pri:'P1', output:'PT 예약 API',     cp:false},
+  {t:'task', id:'WBS-3.15', name:'예약 취소 / 대기 등록 처리',                     fn:'FN-006,FN-007', owners:['BE'],     dur:3,  pred:'WBS-3.13',           wave:'W2', pri:'P1', output:'취소/대기 API',  cp:false},
+  {t:'task', id:'WBS-3.16', name:'출결 관리 (체크인 QR / 출석 현황)',              fn:'FN-020',      owners:['BE','FE'],  dur:2,  pred:'WBS-3.14',           wave:'W2', pri:'P1', output:'출결 모듈',       cp:false},
+  {t:'task', id:'WBS-3.17', name:'예약/스케줄 화면 퍼블리싱 (회원)',               fn:'FN-004,FN-005', owners:['FE'],     dur:3,  pred:'WBS-3.13,WBS-2.8',  wave:'W2', pri:'P1', output:'예약 화면',       cp:false},
+  {t:'sub',   name:'3-E. 회원 관리'},
+  {t:'task', id:'WBS-3.18', name:'회원 등록/조회/수정/등급 관리',                  fn:'FN-010',      owners:['BE'],       dur:3,  pred:'WBS-3.6',            wave:'W2', pri:'P0', output:'회원 API',        cp:true},
+  {t:'task', id:'WBS-3.19', name:'트레이너 프로필 관리 (자격증/담당 수업)',         fn:'FN-012',      owners:['BE'],       dur:2,  pred:'WBS-3.6',            wave:'W2', pri:'P1', output:'트레이너 API',    cp:false},
+  {t:'task', id:'WBS-3.20', name:'신체 측정/건강 기록 관리',                       fn:'FN-013',      owners:['BE'],       dur:3,  pred:'WBS-3.18',           wave:'W2', pri:'P1', output:'건강기록 API',    cp:false},
+  {t:'task', id:'WBS-3.21', name:'회원 관리 화면 퍼블리싱 (운영자)',               fn:'FN-010,FN-013', owners:['FE'],     dur:3,  pred:'WBS-3.20,WBS-2.8',  wave:'W2', pri:'P1', output:'회원 관리 화면', cp:false},
+  {t:'sub',   name:'3-F. 회원권 / 결제'},
+  {t:'task', id:'WBS-3.22', name:'회원권 상품 관리 (타입/가격/유효기간)',           fn:'FN-011',      owners:['BE'],       dur:4,  pred:'WBS-3.18',           wave:'W2', pri:'P0', output:'회원권 모듈',     cp:true},
+  {t:'task', id:'WBS-3.23', name:'포트원 V2 결제 연동 (imp_uid 서버검증)',         fn:'FN-014',      owners:['BE'],       dur:5,  pred:'WBS-3.22',           wave:'W2', pri:'P0', output:'포트원 결제 모듈', cp:true},
+  {t:'task', id:'WBS-3.24', name:'정기 결제 / 회원권 자동 갱신',                   fn:'FN-015',      owners:['BE'],       dur:3,  pred:'WBS-3.23',           wave:'W2', pri:'P1', output:'자동갱신 크론',   cp:false},
+  {t:'task', id:'WBS-3.25', name:'환불 처리 / 이의제기 워크플로우',                fn:'FN-016',      owners:['BE'],       dur:3,  pred:'WBS-3.23',           wave:'W2', pri:'P0', output:'환불 워크플로우', cp:true},
+  {t:'task', id:'WBS-3.26', name:'회원권/결제 화면 퍼블리싱 (회원/운영자)',        fn:'FN-011,FN-014', owners:['FE'],     dur:3,  pred:'WBS-3.25,WBS-2.8',  wave:'W2', pri:'P1', output:'결제 화면',       cp:false},
+  {t:'sub',   name:'3-G. 알림'},
+  {t:'task', id:'WBS-3.27', name:'카카오 알림톡 연동 (예약/결제 알림)',            fn:'FN-017',      owners:['BE'],       dur:3,  pred:'WBS-3.23',           wave:'W2', pri:'P1', output:'알림톡 모듈',     cp:false},
+  {t:'task', id:'WBS-3.28', name:'인앱 알림 시스템 (실시간 푸시)',                 fn:'FN-018',      owners:['BE'],       dur:2,  pred:'WBS-3.27',           wave:'W2', pri:'P1', output:'인앱 알림 모듈', cp:false},
+  {t:'task', id:'WBS-3.29', name:'알림 설정 화면 퍼블리싱 (회원)',                 fn:'FN-017,FN-018', owners:['FE'],     dur:2,  pred:'WBS-3.28,WBS-2.8',  wave:'W2', pri:'P1', output:'알림 설정 화면', cp:false},
+  {t:'sub',   name:'3-H. 구독 / 대시보드'},
+  {t:'task', id:'WBS-3.30', name:'B2B 구독 플랜 시스템 (Basic/Pro/Enterprise)',    fn:'FN-021',      owners:['BE'],       dur:4,  pred:'WBS-3.23',           wave:'W2', pri:'P0', output:'구독 플랜 모듈', cp:true},
+  {t:'task', id:'WBS-3.31', name:'통합 대시보드 (Bull Queue 비동기 집계)',          fn:'FN-019',      owners:['BE','FE'],  dur:4,  pred:'WBS-3.30,WBS-3.25', wave:'W2', pri:'P0', output:'대시보드 API',    cp:true},
+  {t:'task', id:'WBS-3.32', name:'대시보드/구독 화면 퍼블리싱 (운영자)',           fn:'FN-019,FN-021', owners:['FE'],     dur:3,  pred:'WBS-3.31,WBS-2.8',  wave:'W2', pri:'P1', output:'대시보드 화면',  cp:false},
+  {t:'sub',   name:'3-I. 통합 마무리'},
+  {t:'task', id:'WBS-3.33', name:'반응형 + PWA 최적화 (오프라인 캐시)',            fn:'FN-022,FN-023', owners:['FE'],     dur:3,  pred:'WBS-3.32',           wave:'W3+', pri:'P0', output:'PWA 모듈',       cp:true},
+  {t:'task', id:'WBS-3.34', name:'통합 E2E 테스트 (인증/예약/결제 플로우)',        fn:'전체',        owners:['BE','FE'],  dur:5,  pred:'WBS-3.33',           wave:'W3+', pri:'P0', output:'E2E 테스트 결과', cp:true},
+  {t:'task', id:'WBS-3.35', name:'성능 최적화 (LCP ≤1.5초 / Code Splitting)',      fn:'NFR-001',     owners:['FE','BE'],  dur:3,  pred:'WBS-3.34',           wave:'W3+', pri:'P0', output:'성능 최적화 보고', cp:true},
+  {t:'task', id:'WBS-3.36', name:'버그 수정 / 코드 리뷰 / 문서화',                fn:'전체',        owners:['BE','FE'],  dur:5,  pred:'WBS-3.35',           wave:'W3+', pri:'P0', output:'코드 리뷰 · 문서', cp:true},
+
+  /* ── Phase 4: QA ── */
+  {t:'phase', name:'Phase 4: QA'},
+  {t:'task', id:'WBS-4.1', name:'기능 테스트 (TC-F, 전체 FN 커버리지)',            fn:'TC-F-001~',   owners:['QA'],       dur:3,  pred:'WBS-3.36',           wave:'W1', pri:'P0', output:'TC-F 문서 · 결과', cp:true},
+  {t:'task', id:'WBS-4.2', name:'결제/회원권 전문 QA (FN-014~016)',               fn:'TC-F-050~',   owners:['QA'],       dur:3,  pred:'WBS-3.36',           wave:'W1', pri:'P1', output:'결제 QA 보고서',  cp:false},
+  {t:'task', id:'WBS-4.3', name:'접근성 테스트 (WCAG AA, TC-A)',                  fn:'TC-A-001~',   owners:['QA'],       dur:2,  pred:'WBS-3.33',           wave:'W1', pri:'P1', output:'TC-A 문서 · 결과', cp:false},
+  {t:'task', id:'WBS-4.4', name:'성능 테스트 (Lighthouse 90+, TC-P)',             fn:'TC-P-001~',   owners:['QA'],       dur:3,  pred:'WBS-3.35',           wave:'W1', pri:'P0', output:'Lighthouse 보고서', cp:true},
+  {t:'task', id:'WBS-4.5', name:'보안 점검 (OWASP Top 10, JWT 취약점)',           fn:'TC-F-100~',   owners:['QA'],       dur:3,  pred:'WBS-4.1',            wave:'W2', pri:'P1', output:'보안 점검 보고서', cp:false},
+  {t:'task', id:'WBS-4.6', name:'반응형 / 브라우저 호환성 테스트',                fn:'TC-F-120~',   owners:['QA'],       dur:2,  pred:'WBS-4.1',            wave:'W2', pri:'P1', output:'호환성 테스트 결과', cp:false},
+  {t:'task', id:'WBS-4.7', name:'UAT 고객 수락 테스트 (운영자/강사/회원)',        fn:'—',           owners:['QA','기획'], dur:3, pred:'WBS-4.5',            wave:'W2', pri:'P0', output:'UAT 보고서',      cp:false},
+  {t:'task', id:'WBS-4.8', name:'QA 결함 수정 / 회귀 테스트 (TC-R)',             fn:'TC-R-001~',   owners:['QA','BE','FE'], dur:5, pred:'WBS-4.7',          wave:'W3+', pri:'P0', output:'회귀 테스트 보고서', cp:true},
+
+  /* ── Phase 5: 런칭 ── */
+  {t:'phase', name:'Phase 5: 런칭'},
+  {t:'task', id:'WBS-5.1', name:'AWS 프로덕션 환경 구성 (Auto Scaling)',           fn:'NFR-005',     owners:['BE'],       dur:3,  pred:'WBS-4.8',            wave:'W1', pri:'P0', output:'AWS 인프라 설정서', cp:true},
+  {t:'task', id:'WBS-5.2', name:'초기 데이터 세팅 및 이관',                       fn:'—',           owners:['BE'],       dur:1,  pred:'WBS-5.1',            wave:'W2', pri:'P0', output:'데이터 이관 완료', cp:true},
+  {t:'task', id:'WBS-5.3', name:'소프트 런칭 (베타 피트니스센터 3곳)',            fn:'—',           owners:['기획','BE'], dur:2,  pred:'WBS-5.2',            wave:'W2', pri:'P1', output:'소프트 런칭 보고', cp:false},
+  {t:'task', id:'WBS-5.4', name:'모니터링 설정 (CloudWatch + Sentry)',             fn:'NFR-006',     owners:['BE'],       dur:1,  pred:'WBS-5.3',            wave:'W2', pri:'P1', output:'모니터링 설정',   cp:false},
+  {t:'task', id:'WBS-5.5', name:'정식 런칭 및 고객 인수 서명',                   fn:'—',           owners:['기획'],     dur:2,  pred:'WBS-5.4',            wave:'W3+', pri:'P0', output:'런칭 보고서',     cp:true}
+];
+
+/* ================================================================
+   렌더링 엔진 — 수정 불필요
+================================================================ */
 (function() {
+  /* 탭 전환 */
   var btns = document.querySelectorAll('.tab-btn');
   var panels = document.querySelectorAll('.tab-panel');
   btns.forEach(function(btn) {
@@ -1096,13 +489,47 @@ thead .g-id,thead .g-name,thead .g-owner,thead .g-dur{z-index:4;background:var(-
       var target = btn.dataset.tab;
       btns.forEach(function(b) { b.classList.remove('active'); });
       btn.classList.add('active');
-      panels.forEach(function(p) {
-        p.classList.toggle('active', p.id === 'panel-' + target);
-      });
+      panels.forEach(function(p) { p.classList.toggle('active', p.id === 'panel-' + target); });
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   });
 
+  /* 유틸 */
+  function esc(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  var ownerCls = {'PM':'role-plan','기획':'role-plan','디자인':'role-design','FE':'role-pub','BE':'role-dev','QA':'role-qa'};
+  function ownerBadge(o) { return '<span class="badge '+(ownerCls[o]||'role-dev')+'">'+esc(o)+'</span>'; }
+
+  /* ── 간트 tbody 렌더링 ── */
+  var tbody = document.getElementById('ganttBody');
+  if (tbody) {
+    GANTT_ROWS.forEach(function(row) {
+      var tr = document.createElement('tr');
+      if (row.t === 'ph') {
+        tr.className = 'g-phase-row'; tr.dataset.phase = row.ph;
+        tr.innerHTML = '<td class="g-id"></td><td class="g-name">'+esc(row.name)+'</td><td class="g-owner"></td><td class="g-dur"></td>';
+      } else if (row.t === 'sub') {
+        tr.className = 'g-sub-row';
+        tr.innerHTML = '<td class="g-id"></td><td class="g-name" style="padding-left:20px;">'+esc(row.name)+'</td><td class="g-owner"></td><td class="g-dur"></td>';
+      } else if (row.t === 'ms') {
+        tr.className = 'g-milestone'; tr.dataset.week = row.week;
+        tr.innerHTML = '<td class="g-id"></td><td class="g-name" style="font-weight:700;">▶ '+esc(row.name)+'</td><td class="g-owner"></td><td class="g-dur"></td>';
+      } else {
+        tr.className = 'g-task';
+        tr.dataset.phase = row.ph; tr.dataset.sw = row.sw; tr.dataset.ew = row.ew;
+        if (row.cp) tr.dataset.cp = 'true';
+        var cpBadge = row.cp ? '<span class="cp-badge">CP</span>' : '';
+        tr.innerHTML = '<td class="g-id"><span class="wbs-id">'+esc(row.id)+'</span></td>'
+          +'<td class="g-name">'+cpBadge+esc(row.name)+'</td>'
+          +'<td class="g-owner">'+ownerBadge(row.owner)+'</td>'
+          +'<td class="g-dur">'+esc(row.dur)+'</td>';
+      }
+      tbody.appendChild(tr);
+    });
+  }
+
+  /* ── 간트 헤더 + 바 렌더링 ── */
   var table = document.getElementById('ganttTable');
   if (!table) return;
   var projStart  = new Date(table.dataset.projStart  || '2026-01-01');
@@ -1111,83 +538,98 @@ thead .g-id,thead .g-name,thead .g-owner,thead .g-dur{z-index:4;background:var(-
 
   var weeks = [];
   for (var w = 1; w <= totalWeeks; w++) {
-    var d = new Date(projStart);
-    d.setDate(d.getDate() + (w - 1) * 7);
-    weeks.push({ w: w, month: d.getMonth() + 1 });
+    var d = new Date(projStart); d.setDate(d.getDate() + (w-1)*7);
+    weeks.push({ w: w, month: d.getMonth()+1 });
   }
   var monthGroups = [];
   weeks.forEach(function(wk) {
-    var last = monthGroups[monthGroups.length - 1];
+    var last = monthGroups[monthGroups.length-1];
     if (last && last.month === wk.month) { last.count++; }
     else { monthGroups.push({ month: wk.month, count: 1 }); }
   });
   var mNames = ['','1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
   var thead = document.getElementById('ganttHead');
 
-  var tr1 = document.createElement('tr');
-  tr1.className = 'month-hdr';
-  [['g-id','WBS ID'],['g-name','작업명'],['g-owner','담당'],['g-dur','기간']].forEach(function(pair) {
-    var th = document.createElement('th');
-    th.className = pair[0]; th.textContent = pair[1];
-    tr1.appendChild(th);
+  var tr1 = document.createElement('tr'); tr1.className = 'month-hdr';
+  [['g-id','WBS ID'],['g-name','작업명'],['g-owner','담당'],['g-dur','기간']].forEach(function(p) {
+    var th = document.createElement('th'); th.className = p[0]; th.textContent = p[1]; tr1.appendChild(th);
   });
   monthGroups.forEach(function(mg) {
-    var th = document.createElement('th');
-    th.colSpan = mg.count; th.textContent = mNames[mg.month]; th.style.textAlign = 'center';
-    tr1.appendChild(th);
+    var th = document.createElement('th'); th.colSpan = mg.count; th.textContent = mNames[mg.month]; th.style.textAlign='center'; tr1.appendChild(th);
   });
   thead.appendChild(tr1);
 
-  var tr2 = document.createElement('tr');
-  tr2.className = 'week-hdr';
+  var tr2 = document.createElement('tr'); tr2.className = 'week-hdr';
   ['g-id','g-name','g-owner','g-dur'].forEach(function(cls) {
     var th = document.createElement('th'); th.className = cls; tr2.appendChild(th);
   });
   weeks.forEach(function(wk) {
-    var th = document.createElement('th');
-    th.textContent = 'W' + wk.w;
-    if (wk.w === todayWeek) { th.style.color = 'var(--c-accent)'; th.style.fontWeight = '800'; }
+    var th = document.createElement('th'); th.textContent = 'W'+wk.w;
+    if (wk.w === todayWeek) { th.style.color='var(--c-accent)'; th.style.fontWeight='800'; }
     tr2.appendChild(th);
   });
   thead.appendChild(tr2);
 
   document.querySelectorAll('.g-task').forEach(function(row) {
-    var sw = parseInt(row.dataset.sw) || 1;
-    var ew = parseInt(row.dataset.ew) || sw;
-    var ph = parseInt(row.dataset.phase) || 1;
-    var cp = row.dataset.cp === 'true';
-    for (var w = 1; w <= totalWeeks; w++) {
-      var td = document.createElement('td');
-      td.className = 'g-wk';
-      if (w === todayWeek) { td.style.borderLeft = '2px solid var(--c-accent)'; }
-      if (w >= sw && w <= ew) {
+    var sw = parseInt(row.dataset.sw)||1, ew = parseInt(row.dataset.ew)||sw;
+    var ph = parseInt(row.dataset.phase)||1, cp = row.dataset.cp==='true';
+    for (var w=1; w<=totalWeeks; w++) {
+      var td = document.createElement('td'); td.className='g-wk';
+      if (w===todayWeek) td.style.borderLeft='2px solid var(--c-accent)';
+      if (w>=sw && w<=ew) {
         var div = document.createElement('div');
-        var cls = 'bar-inner ' + (cp ? 'cp' : 'ph' + ph);
-        if (w === sw && w === ew) cls += ' bar-s bar-e';
-        else if (w === sw) cls += ' bar-s';
-        else if (w === ew) cls += ' bar-e';
-        else cls += ' bar-mid';
-        div.className = cls;
-        td.appendChild(div);
+        var cls = 'bar-inner '+(cp?'cp':'ph'+ph);
+        if (w===sw && w===ew) cls+=' bar-s bar-e';
+        else if (w===sw) cls+=' bar-s';
+        else if (w===ew) cls+=' bar-e';
+        else cls+=' bar-mid';
+        div.className=cls; td.appendChild(div);
       }
       row.appendChild(td);
     }
   });
 
-  document.querySelectorAll('.g-phase-row, .g-sub-row, .g-milestone').forEach(function(row) {
+  document.querySelectorAll('.g-phase-row,.g-sub-row,.g-milestone').forEach(function(row) {
     var isMilestone = row.classList.contains('g-milestone');
-    var mwk = isMilestone ? parseInt(row.dataset.week) || 0 : 0;
-    for (var w = 1; w <= totalWeeks; w++) {
-      var td = document.createElement('td');
-      td.className = 'g-wk';
-      if (isMilestone && w === mwk) {
-        var span = document.createElement('span');
-        span.className = 'ms-marker'; span.textContent = '▼';
-        td.appendChild(span);
+    var mwk = isMilestone ? parseInt(row.dataset.week)||0 : 0;
+    for (var w=1; w<=totalWeeks; w++) {
+      var td = document.createElement('td'); td.className='g-wk';
+      if (isMilestone && w===mwk) {
+        var span = document.createElement('span'); span.className='ms-marker'; span.textContent='▼'; td.appendChild(span);
       }
       row.appendChild(td);
     }
   });
+
+  /* ── WBS 상세 tbody 렌더링 ── */
+  var wbsTbody = document.getElementById('wbsBody');
+  if (wbsTbody) {
+    WBS_ROWS.forEach(function(row) {
+      var tr = document.createElement('tr');
+      if (row.t === 'phase') {
+        tr.className = 'phase-row';
+        tr.innerHTML = '<td colspan="9">'+esc(row.name)+'</td>';
+      } else if (row.t === 'sub') {
+        tr.className = 'phase-row';
+        tr.innerHTML = '<td colspan="9" style="background:var(--c-primary-light) !important;padding-left:24px;font-weight:600;">'+esc(row.name)+'</td>';
+      } else {
+        var ownersHtml = (row.owners||[]).map(ownerBadge).join(' ');
+        var waveCls = row.wave==='W1'?'b-w1':row.wave==='W2'?'b-w2':'b-w3';
+        var priCls  = row.pri==='P0'?'b-p0':'b-p1';
+        var cpMark  = row.cp ? ' ★CP' : '';
+        tr.innerHTML = '<td><span class="wbs-id">'+esc(row.id)+'</span></td>'
+          +'<td>'+esc(row.name)+cpMark+'</td>'
+          +'<td>'+esc(row.fn||'—')+'</td>'
+          +'<td>'+ownersHtml+'</td>'
+          +'<td>'+esc(row.dur)+'</td>'
+          +'<td>'+esc(row.pred||'-')+'</td>'
+          +'<td><span class="badge '+waveCls+'">'+esc(row.wave)+'</span></td>'
+          +'<td><span class="badge '+priCls+'">'+esc(row.pri)+'</span></td>'
+          +'<td>'+esc(row.output||'')+'</td>';
+      }
+      wbsTbody.appendChild(tr);
+    });
+  }
 })();
 </script>
 </body>
