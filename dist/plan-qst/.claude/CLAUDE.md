@@ -12,17 +12,21 @@
 
 ## 실행 절차
 
-### Step 0: 선행 파악 (연계/독립 모드 판별)
+### Step 0: 선행 파악 (재작성/초기 모드 판별)
 
-1. `output/{프로젝트명}/context/` 폴더 스캔
-   - `context/project.md` 존재 시: 프로젝트 기본 정보 로드
-   - `context/qst.md` 존재 시: 이전 버전 QST 요약 참조 (재작성 판단)
-2. 형제 산출물 스캔: `output/{프로젝트명}/*/REQ_*.md`, `FN_*.md`, `IA_*.md`, `WBS_*.md`
-3. `_context.md` (구버전) 존재 시: "context/ 폴더로 마이그레이션 권장" 메시지 출력 후 context/ 기준으로 진행
-4. 스캔 결과 출력 (필수):
-   ```
-   [전방위 스캔] REQ:{n} FN:{n} IA:{n} WBS:{n} context/qst.md:{존재/미존재}
-   ```
+재작성 모드 조건 (하나라도 해당 시):
+1. **재작성 감지**: `output/{프로젝트명}/context/qst.md` 존재 → 이전 QST 요약 참조 후 재작성 판단
+2. **형제 산출물 감지**: `output/{프로젝트명}/*/REQ_*.md`, `FN_*.md`, `IA_*.md`, `WBS_*.md` 1건 이상 → 완료된 산출물 범위 파악
+3. 모두 미존재 → **초기 모드**: PROJECT.md에서 프로젝트 기본 정보 수집
+
+추가 스캔:
+- `output/{프로젝트명}/context/project.md` 존재 시 프로젝트 기본 정보 로드
+- `_context.md` 존재 시 "context/ 폴더로 마이그레이션 권장" 메시지 출력 후 context/ 기준으로 진행
+
+**모드 판정 출력**:
+```
+[QST Step 0] 모드: {초기작성/재작성} | context/qst.md: {있음/없음} | REQ:{n} FN:{n} IA:{n} WBS:{n}
+```
 
 ### Step 1: 기확정 항목 식별
 
