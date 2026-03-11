@@ -28,6 +28,12 @@
   --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
   --shadow-lg: 0 8px 24px rgba(0,0,0,0.1);
   --max-w: 960px;
+  /* Depth 색상 */
+  --d0-bg: #1B3A5C; --d0-fg: #fff;
+  --d1-bg: #EBF4FF; --d1-fg: #1e40af; --d1-bd: #BFDBFE;
+  --d2-bg: #F0FDF4; --d2-fg: #065f46; --d2-bd: #A7F3D0;
+  --d3-bg: #FDF4FF; --d3-fg: #6d28d9; --d3-bd: #DDD6FE;
+  --d4-bg: #FFF7ED; --d4-fg: #92400e; --d4-bd: #FDE68A;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -84,21 +90,47 @@ body {
 .info-table td { padding: 10px 14px; border-bottom: 1px solid var(--c-border); font-size: 14px; }
 .info-table tr:last-child th, .info-table tr:last-child td { border-bottom: none; }
 
-/* Sitemap Tree */
-.sitemap-wrap {
-  background: var(--c-bg-alt);
-  border: 1px solid var(--c-border);
-  border-radius: var(--radius);
-  padding: 20px 24px;
-  overflow-x: auto;
-}
-.sitemap-tree {
-  font-family: 'Consolas', 'D2Coding', 'Nanum Gothic Coding', monospace;
-  font-size: 14px;
-  line-height: 1.8;
-  color: var(--c-text);
-  white-space: pre;
-}
+/* ===== SITEMAP VISUAL TREE ===== */
+.sm-legend { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; font-size: 12px; color: var(--c-text-sub); }
+.sm-legend-item { display: flex; align-items: center; gap: 6px; }
+.sm-legend-dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; flex-shrink: 0; }
+.ld0 { background: var(--d0-bg); }
+.ld1 { background: var(--d1-bd); border: 1px solid var(--d1-fg); }
+.ld2 { background: var(--d2-bd); border: 1px solid var(--d2-fg); }
+.ld3 { background: var(--d3-bd); border: 1px solid var(--d3-fg); }
+.ld4 { background: var(--d4-bd); border: 1px solid var(--d4-fg); }
+.sm-gnb-wrap { display: flex; flex-direction: column; gap: 12px; }
+.sm-gnb-block { border: 1px solid var(--c-border); border-radius: var(--radius); overflow: hidden; }
+.sm-home-row { display: flex; align-items: center; gap: 10px; background: var(--d0-bg); color: var(--d0-fg); padding: 10px 16px; font-size: 13px; font-weight: 700; }
+.sm-home-row .sm-ia-id { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.5); margin-left: auto; }
+.sm-l1-row { display: flex; align-items: center; gap: 10px; background: var(--d1-bg); border-left: 4px solid var(--d1-fg); padding: 9px 14px; font-size: 13px; font-weight: 700; color: var(--d1-fg); cursor: pointer; user-select: none; }
+.sm-l1-row .sm-ia-id { font-size: 10px; font-weight: 600; color: var(--c-text-sub); margin-left: auto; }
+.sm-l1-row .sm-toggle { font-size: 10px; color: var(--c-text-sub); margin-left: 6px; transition: transform 0.2s; }
+.sm-l1-row.collapsed .sm-toggle { transform: rotate(-90deg); }
+.sm-l1-children { border-top: 1px solid var(--c-border); }
+.sm-l1-children.hidden { display: none; }
+.sm-l2-row { display: flex; align-items: center; gap: 8px; padding: 7px 14px 7px 28px; font-size: 12px; font-weight: 600; color: var(--d2-fg); background: var(--c-surface); border-bottom: 1px solid #f3f4f6; position: relative; }
+.sm-l2-row::before { content: ''; position: absolute; left: 16px; top: 50%; width: 6px; height: 1px; background: var(--d2-fg); opacity: 0.4; }
+.sm-l2-row .sm-ia-id { font-size: 10px; color: var(--c-text-sub); margin-left: auto; }
+.sm-l2-row .sm-badges { display: flex; gap: 4px; }
+.sm-l2-children { background: var(--d2-bg); }
+.sm-l3-row { display: flex; align-items: center; gap: 8px; padding: 6px 14px 6px 44px; font-size: 12px; color: var(--d3-fg); background: transparent; border-bottom: 1px solid rgba(0,0,0,0.04); position: relative; }
+.sm-l3-row::before { content: ''; position: absolute; left: 32px; top: 50%; width: 6px; height: 1px; background: var(--d3-fg); opacity: 0.35; }
+.sm-l3-row .sm-ia-id { font-size: 10px; color: var(--c-text-sub); margin-left: auto; }
+.sm-l3-children { background: var(--d3-bg); }
+.sm-l4-row { display: flex; align-items: center; gap: 8px; padding: 5px 14px 5px 60px; font-size: 11px; color: var(--d4-fg); background: transparent; border-bottom: 1px solid rgba(0,0,0,0.04); position: relative; }
+.sm-l4-row::before { content: ''; position: absolute; left: 48px; top: 50%; width: 6px; height: 1px; background: var(--d4-fg); opacity: 0.35; }
+.sm-l4-row .sm-ia-id { font-size: 10px; color: var(--c-text-sub); margin-left: auto; }
+.sm-util-section { margin-top: 12px; border: 1px solid var(--c-border); border-radius: var(--radius); overflow: hidden; }
+.sm-util-header { background: #374151; color: #fff; padding: 8px 16px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.depth-badge { display: inline-block; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 2px; margin-right: 2px; flex-shrink: 0; }
+.dep0 { background: rgba(255,255,255,0.2); color: #fff; }
+.dep1 { background: var(--d1-bd); color: var(--d1-fg); }
+.dep2 { background: var(--d2-bd); color: var(--d2-fg); }
+.dep3 { background: var(--d3-bd); color: var(--d3-fg); }
+.dep4 { background: var(--d4-bd); color: var(--d4-fg); }
+.pg-type { font-size: 12px; }
+.sm-ia-id { }
 
 /* Page Inventory Table */
 .inventory-table {
@@ -149,9 +181,14 @@ body {
 
 /* Depth Indent */
 .d0 { font-weight: 700; }
-.d1 { padding-left: 14px; }
-.d2 { padding-left: 28px; }
-.d3 { padding-left: 42px; color: var(--c-text-sub); }
+.d1 { padding-left: 12px; }
+.d2 { padding-left: 24px; color: var(--c-text-sub); }
+.d3 { padding-left: 36px; color: var(--c-text-sub); font-size: 11px; }
+.d4 { padding-left: 48px; color: var(--c-text-sub); font-size: 11px; font-style: italic; }
+/* Depth row highlight */
+.inventory-table tr.r-d0 td { background: #EBF4FF; font-weight: 700; }
+.inventory-table tr.r-d2 td { background: var(--c-bg-alt); }
+.inventory-table tr.r-d4 td { background: #FFFBEB; }
 
 /* Page ID */
 .page-id { font-size: 11px; font-weight: 700; color: var(--c-primary-mid); white-space: nowrap; }
@@ -224,14 +261,14 @@ body {
 <!-- ===== STICKY TAB ===== -->
 <div class="tab-wrap">
   <nav class="tab-nav">
-    <button class="tab-btn active" data-tab="overview">개요</button>
-    <button class="tab-btn" data-tab="sitemap">사이트맵</button>
+    <button class="tab-btn active" data-tab="sitemap">사이트맵</button>
     <button class="tab-btn" data-tab="inventory">페이지 인벤토리</button>
+    <button class="tab-btn" data-tab="overview">개요</button>
   </nav>
 </div>
 
 <!-- ===== TAB: 개요 ===== -->
-<div class="tab-panel active" id="panel-overview">
+<div class="tab-panel" id="panel-overview">
 <div class="container">
   <div class="inner-section">
     <div class="s-label">Document Overview</div>
@@ -249,79 +286,393 @@ body {
 </div>
 
 <!-- ===== TAB: 사이트맵 ===== -->
-<div class="tab-panel" id="panel-sitemap">
+<div class="tab-panel active" id="panel-sitemap">
 <div class="container">
   <div class="inner-section">
     <div class="s-label">Sitemap</div>
-    <div class="s-title">사이트맵 트리</div>
-    <div class="sitemap-wrap">
-      <pre class="sitemap-tree">━━━ 공통 / 인증 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    <div class="s-title">사이트맵</div>
 
-📄 로그인                      (IA-P001)  /login
-📄 회원가입 (운영자 전용)      (IA-P002)  /signup
-📄 비밀번호 재설정             (IA-P003)  /reset-password
-📄 이용약관                    (IA-P004)  /terms
-📄 개인정보처리방침            (IA-P005)  /privacy
-📄 404 에러                    (IA-P006)  /404
-📄 500 에러                    (IA-P007)  /500
-
-
-━━━ 운영자 (Admin) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-🏠 운영자 대시보드             (IA-P100)  /admin
-├── 📂 수업 관리               (IA-P110)  /admin/classes
-│   ├── 📄 수업 일정 목록      (IA-P111)  /admin/classes
-│   ├── 📄 수업 일정 등록/수정 (IA-P112)  /admin/classes/new
-│   └── 📄 수업 상세           (IA-P113)  /admin/classes/:id
-├── 📂 예약 관리               (IA-P120)  /admin/reservations
-│   ├── 📄 예약 현황 조회      (IA-P121)  /admin/reservations
-│   └── 📄 예약 상세           (IA-P122)  /admin/reservations/:id
-├── 📂 강사 관리               (IA-P130)  /admin/trainers
-│   ├── 📄 강사 목록           (IA-P131)  /admin/trainers
-│   ├── 📄 강사 등록/수정      (IA-P132)  /admin/trainers/new
-│   └── 📄 강사 스케줄 설정    (IA-P133)  /admin/trainers/:id/schedule
-├── 📂 회원 관리               (IA-P140)  /admin/members
-│   ├── 📄 회원 목록           (IA-P141)  /admin/members
-│   ├── 📄 회원 등록/수정      (IA-P142)  /admin/members/new
-│   ├── 📄 회원 상세           (IA-P143)  /admin/members/:id
-│   └── 📄 출석 체크           (IA-P144)  /admin/attendance
-├── 📂 회원권 / 결제           (IA-P150)  /admin/billing
-│   ├── 📄 회원권 목록         (IA-P151)  /admin/billing/memberships
-│   ├── 📄 회원권 등록/수정    (IA-P152)  /admin/billing/memberships/new
-│   ├── 📄 결제 내역           (IA-P153)  /admin/billing/payments
-│   ├── 📄 결제 등록           (IA-P154)  /admin/billing/payments/new
-│   └── 📄 영수증              (IA-P155)  /admin/billing/payments/:id/receipt
-├── 📂 알림 설정               (IA-P160)  /admin/notifications
-│   ├── 📄 알림 발송 내역      (IA-P161)  /admin/notifications/history
-│   └── 📄 알림 템플릿 설정    (IA-P162)  /admin/notifications/templates
-└── 📂 구독 플랜 관리          (IA-P170)  /admin/subscription
-    ├── 📄 구독 현황           (IA-P171)  /admin/subscription
-    └── 📄 구독 플랜 설정      (IA-P172)  /admin/subscription/settings
-
-
-━━━ 강사 (Trainer) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-🏠 강사 홈                     (IA-P200)  /trainer
-├── 📂 내 스케줄               (IA-P210)  /trainer/schedule
-│   ├── 📄 주간 스케줄         (IA-P211)  /trainer/schedule
-│   └── 📄 수업 상세           (IA-P212)  /trainer/schedule/:id
-└── 📂 내 수업                 (IA-P220)  /trainer/classes
-    ├── 📄 수업 목록           (IA-P221)  /trainer/classes
-    └── 📄 수강 회원 목록      (IA-P222)  /trainer/classes/:id/members
-
-
-━━━ 회원 (Member) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-🏠 회원 홈                     (IA-P300)  /member
-├── 📂 예약                    (IA-P310)  /member/reservations
-│   ├── 📄 그룹 수업 예약      (IA-P311)  /member/reservations/group
-│   ├── 📄 PT 1:1 예약         (IA-P312)  /member/reservations/pt
-│   └── 📄 내 예약 목록        (IA-P313)  /member/reservations/my
-├── 📂 회원권 / 결제           (IA-P320)  /member/billing
-│   ├── 📄 내 회원권 현황      (IA-P321)  /member/billing/membership
-│   └── 📄 결제 내역           (IA-P322)  /member/billing/payments
-└── 📄 내 프로필               (IA-P330)  /member/profile</pre>
+    <!-- Depth 범례 -->
+    <div class="sm-legend">
+      <span class="sm-legend-item"><span class="sm-legend-dot ld0"></span>L0 홈 / 대시보드</span>
+      <span class="sm-legend-item"><span class="sm-legend-dot ld1"></span>L1 GNB 메뉴</span>
+      <span class="sm-legend-item"><span class="sm-legend-dot ld2"></span>L2 서브메뉴 / 목록</span>
+      <span class="sm-legend-item"><span class="sm-legend-dot ld3"></span>L3 상세 페이지</span>
+      <span class="sm-legend-item"><span class="sm-legend-dot ld4"></span>L4 모달 / 오버레이</span>
     </div>
+
+    <div class="sm-gnb-wrap">
+
+      <!-- 운영자 영역 -->
+      <div class="sm-gnb-block">
+        <div class="sm-home-row">
+          <span class="pg-type">🏠</span>
+          <span>운영자 대시보드 (Admin)</span>
+          <span class="sm-ia-id">IA-P100 · /admin</span>
+        </div>
+        <!-- 수업 관리 -->
+        <div class="sm-l1-row" onclick="toggleL1(this)">
+          <span class="depth-badge dep1">L1</span>
+          <span class="pg-type">📂</span>
+          <span>수업 관리</span>
+          <span class="sm-ia-id">IA-P110 · /admin/classes</span>
+          <span class="sm-toggle">▼</span>
+        </div>
+        <div class="sm-l1-children">
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📋</span>
+            <span>수업 일정 목록</span>
+            <span class="sm-ia-id">IA-P111 · /admin/classes</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📝</span>
+            <span>수업 일정 등록/수정</span>
+            <span class="sm-ia-id">IA-P112 · /admin/classes/new</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📄</span>
+            <span>수업 상세</span>
+            <span class="sm-ia-id">IA-P113 · /admin/classes/:id</span>
+          </div>
+        </div>
+        <!-- 예약 관리 -->
+        <div class="sm-l1-row" onclick="toggleL1(this)">
+          <span class="depth-badge dep1">L1</span>
+          <span class="pg-type">📂</span>
+          <span>예약 관리</span>
+          <span class="sm-ia-id">IA-P120 · /admin/reservations</span>
+          <span class="sm-toggle">▼</span>
+        </div>
+        <div class="sm-l1-children">
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📋</span>
+            <span>예약 현황 조회</span>
+            <span class="sm-ia-id">IA-P121 · /admin/reservations</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📄</span>
+            <span>예약 상세</span>
+            <span class="sm-ia-id">IA-P122 · /admin/reservations/:id</span>
+          </div>
+        </div>
+        <!-- 강사 관리 -->
+        <div class="sm-l1-row" onclick="toggleL1(this)">
+          <span class="depth-badge dep1">L1</span>
+          <span class="pg-type">📂</span>
+          <span>강사 관리</span>
+          <span class="sm-ia-id">IA-P130 · /admin/trainers</span>
+          <span class="sm-toggle">▼</span>
+        </div>
+        <div class="sm-l1-children">
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📋</span>
+            <span>강사 목록</span>
+            <span class="sm-ia-id">IA-P131 · /admin/trainers</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📝</span>
+            <span>강사 등록/수정</span>
+            <span class="sm-ia-id">IA-P132 · /admin/trainers/new</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📄</span>
+            <span>강사 스케줄 설정</span>
+            <span class="sm-ia-id">IA-P133 · /admin/trainers/:id/schedule</span>
+          </div>
+        </div>
+        <!-- 회원 관리 -->
+        <div class="sm-l1-row" onclick="toggleL1(this)">
+          <span class="depth-badge dep1">L1</span>
+          <span class="pg-type">📂</span>
+          <span>회원 관리</span>
+          <span class="sm-ia-id">IA-P140 · /admin/members</span>
+          <span class="sm-toggle">▼</span>
+        </div>
+        <div class="sm-l1-children">
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📋</span>
+            <span>회원 목록</span>
+            <span class="sm-ia-id">IA-P141 · /admin/members</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📝</span>
+            <span>회원 등록/수정</span>
+            <span class="sm-ia-id">IA-P142 · /admin/members/new</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📄</span>
+            <span>회원 상세</span>
+            <span class="sm-ia-id">IA-P143 · /admin/members/:id</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">✅</span>
+            <span>출석 체크</span>
+            <span class="sm-ia-id">IA-P144 · /admin/attendance</span>
+          </div>
+        </div>
+        <!-- 회원권/결제 -->
+        <div class="sm-l1-row" onclick="toggleL1(this)">
+          <span class="depth-badge dep1">L1</span>
+          <span class="pg-type">📂</span>
+          <span>회원권 / 결제</span>
+          <span class="sm-ia-id">IA-P150 · /admin/billing</span>
+          <span class="sm-toggle">▼</span>
+        </div>
+        <div class="sm-l1-children">
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📋</span>
+            <span>회원권 목록</span>
+            <span class="sm-ia-id">IA-P151 · /admin/billing/memberships</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📝</span>
+            <span>회원권 등록/수정</span>
+            <span class="sm-ia-id">IA-P152 · /admin/billing/memberships/new</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">💳</span>
+            <span>결제 내역</span>
+            <span class="sm-ia-id">IA-P153 · /admin/billing/payments</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📝</span>
+            <span>결제 등록</span>
+            <span class="sm-ia-id">IA-P154 · /admin/billing/payments/new</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">🧾</span>
+            <span>영수증</span>
+            <span class="sm-ia-id">IA-P155 · /admin/billing/payments/:id/receipt</span>
+          </div>
+        </div>
+        <!-- 알림 설정 -->
+        <div class="sm-l1-row" onclick="toggleL1(this)">
+          <span class="depth-badge dep1">L1</span>
+          <span class="pg-type">📂</span>
+          <span>알림 설정</span>
+          <span class="sm-ia-id">IA-P160 · /admin/notifications</span>
+          <span class="sm-toggle">▼</span>
+        </div>
+        <div class="sm-l1-children">
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📋</span>
+            <span>알림 발송 내역</span>
+            <span class="sm-ia-id">IA-P161 · /admin/notifications/history</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">⚙</span>
+            <span>알림 템플릿 설정</span>
+            <span class="sm-ia-id">IA-P162 · /admin/notifications/templates</span>
+          </div>
+        </div>
+        <!-- 구독 플랜 관리 -->
+        <div class="sm-l1-row" onclick="toggleL1(this)">
+          <span class="depth-badge dep1">L1</span>
+          <span class="pg-type">📂</span>
+          <span>구독 플랜 관리</span>
+          <span class="sm-ia-id">IA-P170 · /admin/subscription</span>
+          <span class="sm-toggle">▼</span>
+        </div>
+        <div class="sm-l1-children">
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📊</span>
+            <span>구독 현황</span>
+            <span class="sm-ia-id">IA-P171 · /admin/subscription</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">⚙</span>
+            <span>구독 플랜 설정</span>
+            <span class="sm-ia-id">IA-P172 · /admin/subscription/settings</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 강사 영역 -->
+      <div class="sm-gnb-block">
+        <div class="sm-home-row">
+          <span class="pg-type">🏠</span>
+          <span>강사 홈 (Trainer)</span>
+          <span class="sm-ia-id">IA-P200 · /trainer</span>
+        </div>
+        <!-- 내 스케줄 -->
+        <div class="sm-l1-row" onclick="toggleL1(this)">
+          <span class="depth-badge dep1">L1</span>
+          <span class="pg-type">📂</span>
+          <span>내 스케줄</span>
+          <span class="sm-ia-id">IA-P210 · /trainer/schedule</span>
+          <span class="sm-toggle">▼</span>
+        </div>
+        <div class="sm-l1-children">
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📅</span>
+            <span>주간 스케줄</span>
+            <span class="sm-ia-id">IA-P211 · /trainer/schedule</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📄</span>
+            <span>수업 상세</span>
+            <span class="sm-ia-id">IA-P212 · /trainer/schedule/:id</span>
+          </div>
+        </div>
+        <!-- 내 수업 -->
+        <div class="sm-l1-row" onclick="toggleL1(this)">
+          <span class="depth-badge dep1">L1</span>
+          <span class="pg-type">📂</span>
+          <span>내 수업</span>
+          <span class="sm-ia-id">IA-P220 · /trainer/classes</span>
+          <span class="sm-toggle">▼</span>
+        </div>
+        <div class="sm-l1-children">
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📋</span>
+            <span>수업 목록</span>
+            <span class="sm-ia-id">IA-P221 · /trainer/classes</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">👥</span>
+            <span>수강 회원 목록</span>
+            <span class="sm-ia-id">IA-P222 · /trainer/classes/:id/members</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 회원 영역 -->
+      <div class="sm-gnb-block">
+        <div class="sm-home-row">
+          <span class="pg-type">🏠</span>
+          <span>회원 홈 (Member)</span>
+          <span class="sm-ia-id">IA-P300 · /member</span>
+        </div>
+        <!-- 예약 -->
+        <div class="sm-l1-row" onclick="toggleL1(this)">
+          <span class="depth-badge dep1">L1</span>
+          <span class="pg-type">📂</span>
+          <span>예약</span>
+          <span class="sm-ia-id">IA-P310 · /member/reservations</span>
+          <span class="sm-toggle">▼</span>
+        </div>
+        <div class="sm-l1-children">
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📅</span>
+            <span>그룹 수업 예약</span>
+            <span class="sm-ia-id">IA-P311 · /member/reservations/group</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">🏋</span>
+            <span>PT 1:1 예약</span>
+            <span class="sm-ia-id">IA-P312 · /member/reservations/pt</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📋</span>
+            <span>내 예약 목록</span>
+            <span class="sm-ia-id">IA-P313 · /member/reservations/my</span>
+          </div>
+        </div>
+        <!-- 회원권/결제 -->
+        <div class="sm-l1-row" onclick="toggleL1(this)">
+          <span class="depth-badge dep1">L1</span>
+          <span class="pg-type">📂</span>
+          <span>회원권 / 결제</span>
+          <span class="sm-ia-id">IA-P320 · /member/billing</span>
+          <span class="sm-toggle">▼</span>
+        </div>
+        <div class="sm-l1-children">
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">💳</span>
+            <span>내 회원권 현황</span>
+            <span class="sm-ia-id">IA-P321 · /member/billing/membership</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">🧾</span>
+            <span>결제 내역</span>
+            <span class="sm-ia-id">IA-P322 · /member/billing/payments</span>
+          </div>
+        </div>
+        <!-- 내 프로필 (단일 페이지, L1 직접) -->
+        <div class="sm-l1-row" style="cursor:default;" onclick="">
+          <span class="depth-badge dep1">L1</span>
+          <span class="pg-type">👤</span>
+          <span>내 프로필</span>
+          <span class="sm-ia-id">IA-P330 · /member/profile</span>
+        </div>
+      </div>
+
+      <!-- 공통/인증 -->
+      <div class="sm-util-section">
+        <div class="sm-util-header">
+          <span>🔑</span> 공통 / 인증
+        </div>
+        <div class="sm-l1-children" style="display:block;">
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">🔑</span>
+            <span>로그인</span>
+            <span class="sm-ia-id">IA-P001 · /login</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">✏</span>
+            <span>회원가입 (운영자 전용)</span>
+            <span class="sm-ia-id">IA-P002 · /signup</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">🔒</span>
+            <span>비밀번호 재설정</span>
+            <span class="sm-ia-id">IA-P003 · /reset-password</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📜</span>
+            <span>이용약관</span>
+            <span class="sm-ia-id">IA-P004 · /terms</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">🔏</span>
+            <span>개인정보처리방침</span>
+            <span class="sm-ia-id">IA-P005 · /privacy</span>
+          </div>
+          <div class="sm-l2-row" style="border-bottom:none;">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">⚠</span>
+            <span>에러 (404 / 500)</span>
+            <span class="sm-ia-id">IA-P006~007 · /404 · /500</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /sm-gnb-wrap -->
   </div>
 </div>
 </div>
@@ -892,6 +1243,13 @@ body {
 </div>
 
 <script>
+function toggleL1(row) {
+  row.classList.toggle('collapsed');
+  var next = row.nextElementSibling;
+  if (next && next.classList.contains('sm-l1-children')) {
+    next.classList.toggle('hidden');
+  }
+}
 (function() {
   var btns = document.querySelectorAll('.tab-btn');
   var panels = document.querySelectorAll('.tab-panel');

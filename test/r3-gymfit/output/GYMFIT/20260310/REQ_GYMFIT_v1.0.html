@@ -238,7 +238,7 @@ body {
       </div>
       <div class="summary-card green">
         <div class="summary-value">7</div>
-        <div class="summary-label">NFR</div>
+        <div class="summary-label">Should</div>
       </div>
       <div class="summary-card warn">
         <div class="summary-value">13</div>
@@ -253,7 +253,6 @@ body {
   <nav class="tab-nav">
     <button class="tab-btn active" data-tab="overview">개요</button>
     <button class="tab-btn" data-tab="fr">기능 요구사항 (FR)</button>
-    <button class="tab-btn" data-tab="nfr">비기능 요구사항 (NFR)</button>
     <button class="tab-btn" data-tab="scope">범위 &amp; 규칙</button>
     <button class="tab-btn" data-tab="trace">추적성 매트릭스</button>
   </nav>
@@ -632,60 +631,6 @@ body {
           <div class="req-footer"><span><strong>QST 근거:</strong> Q-013 <span class="trace-badge t-assumption">가정: CSV export만</span></span></div>
         </div>
       </div>
-    </div>
-
-  </div>
-</div>
-</div>
-
-<!-- ===== TAB: 비기능 요구사항 ===== -->
-<div class="tab-panel" id="panel-nfr">
-<div class="container">
-  <div class="inner-section">
-    <div class="s-label">Non-Functional Requirements</div>
-    <div class="s-title">비기능 요구사항 (NFR-001 ~ NFR-007)</div>
-
-    <div class="nfr-card">
-      <div class="nfr-header"><span class="nfr-id">NFR-001</span></div>
-      <div class="nfr-title">성능</div>
-      <div class="nfr-body">핵심 페이지 로딩 속도 — 예약 목록, 대시보드, 회원 관리 등 주요 화면</div>
-      <span class="nfr-metric">LCP ≤ 2.0초 / Lighthouse 모바일 ≥ 70점</span>
-    </div>
-    <div class="nfr-card">
-      <div class="nfr-header"><span class="nfr-id">NFR-002</span></div>
-      <div class="nfr-title">반응형</div>
-      <div class="nfr-body">모바일 퍼스트 반응형 레이아웃 — 운영자·강사·회원 모두 모바일에서 핵심 기능 사용 가능</div>
-      <span class="nfr-metric">320px / 768px / 1280px — Chrome/Safari DevTools 기준</span>
-    </div>
-    <div class="nfr-card">
-      <div class="nfr-header"><span class="nfr-id">NFR-003</span></div>
-      <div class="nfr-title">접근성</div>
-      <div class="nfr-body">웹 접근성 준수 — 색 대비, 키보드 내비게이션, 스크린리더 지원</div>
-      <span class="nfr-metric">WCAG 2.1 AA — 색 대비 4.5:1 이상, 키보드 내비게이션</span>
-    </div>
-    <div class="nfr-card">
-      <div class="nfr-header"><span class="nfr-id">NFR-004</span></div>
-      <div class="nfr-title">보안</div>
-      <div class="nfr-body">인증·데이터 암호화 — 회원 개인정보 및 결제 정보 보호</div>
-      <span class="nfr-metric">JWT 인증 / HTTPS 필수 / 개인정보(연락처·결제정보) AES-256 암호화</span>
-    </div>
-    <div class="nfr-card">
-      <div class="nfr-header"><span class="nfr-id">NFR-005</span></div>
-      <div class="nfr-title">가용성</div>
-      <div class="nfr-body">서비스 안정성 — 헬스장 운영 시간(06:00~23:00) 중 무중단 서비스</div>
-      <span class="nfr-metric">월간 가동률 99.9% (월 다운타임 43분 이내)</span>
-    </div>
-    <div class="nfr-card">
-      <div class="nfr-header"><span class="nfr-id">NFR-006</span></div>
-      <div class="nfr-title">브라우저 호환성</div>
-      <div class="nfr-body">크로스브라우저 지원 — 운영자·강사는 데스크톱 크롬/사파리, 회원은 모바일 환경</div>
-      <span class="nfr-metric">Chrome · Safari 최신 2버전 / iOS Safari · Android Chrome</span>
-    </div>
-    <div class="nfr-card">
-      <div class="nfr-header"><span class="nfr-id">NFR-007</span></div>
-      <div class="nfr-title">데이터 보안</div>
-      <div class="nfr-body">개인정보 처리 — 개인정보보호법 준수, 회원 개인정보 수집·보관·삭제 절차 명문화</div>
-      <span class="nfr-metric">개인정보보호법 준수 / 암호화 저장 / 수집·보관·삭제 절차 문서화</span>
     </div>
 
   </div>
