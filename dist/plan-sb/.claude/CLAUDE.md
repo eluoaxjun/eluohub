@@ -26,7 +26,16 @@ QST → REQ → FN → IA → WBS → [SB]
 
 JSON 파일 스캔:
 - `data/*.json`, `input/*.json` 존재 시 → 자동 모드
+  - 기존 SB 산출물 JSON인 경우: screens[] 구조(interfaceName, location, viewportType) 유지하며 수정·보강
+  - v1 스키마(`assignment` 필드 존재) → 자동 정규화 후 사용
+  - 미인식 포맷 → 필수 필드(`project`, `screens[]`)만 추출해 최소 스키마 생성
 - 미발견 시 → 대화형 수집 모드 (사용자에게 프로젝트 정보 질의 후 JSON 생성)
+
+이미지 스캔:
+- `input/*.{png,jpg,jpeg,gif,webp}`, `input/pages/*.{png,jpg,jpeg}` 존재 시 → uiImagePath 자동 매핑
+  - 파일명 기반 매핑(interfaceName 유사도) → 실패 시 정렬 순서 기반 1:1 매핑
+  - `Read` 도구로 이미지를 읽어 레이아웃 Vision 분석 → wireframe[] 초안 자동 도출
+- 미발견 시 → wireframe 표시 (기본 동작)
 
 FN 산출물 스캔 (연계 모드):
 - **반드시** `output/{프로젝트명}/*/FN_*.md` 패턴 사용 (날짜 하위폴더 포함)
@@ -39,7 +48,7 @@ context 파일 없을 시: `mkdir -p output/{프로젝트명}/context/` 생성
 **참조 URL**: 프롬프트에 URL 포함 시 → Playwright MCP로 방문·스크린샷·구조 분석 (GNB·주요기능·레이아웃 파악). 미포함 시 → 프로젝트명으로 공식 사이트 웹 검색 시도. 접속/검색 모두 실패 시 → "현행 사이트 미확인" 표기 후 진행.
 
 ```
-[SB Step 0] 모드: {연계/독립} | JSON: {n건/없음} | FN: {n건/없음} | IA: {있음/없음} | 참조사이트: {URL/검색결과/미확인}
+[SB Step 0] 모드: {연계/독립} | JSON: {n건/없음} | 이미지: {n건/없음} | FN: {n건/없음} | IA: {있음/없음} | 참조사이트: {URL/검색결과/미확인}
 → Step 1 진입
 ```
 
@@ -47,14 +56,17 @@ context 파일 없을 시: `mkdir -p output/{프로젝트명}/context/` 생성
 
 **자동 모드** (JSON 발견 시):
 - v1/v2 스키마 자동 정규화 (`lib/schema.js normalizeV1()`)
+- 미인식 포맷: 필수 필드만 추출해 최소 스키마 생성 후 진행
 - 연계 모드: `context/fn.md`에서 FN ID + 기능명 추출 → screens 자동 구성
+- 이미지 발견 시: uiImagePath 자동 매핑 + Vision 분석으로 wireframe[] 초안 보강
 
 **대화형 모드** (JSON 미발견 시):
 - 프로젝트 정보 순차 수집 (id, title, serviceName, version, date, writer, company.name)
-- 화면 목록 수집 → JSON 파일 생성 → 자동 모드로 전환
+- 이미지 발견 시: 이미지 기반으로 화면 목록 제안 → 사용자 확인 후 JSON 생성
+- 이미지 미발견 시: 화면 목록 직접 수집 → JSON 파일 생성 → 자동 모드로 전환
 
 ```
-[Step 1] 스키마: {v1→v2 정규화/v2 직접} | screens: {n개}
+[Step 1] 스키마: {v1→v2 정규화/v2 직접/최소 스키마} | screens: {n개} | 이미지 매핑: {n건/없음}
 ```
 
 ### Step 2: HTML/PDF 생성
