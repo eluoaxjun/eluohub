@@ -67,14 +67,14 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,'Segoe UI','Ma
 .role-pub{background:#eff6ff;color:#1e40af;} .role-qa{background:#ecfdf5;color:#065f46;} .role-dev{background:#f1f5f9;color:#475569;}
 .wbs-id{font-size:11px;font-weight:700;color:var(--c-primary-mid);white-space:nowrap;}
 /* ===== GANTT ===== */
-.gantt-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 12px;max-width:100%;}
+.gantt-header{display:flex;align-items:center;justify-content:space-between;padding:20px 0 12px;max-width:100%;}
 .gantt-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--c-text-sub);}
 .legend-item{display:flex;align-items:center;gap:5px;}
 .legend-swatch{width:22px;height:10px;border-radius:2px;display:inline-block;}
 .lsw-ph1{background:var(--ph1);} .lsw-ph2{background:var(--ph2);} .lsw-ph3{background:var(--ph3);}
 .lsw-ph4{background:var(--ph4);} .lsw-ph5{background:var(--ph5);}
 .lsw-cp{background:repeating-linear-gradient(-45deg,#DC2626,#DC2626 3px,#f87171 3px,#f87171 6px);}
-.gantt-outer{overflow:auto;height:calc(100vh - 170px);min-height:300px;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--c-border) transparent;}
+.gantt-outer{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--c-border) transparent;}
 .gantt-table{border-collapse:collapse;white-space:nowrap;font-size:12px;table-layout:fixed;}
 .g-id,.g-name,.g-owner,.g-dur{position:sticky;z-index:2;background:var(--c-surface);}
 .g-id{left:0;width:80px;min-width:80px;} .g-name{left:80px;width:230px;min-width:230px;overflow:hidden;text-overflow:ellipsis;}
@@ -164,6 +164,7 @@ thead .g-id,thead .g-name,thead .g-owner,thead .g-dur{z-index:4;background:var(-
 
 <!-- ===== TAB: 간트 차트 ===== -->
 <div class="tab-panel" id="panel-gantt">
+<div class="container">
   <div class="gantt-header">
     <div style="font-size:13px;color:var(--c-text-sub);">{시작일} ~ {종료일} &nbsp;·&nbsp; {총주차}주 일정</div>
     <div class="gantt-legend">
@@ -175,17 +176,18 @@ thead .g-id,thead .g-name,thead .g-owner,thead .g-dur{z-index:4;background:var(-
       <span class="legend-item"><span class="legend-swatch lsw-cp"></span>크리티컬 패스</span>
     </div>
   </div>
-  <div class="gantt-outer">
-    <table class="gantt-table" id="ganttTable"
-           data-proj-start="{시작일YYYY-MM-DD}"
-           data-total-weeks="{총주차N}"
-           data-today-week="{오늘주차N}">
-      <thead id="ganttHead"></thead>
-      <tbody id="ganttBody">
-        <!-- JS가 GANTT_ROWS 배열로 자동 생성 -->
-      </tbody>
-    </table>
-  </div>
+</div>
+<div class="gantt-outer">
+  <table class="gantt-table" id="ganttTable"
+         data-proj-start="{시작일YYYY-MM-DD}"
+         data-total-weeks="{총주차N}"
+         data-today-week="{오늘주차N}">
+    <thead id="ganttHead"></thead>
+    <tbody id="ganttBody">
+      <!-- JS가 GANTT_ROWS 배열로 자동 생성 -->
+    </tbody>
+  </table>
+</div>
 </div>
 
 <!-- ===== TAB: 마일스톤 ===== -->
