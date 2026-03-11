@@ -74,7 +74,7 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,'Segoe UI','Ma
 .lsw-ph1{background:var(--ph1);} .lsw-ph2{background:var(--ph2);} .lsw-ph3{background:var(--ph3);}
 .lsw-ph4{background:var(--ph4);} .lsw-ph5{background:var(--ph5);}
 .lsw-cp{background:repeating-linear-gradient(-45deg,#DC2626,#DC2626 3px,#f87171 3px,#f87171 6px);}
-.gantt-outer{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--c-border) transparent;}
+.gantt-outer{overflow:auto;height:calc(100vh - 170px);min-height:300px;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--c-border) transparent;}
 .gantt-table{border-collapse:collapse;white-space:nowrap;font-size:12px;table-layout:fixed;}
 .g-id,.g-name,.g-owner,.g-dur{position:sticky;z-index:2;background:var(--c-surface);}
 .g-id{left:0;width:80px;min-width:80px;} .g-name{left:80px;width:230px;min-width:230px;overflow:hidden;text-overflow:ellipsis;}
@@ -135,19 +135,19 @@ thead .g-id,thead .g-name,thead .g-owner,thead .g-dur{z-index:4;background:var(-
   <div class="container">
     <div class="summary-strip">
       <div class="summary-card">
-        <div class="summary-value">{총기간주}주</div>
+        <div class="summary-value" id="sc-weeks">—</div>
         <div class="summary-label">총 기간</div>
       </div>
       <div class="summary-card accent">
-        <div class="summary-value">{작업수}</div>
+        <div class="summary-value" id="sc-tasks">—</div>
         <div class="summary-label">전체 작업</div>
       </div>
       <div class="summary-card warn">
-        <div class="summary-value">{CP일수}일</div>
+        <div class="summary-value" id="sc-cp">—</div>
         <div class="summary-label">크리티컬 패스</div>
       </div>
       <div class="summary-card green">
-        <div class="summary-value">{Wave수}</div>
+        <div class="summary-value" id="sc-waves">—</div>
         <div class="summary-label">Wave</div>
       </div>
     </div>
@@ -194,39 +194,8 @@ thead .g-id,thead .g-name,thead .g-owner,thead .g-dur{z-index:4;background:var(-
   <div class="inner-section">
     <div class="s-label">Milestones</div>
     <div class="s-title">마일스톤</div>
-    <!-- 카드 클래스: m-done(완료) / m-curr(진행중) / m-plan(예정) -->
-    <div class="milestone-grid">
-      <div class="milestone-card m-plan">
-        <div class="ms-id">M1</div>
-        <div class="ms-name">기획 완료</div>
-        <div class="ms-date">{목표일}</div>
-        <span class="ms-gate">게이트: 고객 승인</span>
-      </div>
-      <div class="milestone-card m-plan">
-        <div class="ms-id">M2</div>
-        <div class="ms-name">디자인 완료</div>
-        <div class="ms-date">{목표일}</div>
-        <span class="ms-gate">게이트: 디자인 리뷰 통과</span>
-      </div>
-      <div class="milestone-card m-plan">
-        <div class="ms-id">M3</div>
-        <div class="ms-name">개발 완료</div>
-        <div class="ms-date">{목표일}</div>
-        <span class="ms-gate">게이트: 통합 테스트 Pass</span>
-      </div>
-      <div class="milestone-card m-plan">
-        <div class="ms-id">M4</div>
-        <div class="ms-name">QA 완료</div>
-        <div class="ms-date">{목표일}</div>
-        <span class="ms-gate">게이트: Critical 결함 0건</span>
-      </div>
-      <div class="milestone-card m-plan">
-        <div class="ms-id">M5</div>
-        <div class="ms-name">오픈</div>
-        <div class="ms-date">{목표일}</div>
-        <span class="ms-gate">게이트: 최종 고객 승인</span>
-      </div>
-    </div>
+    <!-- JS가 GANTT_ROWS의 {t:'ms', week:N, name:'M1: ...', gate:'게이트 설명'} 항목으로 자동 생성 -->
+    <div class="milestone-grid" id="msGrid"></div>
   </div>
 </div>
 </div>
@@ -358,7 +327,60 @@ var WBS_ROWS = [
    렌더링 엔진 — 수정 불필요
 ================================================================ */
 (function() {
-  /* 탭 전환 */
+  /* ── 유틸 ── */
+  function esc(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function fmtDate(d) {
+    return d.getFullYear() + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + String(d.getDate()).padStart(2,'0');
+  }
+  var ownerCls = {'PM':'role-plan','기획':'role-plan','디자인':'role-design','FE':'role-pub','BE':'role-dev','QA':'role-qa'};
+  function ownerBadge(o) { return '<span class="badge '+(ownerCls[o]||'role-dev')+'">'+esc(o)+'</span>'; }
+
+  /* ── 공통 날짜 계산 (ganttTable에서 읽음) ── */
+  var table      = document.getElementById('ganttTable');
+  var projStart  = new Date((table && table.dataset.projStart) || '2026-01-01');
+  var totalWeeks = parseInt((table && table.dataset.totalWeeks)) || 12;
+  var _today = new Date(); _today.setHours(0,0,0,0);
+  var _diff  = _today - projStart;
+  var todayWeek = (_diff < 0) ? 0 : Math.min(Math.floor(_diff / 604800000) + 1, totalWeeks);
+
+  /* ── Summary 카드 자동 계산 (WBS_ROWS 기반) ── */
+  var taskRows = WBS_ROWS.filter(function(r){ return r.t === 'task'; });
+  var cpDays   = taskRows.filter(function(r){ return r.cp; }).reduce(function(s,r){ return s+(r.dur||0); }, 0);
+  var waves    = taskRows.map(function(r){ return r.wave; }).filter(function(v,i,a){ return v && a.indexOf(v)===i; });
+  var scEl;
+  scEl = document.getElementById('sc-weeks'); if(scEl) scEl.textContent = totalWeeks + '주';
+  scEl = document.getElementById('sc-tasks'); if(scEl) scEl.textContent = taskRows.length + '건';
+  scEl = document.getElementById('sc-cp');    if(scEl) scEl.textContent = cpDays + '일';
+  scEl = document.getElementById('sc-waves'); if(scEl) scEl.textContent = waves.length;
+
+  /* ── 마일스톤 그리드 자동 렌더링 (GANTT_ROWS ms 항목 기반) ── */
+  var msGrid = document.getElementById('msGrid');
+  if (msGrid) {
+    var msItems = GANTT_ROWS.filter(function(r){ return r.t === 'ms'; });
+    var foundCurr = false;
+    msItems.forEach(function(ms) {
+      var msDate = new Date(projStart);
+      msDate.setDate(msDate.getDate() + (ms.week - 1) * 7 + 6); /* 해당 주 마지막 날 */
+      var status;
+      if (msDate < _today)       { status = 'm-done'; }
+      else if (!foundCurr)       { status = 'm-curr'; foundCurr = true; }
+      else                       { status = 'm-plan'; }
+      var idMatch = ms.name.match(/M(\d+)/);
+      var msId    = idMatch ? 'M' + idMatch[1] : 'M';
+      var msName  = ms.name.replace(/^M\d+[\s:：·\-]+/, '');
+      var card = document.createElement('div');
+      card.className = 'milestone-card ' + status;
+      card.innerHTML = '<div class="ms-id">'+esc(msId)+'</div>'
+        + '<div class="ms-name">'+esc(msName)+'</div>'
+        + '<div class="ms-date">'+fmtDate(msDate)+'</div>'
+        + (ms.gate ? '<span class="ms-gate">게이트: '+esc(ms.gate)+'</span>' : '');
+      msGrid.appendChild(card);
+    });
+  }
+
+  /* ── 탭 전환 ── */
   var btns = document.querySelectorAll('.tab-btn');
   var panels = document.querySelectorAll('.tab-panel');
   btns.forEach(function(btn) {
@@ -371,13 +393,6 @@ var WBS_ROWS = [
       if (target === 'gantt') scrollGanttToToday();
     });
   });
-
-  /* 유틸 */
-  function esc(s) {
-    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-  var ownerCls = {'PM':'role-plan','기획':'role-plan','디자인':'role-design','FE':'role-pub','BE':'role-dev','QA':'role-qa'};
-  function ownerBadge(o) { return '<span class="badge '+(ownerCls[o]||'role-dev')+'">'+esc(o)+'</span>'; }
 
   /* ── 간트 tbody 렌더링 ── */
   var tbody = document.getElementById('ganttBody');
@@ -408,15 +423,7 @@ var WBS_ROWS = [
   }
 
   /* ── 간트 헤더 + 바 렌더링 ── */
-  var table = document.getElementById('ganttTable');
-  if (!table) return;
-  var projStart  = new Date(table.dataset.projStart  || '2026-01-01');
-  var totalWeeks = parseInt(table.dataset.totalWeeks) || 12;
-  /* 오늘 날짜 기준으로 현재 주차 자동 계산 (data-today-week 하드코딩 불필요) */
-  var _today = new Date(); _today.setHours(0,0,0,0);
-  var _diff  = _today - projStart;
-  var todayWeek = (_diff < 0) ? 0 : Math.min(Math.floor(_diff / 604800000) + 1, totalWeeks);
-
+  if (table) {
   var weeks = [];
   for (var w = 1; w <= totalWeeks; w++) {
     var d = new Date(projStart); d.setDate(d.getDate() + (w-1)*7);
@@ -481,6 +488,7 @@ var WBS_ROWS = [
       row.appendChild(td);
     }
   });
+  } /* end if (table) */
 
   /* ── 오늘 주차 가운데 스크롤 ── */
   /* display:none 상태에서 getBoundingClientRect()가 0을 반환하므로 오프셋 직접 계산 */
@@ -491,7 +499,7 @@ var WBS_ROWS = [
     var outer = document.querySelector('.gantt-outer');
     if (!outer) return;
     var todayOffset = FIXED_W + (todayWeek - 1) * COL_W + COL_W / 2;
-    outer.scrollLeft = todayOffset - outer.clientWidth / 2;
+    outer.scrollLeft = todayOffset - (outer.clientWidth + FIXED_W) / 2;
   }
   scrollGanttToToday();
 

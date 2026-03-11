@@ -74,7 +74,7 @@ body{font-family:'Pretendard Variable','Pretendard',-apple-system,'Segoe UI','Ma
 .lsw-ph1{background:var(--ph1);} .lsw-ph2{background:var(--ph2);} .lsw-ph3{background:var(--ph3);}
 .lsw-ph4{background:var(--ph4);} .lsw-ph5{background:var(--ph5);}
 .lsw-cp{background:repeating-linear-gradient(-45deg,#DC2626,#DC2626 3px,#f87171 3px,#f87171 6px);}
-.gantt-outer{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--c-border) transparent;}
+.gantt-outer{overflow:auto;height:calc(100vh - 170px);min-height:300px;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--c-border) transparent;}
 .gantt-table{border-collapse:collapse;white-space:nowrap;font-size:12px;table-layout:fixed;}
 .g-id,.g-name,.g-owner,.g-dur{position:sticky;z-index:2;background:var(--c-surface);}
 .g-id{left:0;width:80px;min-width:80px;} .g-name{left:80px;width:230px;min-width:230px;overflow:hidden;text-overflow:ellipsis;}
@@ -606,7 +606,7 @@ var WBS_ROWS = [
     var outer = document.querySelector('.gantt-outer');
     if (!outer) return;
     var todayOffset = FIXED_W + (todayWeek - 1) * COL_W + COL_W / 2;
-    outer.scrollLeft = todayOffset - outer.clientWidth / 2;
+    outer.scrollLeft = todayOffset - (outer.clientWidth + FIXED_W) / 2;
   }
   scrollGanttToToday();
 
