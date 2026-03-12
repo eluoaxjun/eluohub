@@ -140,21 +140,21 @@ function css(theme) {
   .wf-scroll { flex: 1; overflow-y: auto; padding: 12px 15px; }
   .wf-el { border: 1px dashed #ccc; background: #fafafa; padding: 10px 14px; margin: 0 0 7px 0; font-size: 13px; color: #666; position: relative; display: flex; flex-direction: column; }
   .wf-el:last-child { margin-bottom: 0; }
-  .wf-el--header { background: #e8e8e8; border: 1px solid #bbb; min-height: 48px; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #555; font-size: 14px; }
-  .wf-el--nav { background: #f0f0f0; border: 1px solid #ccc; min-height: 40px; display: flex; align-items: center; gap: 16px; padding: 0 16px; }
+  .wf-el--header { background: #e8e8e8; border: 1px solid #bbb; min-height: 48px; display: flex; flex-direction: row; align-items: center; justify-content: center; font-weight: 600; color: #555; font-size: 14px; }
+  .wf-el--nav { background: #f0f0f0; border: 1px solid #ccc; min-height: 40px; display: flex; flex-direction: row; align-items: center; gap: 16px; padding: 0 16px; }
   .wf-el--nav span { font-size: 13px; color: #888; }
   .wf-el--text { background: #fff; border: 1px dashed #ddd; padding: 8px 10px; }
   .wf-el--text .wf-content { color: #333; font-size: 11px; margin-top: 3px; }
-  .wf-el--input { background: #fff; border: 1px solid #ccc; border-radius: 3px; min-height: 30px; display: flex; align-items: center; padding: 0 8px; color: #aaa; font-size: 11px; }
+  .wf-el--input { background: #fff; border: 1px solid #ccc; border-radius: 3px; min-height: 30px; display: flex; flex-direction: row; align-items: center; padding: 0 8px; color: #aaa; font-size: 11px; }
   .wf-el--button { display: inline-flex; align-items: center; justify-content: center; min-height: 30px; padding: 0 16px; border-radius: 3px; font-size: 11px; font-weight: 600; border: 1px solid #999; background: #f5f5f5; color: #333; cursor: default; }
   .wf-el--button-primary { background: #333; color: #fff; border-color: #333; }
   .wf-el--button-outline { background: transparent; border: 1px solid #999; color: #666; }
   .wf-el--card { background: #fff; border: 1px solid #ddd; border-radius: 5px; padding: 10px; }
-  .wf-el--image { background: #f0f0f0; border: 1px dashed #ccc; display: flex; align-items: center; justify-content: center; color: #aaa; min-height: 80px; }
+  .wf-el--image { background: repeating-linear-gradient(45deg, #e0e0e0, #e0e0e0 4px, #f0f0f0 4px, #f0f0f0 12px); border: 1px solid #ccc; display: flex; flex-direction: row; align-items: center; justify-content: center; color: #999; min-height: 80px; }
   .wf-el--image::before { content: '\\1F5BC'; font-size: 16px; margin-right: 5px; }
   .wf-el--list { background: #fff; border: 1px dashed #ddd; padding: 6px 10px 6px 24px; }
   .wf-el--list li { font-size: 10px; color: #555; margin-bottom: 3px; list-style: disc; }
-  .wf-el--banner { background: linear-gradient(135deg, #e8e8e8, #f5f5f5); border: 1px solid #ccc; min-height: 80px; display: flex; align-items: center; justify-content: center; font-size: 15px; color: #888; font-weight: 600; }
+  .wf-el--banner { background: linear-gradient(135deg, #e8e8e8, #f5f5f5); border: 1px solid #ccc; min-height: 80px; display: flex; flex-direction: row; align-items: center; justify-content: center; font-size: 15px; color: #888; font-weight: 600; }
   .wf-el--divider { border: none; border-top: 1px solid #ddd; margin: 6px 0; padding: 0; min-height: 0; background: transparent; }
   .wf-el--group { border: 1px dashed #bbb; background: #fcfcfc; padding: 6px; gap: 5px; }
   .wf-el--group--horizontal { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
@@ -198,8 +198,17 @@ function css(theme) {
   .wf-el--marked { border: 2px dashed ${theme.accentColor} !important; background: rgba(204, 51, 51, 0.03); }
   .wf-viewport { padding: 0 0 0 34px; }
 
+  /* ── Auto-generated wireframe tight layout ── */
+  .wf-auto > .wf-el { margin-bottom: 0; width: 100%; box-sizing: border-box; }
+  .wf-auto > .wf-el--divider { margin: 0; }
+  .wf-auto > .wf-el--group--card-grid { margin-bottom: 0; }
+  .wf-auto > .wf-el--text-title,
+  .wf-auto > .wf-el--text-subtitle,
+  .wf-auto > .wf-el--text-breadcrumb,
+  .wf-auto > .wf-el--text-count { margin-bottom: 0; }
+
   /* ── Header 구조 레이아웃 ── */
-  .wf-el--header-structured { display: flex; align-items: center; justify-content: space-between; padding: 0 20px; gap: 12px; background: #e8e8e8; border: 1px solid #bbb; min-height: 56px; }
+  .wf-el--header-structured { display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding: 0 20px; gap: 12px; background: #e8e8e8; border: 1px solid #bbb; min-height: 56px; }
   .wf-header-left { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
   .wf-header-logo { font-size: 15px; font-weight: 700; color: #333; white-space: nowrap; }
   .wf-header-center { display: flex; align-items: center; gap: 4px; flex: 1; justify-content: center; }
@@ -210,12 +219,12 @@ function css(theme) {
   .wf-header-icon { width: 28px; height: 28px; background: #d0d0d0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #666; }
 
   /* ── GNB 탭 바 ── */
-  .wf-el--gnb-tabs { background: #f7f7f7; border-bottom: 2px solid #ddd; padding: 0 20px; display: flex; align-items: flex-end; gap: 0; min-height: 44px; overflow: hidden; }
+  .wf-el--gnb-tabs { background: #f7f7f7; border-bottom: 2px solid #ddd; padding: 0 20px; display: flex; flex-direction: row; align-items: flex-end; gap: 0; min-height: 44px; overflow: hidden; }
   .wf-gnb-tab { padding: 8px 18px; font-size: 13px; color: #999; cursor: default; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; }
   .wf-gnb-tab:first-child { color: #222; font-weight: 700; border-bottom-color: #333; }
 
   /* ── 버튼 필터 행 ── */
-  .wf-el--group--btn-row { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 16px; align-items: center; background: #fafafa; border: 1px solid #e0e0e0; }
+  .wf-el--group--btn-row { display: flex; flex-direction: row; flex-wrap: wrap; gap: 8px; padding: 10px 16px; align-items: center; background: #fafafa; border: 1px solid #e0e0e0; }
   .wf-el--group--btn-row .wf-el--button { margin: 0; flex: none; font-size: 12px; padding: 0 14px; height: 28px; border-radius: 14px; }
   .wf-el--group--btn-row .wf-el--button:first-child { background: #333; color: #fff; border-color: #333; }
 
@@ -266,6 +275,24 @@ function css(theme) {
   .msg-case-table td { padding: 5px 7px; border: 1px solid #ddd; vertical-align: top; font-size: 11px; }
   .msg-type-error { color: #c00000; font-weight: 600; }
   .msg-type-process { color: #0070c0; font-weight: 600; }
+
+  /* ── text 역할별 스타일 ── */
+  .wf-el--text-title { background: transparent; border: none; padding: 2px 0; }
+  .wf-text-title { font-size: 16px; font-weight: 700; color: #1a1a1a; line-height: 1.3; }
+  .wf-el--text-subtitle { background: transparent; border: none; padding: 2px 0; }
+  .wf-text-subtitle { font-size: 13px; font-weight: 600; color: #444; }
+  .wf-el--text-breadcrumb { background: transparent; border: none; padding: 2px 0; }
+  .wf-breadcrumb { font-size: 10px; color: #aaa; letter-spacing: 0.02em; }
+  .wf-el--text-count { background: transparent; border: none; padding: 2px 0; }
+  .wf-count-text { font-size: 12px; color: #666; font-weight: 500; }
+
+  /* ── 카드 뱃지 ── */
+  .wf-card-badge { display: inline-block; font-size: 9px; padding: 2px 7px; border-radius: 10px; background: #e8f0fe; color: #3b5998; font-weight: 600; margin-bottom: 4px; }
+
+  /* ── LNB 탭 (nav) — GNB와 분리 ── */
+  .wf-el--nav-lnb { background: #fff; border-bottom: 1px solid #eee; padding: 0 16px; display: flex; flex-direction: row; align-items: flex-end; gap: 0; min-height: 40px; overflow: hidden; }
+  .wf-lnb-tab { padding: 8px 14px; font-size: 12px; color: #aaa; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; cursor: default; }
+  .wf-lnb-tab:first-child { color: #555; font-weight: 600; border-bottom-color: #555; }
   .msg-type-positive { color: #2e8b57; font-weight: 600; }
   .msg-type-negative { color: #e67700; font-weight: 600; }
 
@@ -710,13 +737,41 @@ function renderWfElement(el) {
       }
       return `<div class="wf-el wf-el--header${markedCls}" style="${h}">${markerHtml}${el.label || 'Header'}</div>`;
     }
-    case 'nav':
     case 'gnb': {
-      const navItems = (el.items || ['메뉴1', '메뉴2', '메뉴3']);
-      const tabsHtml = navItems.map(i => `<span class="wf-gnb-tab">${i}</span>`).join('');
+      const gnbItems = (el.items || ['메뉴1', '메뉴2', '메뉴3']);
+      const tabsHtml = gnbItems.map(i => `<span class="wf-gnb-tab">${i}</span>`).join('');
       return `<div class="wf-el wf-el--gnb-tabs${markedCls}" style="${h}">${markerHtml}${tabsHtml}</div>`;
     }
+    case 'nav': {
+      // LNB 탭 — GNB와 분리하여 별도 스타일 적용
+      const lnbItems = (el.items || el.label ? (el.items || el.label.split('|').map(s => s.trim()).filter(Boolean)) : ['탭1', '탭2', '탭3']);
+      const lnbTabsHtml = lnbItems.map(i => `<span class="wf-lnb-tab">${i}</span>`).join('');
+      return `<div class="wf-el wf-el--nav-lnb${markedCls}" style="${h}">${markerHtml}${lnbTabsHtml}</div>`;
+    }
     case 'text': {
+      // label 키워드 기반 자동 role 감지
+      const lbl = (el.label || '').toLowerCase();
+      const isTitleKw = /타이틀|제목|title|heading|h1|h2|h3|섹션명|페이지명/.test(lbl);
+      const isSubKw   = /소제목|subtitle|소타이틀/.test(lbl);
+      const isBreadKw = /breadcrumb|경로|위치|home|홈|네비게이션|위치경로/.test(lbl);
+      const isCountKw = /건|개|count|total|총|결과수|항목수/.test(lbl);
+
+      if (isTitleKw) {
+        const text = el.content || el.label || '타이틀';
+        return `<div class="wf-el wf-el--text-title${markedCls}" style="${h}">${markerHtml}<span class="wf-text-title">${text}</span></div>`;
+      }
+      if (isSubKw) {
+        const text = el.content || el.label || '소제목';
+        return `<div class="wf-el wf-el--text-subtitle${markedCls}" style="${h}">${markerHtml}<span class="wf-text-subtitle">${text}</span></div>`;
+      }
+      if (isBreadKw) {
+        const text = el.content || el.label || '홈 > 페이지';
+        return `<div class="wf-el wf-el--text-breadcrumb${markedCls}" style="${h}">${markerHtml}<span class="wf-breadcrumb">${text}</span></div>`;
+      }
+      if (isCountKw) {
+        const text = el.content || el.label || '총 0건';
+        return `<div class="wf-el wf-el--text-count${markedCls}" style="${h}">${markerHtml}<span class="wf-count-text">${text}</span></div>`;
+      }
       const content = el.content ? `<div class="wf-content">${el.content}</div>` : '';
       return `<div class="wf-el wf-el--text${markedCls}" style="${h}">${markerHtml}${labelHtml}${content}</div>`;
     }
@@ -738,12 +793,28 @@ function renderWfElement(el) {
         ? `<div class="wf-card-thumb">${imgKids[0].label || 'Thumbnail'}</div>`
         : `<div class="wf-card-thumb" style="min-height:60px;"></div>`;
 
-      // 본문 (타이틀 + 설명)
+      // 본문 (badge + 타이틀 + 설명) — text children 키워드 기반 스마트 분기
+      const BADGE_KW  = /카테고리|태그|유형|분류|지역|지구|타입|badge|category|tag|type/i;
+      const TITLE_KW  = /명칭|제목|타이틀|title|name|장소명|관광지명|이름|행사명/i;
       let bodyContent = '';
-      if (el.label) bodyContent += `<div class="wf-card-title">${el.label}</div>`;
-      if (restKids.length > 0) {
-        bodyContent += restKids.map(c => renderWfElement(c)).join('');
+      let titleAssigned = false;
+      const badgeParts = [];
+      const descParts  = [];
+      for (const c of restKids) {
+        if (c.type !== 'text') { descParts.push(renderWfElement(c)); continue; }
+        const cLbl = (c.label || '').toLowerCase();
+        if (BADGE_KW.test(cLbl)) {
+          badgeParts.push(`<span class="wf-card-badge">${c.content || c.label}</span>`);
+        } else if (!titleAssigned && TITLE_KW.test(cLbl)) {
+          descParts.unshift(`<div class="wf-card-title">${c.content || c.label}</div>`);
+          titleAssigned = true;
+        } else {
+          descParts.push(`<div class="wf-card-desc">${c.content || c.label || ''}</div>`);
+        }
       }
+      if (el.label && !titleAssigned) bodyContent += `<div class="wf-card-title">${el.label}</div>`;
+      if (badgeParts.length) bodyContent = badgeParts.join('') + bodyContent;
+      bodyContent += descParts.join('');
       const bodyHtml = bodyContent ? `<div class="wf-card-body">${bodyContent}</div>` : '';
 
       // 액션 버튼
@@ -870,6 +941,16 @@ function renderWfElement(el) {
     default:
       return `<div class="wf-el${markedCls}" style="${h}">${markerHtml}${labelHtml}${el.content || el.type}</div>`;
   }
+}
+
+/**
+ * wireframe[] → wfHtml 자동 생성 (Option A)
+ * renderWfElement를 사용하되 tight-layout을 위한 wf-auto 마커 HTML 반환.
+ * 반환값은 renderDesignLayout 내부에서 wf-auto 클래스 viewport에 삽입됨.
+ */
+function autoWfHtml(wireframe) {
+  if (!wireframe || wireframe.length === 0) return '';
+  return wireframe.map(el => renderWfElement(el)).join('');
 }
 
 /**
@@ -1058,10 +1139,16 @@ function renderPersistentFooter(persistent) {
 function renderDesignLayout(screen) {
   let wireframeHtml;
 
-  if (!screen.uiImagePath && screen.wireframe) {
+  if (!screen.uiImagePath && (screen.wfHtml || screen.wireframe)) {
     // 와이어프레임 모드
-    const wfElements = screen.wireframe.map(el => renderWfElement(el)).join('');
+    // wfHtml: Claude가 직접 생성한 레이아웃 HTML → 수동 우선 사용
+    // wireframe: autoWfHtml()로 자동 생성 (Option A — tight layout, width 100%)
+    const isAutoMode = !screen.wfHtml && screen.wireframe;
+    const wfElements = screen.wfHtml
+      ? screen.wfHtml
+      : autoWfHtml(screen.wireframe);
     const maxWidth = screen.viewportType === 'Mobile' ? '375px' : '100%';
+    const viewportCls = isAutoMode ? 'wf-viewport wf-auto' : 'wf-viewport';
     const persistent = screen.persistent;
 
     const headerHtml = renderPersistentHeader(persistent);
@@ -1074,11 +1161,11 @@ function renderDesignLayout(screen) {
       bodyHtml = `<div class="wf-with-lnb">
         ${lnbHtml}
         <div class="wf-main-content">
-          <div class="wf-viewport" style="max-width:${maxWidth};">${wfElements}</div>
+          <div class="${viewportCls}" style="max-width:${maxWidth};">${wfElements}</div>
         </div>
       </div>`;
     } else {
-      bodyHtml = `<div class="wf-scroll"><div class="wf-viewport" style="max-width:${maxWidth};">${wfElements}</div></div>`;
+      bodyHtml = `<div class="wf-scroll"><div class="${viewportCls}" style="max-width:${maxWidth};">${wfElements}</div></div>`;
     }
 
     wireframeHtml = `<div class="wf-container">
