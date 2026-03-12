@@ -198,6 +198,40 @@ function css(theme) {
   .wf-el--marked { border: 2px dashed ${theme.accentColor} !important; background: rgba(204, 51, 51, 0.03); }
   .wf-viewport { padding: 0 0 0 34px; }
 
+  /* ── Header 구조 레이아웃 ── */
+  .wf-el--header-structured { display: flex; align-items: center; justify-content: space-between; padding: 0 20px; gap: 12px; background: #e8e8e8; border: 1px solid #bbb; min-height: 56px; }
+  .wf-header-left { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .wf-header-logo { font-size: 15px; font-weight: 700; color: #333; white-space: nowrap; }
+  .wf-header-center { display: flex; align-items: center; gap: 4px; flex: 1; justify-content: center; }
+  .wf-header-center .wf-nav-tab { font-size: 13px; color: #777; padding: 6px 14px; cursor: default; border-bottom: 2px solid transparent; white-space: nowrap; }
+  .wf-header-center .wf-nav-tab:first-child { color: #222; font-weight: 600; border-bottom-color: #333; }
+  .wf-header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .wf-header-search { background: #fff; border: 1px solid #ccc; border-radius: 14px; padding: 5px 14px; font-size: 11px; color: #aaa; min-width: 140px; }
+  .wf-header-icon { width: 28px; height: 28px; background: #d0d0d0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #666; }
+
+  /* ── GNB 탭 바 ── */
+  .wf-el--gnb-tabs { background: #f7f7f7; border-bottom: 2px solid #ddd; padding: 0 20px; display: flex; align-items: flex-end; gap: 0; min-height: 44px; overflow: hidden; }
+  .wf-gnb-tab { padding: 8px 18px; font-size: 13px; color: #999; cursor: default; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; }
+  .wf-gnb-tab:first-child { color: #222; font-weight: 700; border-bottom-color: #333; }
+
+  /* ── 버튼 필터 행 ── */
+  .wf-el--group--btn-row { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 16px; align-items: center; background: #fafafa; border: 1px solid #e0e0e0; }
+  .wf-el--group--btn-row .wf-el--button { margin: 0; flex: none; font-size: 12px; padding: 0 14px; height: 28px; border-radius: 14px; }
+  .wf-el--group--btn-row .wf-el--button:first-child { background: #333; color: #fff; border-color: #333; }
+
+  /* ── 카드 그리드 ── */
+  .wf-el--group--card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 14px; background: #fcfcfc; border: 1px dashed #ccc; align-items: start; }
+  .wf-el--group--card-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .wf-el--group--card-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+  .wf-el--group--card-grid .wf-el--card { margin: 0; }
+
+  /* ── 카드 개선 ── */
+  .wf-card-meta { display: flex; align-items: center; justify-content: space-between; padding: 4px 10px 8px; font-size: 10px; color: #aaa; }
+  .wf-card-title { font-size: 12px; font-weight: 600; color: #333; margin-bottom: 3px; }
+  .wf-card-desc { font-size: 10px; color: #888; line-height: 1.4; }
+  .wf-card-action { margin-top: 8px; }
+  .wf-card-action .wf-el--button { width: 100%; justify-content: center; font-size: 11px; height: 26px; background: #f0f0f0; border-color: #ccc; }
+
   /* 이미지 UI 캡처 */
   .ui-capture { flex: 1; background: #f9f9f9; border-right: 1px solid #ddd; display: flex; align-items: center; justify-content: center; color: #999; font-size: 13px; overflow: hidden; }
   .ui-capture-inner { position: relative; display: inline-block; max-width: 100%; max-height: 100%; }
@@ -625,12 +659,42 @@ function renderWfElement(el) {
   const h = el.height ? `min-height:${el.height};` : '';
 
   switch (el.type) {
-    case 'header':
+    case 'header': {
+      const kids = el.children || [];
+      if (kids.length > 0) {
+        // children이 있으면 구조화 레이아웃: 좌(로고) / 중앙(nav) / 우(input/버튼)
+        const logoKid = kids.find(c => c.role === 'logo' || (c.type === 'text' && !c.role));
+        const navKid  = kids.find(c => c.type === 'nav' || c.type === 'gnb');
+        const searchKid = kids.find(c => c.type === 'input');
+        const otherKids = kids.filter(c => c !== logoKid && c !== navKid && c !== searchKid);
+
+        const leftHtml = logoKid
+          ? `<div class="wf-header-logo">${logoKid.label || '로고'}</div>`
+          : `<div class="wf-header-logo">${el.label || 'LOGO'}</div>`;
+
+        const centerHtml = navKid
+          ? (navKid.items || []).map(i => `<span class="wf-nav-tab">${i}</span>`).join('')
+          : '';
+
+        const rightHtml = [
+          searchKid ? `<div class="wf-header-search">${searchKid.label || '검색'}</div>` : '',
+          ...otherKids.map(c => renderWfElement(c))
+        ].filter(Boolean).join('');
+
+        return `<div class="wf-el wf-el--header-structured${markedCls}" style="${h}">
+          ${markerHtml}
+          <div class="wf-header-left">${leftHtml}</div>
+          <div class="wf-header-center">${centerHtml}</div>
+          <div class="wf-header-right">${rightHtml}</div>
+        </div>`;
+      }
       return `<div class="wf-el wf-el--header${markedCls}" style="${h}">${markerHtml}${el.label || 'Header'}</div>`;
+    }
     case 'nav':
     case 'gnb': {
-      const navItems = (el.items || ['메뉴1', '메뉴2', '메뉴3']).map(i => `<span>${i}</span>`).join('');
-      return `<div class="wf-el wf-el--nav${markedCls}" style="${h}">${markerHtml}${navItems}</div>`;
+      const navItems = (el.items || ['메뉴1', '메뉴2', '메뉴3']);
+      const tabsHtml = navItems.map(i => `<span class="wf-gnb-tab">${i}</span>`).join('');
+      return `<div class="wf-el wf-el--gnb-tabs${markedCls}" style="${h}">${markerHtml}${tabsHtml}</div>`;
     }
     case 'text': {
       const content = el.content ? `<div class="wf-content">${el.content}</div>` : '';
@@ -646,18 +710,28 @@ function renderWfElement(el) {
     case 'card': {
       const kids = el.children || [];
       const imgKids = kids.filter(c => c.type === 'image');
-      const restKids = kids.filter(c => c.type !== 'image');
-      let inner = '';
-      if (imgKids.length > 0) {
-        const thumbLabel = imgKids[0].label || 'Thumbnail';
-        inner += `<div class="wf-card-thumb">${thumbLabel}</div>`;
-        const bodyHtml = [...imgKids.slice(1), ...restKids].map(c => renderWfElement(c)).join('');
-        if (bodyHtml) inner += `<div class="wf-card-body">${labelHtml}${bodyHtml}</div>`;
-        else if (el.label) inner += `<div class="wf-card-body">${labelHtml}</div>`;
-      } else {
-        inner = labelHtml + restKids.map(c => renderWfElement(c)).join('');
+      const btnKids = kids.filter(c => c.type === 'button');
+      const restKids = kids.filter(c => c.type !== 'image' && c.type !== 'button');
+
+      // 썸네일 영역
+      const thumbHtml = imgKids.length > 0
+        ? `<div class="wf-card-thumb">${imgKids[0].label || 'Thumbnail'}</div>`
+        : `<div class="wf-card-thumb" style="min-height:60px;"></div>`;
+
+      // 본문 (타이틀 + 설명)
+      let bodyContent = '';
+      if (el.label) bodyContent += `<div class="wf-card-title">${el.label}</div>`;
+      if (restKids.length > 0) {
+        bodyContent += restKids.map(c => renderWfElement(c)).join('');
       }
-      return `<div class="wf-el wf-el--card${markedCls}" style="${h}">${markerHtml}${inner}</div>`;
+      const bodyHtml = bodyContent ? `<div class="wf-card-body">${bodyContent}</div>` : '';
+
+      // 액션 버튼
+      const actionHtml = btnKids.length > 0
+        ? `<div class="wf-card-action">${btnKids.map(c => renderWfElement(c)).join('')}</div>`
+        : '';
+
+      return `<div class="wf-el wf-el--card${markedCls}" style="${h}">${markerHtml}${thumbHtml}${bodyHtml}${actionHtml}</div>`;
     }
     case 'image':
       return `<div class="wf-el wf-el--image${markedCls}" style="${h}">${markerHtml}${el.label || 'Image'}</div>`;
@@ -749,10 +823,27 @@ function renderWfElement(el) {
         </div>`;
       }
 
-      // default layout
+      // default layout — children 타입 자동 감지로 레이아웃 결정
+      const kids = el.children || [];
+      const allCards   = kids.length > 0 && kids.every(c => c.type === 'card');
+      const allButtons = kids.length > 0 && kids.every(c => c.type === 'button');
+
+      if (allCards) {
+        // 카드 그리드: children 수로 열 수 결정
+        const cols = kids.length <= 2 ? 'cols-2' : kids.length >= 4 ? 'cols-4' : '';
+        const childrenHtml = kids.map(c => renderWfElement(c)).join('');
+        return `<div class="wf-el wf-el--group--card-grid ${cols}${markedCls}" style="${h}">${markerHtml}${childrenHtml}</div>`;
+      }
+
+      if (allButtons) {
+        // 버튼 필터 행: 가로 나열
+        const childrenHtml = kids.map(c => renderWfElement(c)).join('');
+        return `<div class="wf-el wf-el--group--btn-row${markedCls}" style="${h}">${markerHtml}${childrenHtml}</div>`;
+      }
+
+      // 기존 방식 유지 (direction 명시 또는 혼합 타입)
       const dirCls = el.direction === 'horizontal' ? ' wf-el--group--horizontal' : '';
-      const children = (el.children || []).map(c => renderWfElement(c)).join('');
-      // children 없을 때 label fallback — description 패널에서 설명하는 경우에도 빈 박스만 보이는 것을 방지
+      const children = kids.map(c => renderWfElement(c)).join('');
       const groupFallback = (!children && el.label) ? `<span class="wf-label">${el.label}</span>` : '';
       return `<div class="wf-el wf-el--group${dirCls}${markedCls}" style="${h}">${markerHtml}${groupFallback}${children}</div>`;
     }
