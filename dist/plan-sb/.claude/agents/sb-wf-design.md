@@ -75,6 +75,48 @@ wc -c < "{절대경로}"    # 크로스플랫폼 대안
 | W3 | 레이블 공백 | 임의 wfElement에 `label` 비어있거나 없음 |
 | W4 | 마커 정합성 | wireframe `marker`가 descriptions `marker`와 불일치 |
 | W5 | 최소 요소 수 | wireframe[]이 3개 미만 (uiImagePath 미설정 screen) |
+| W6 | marker 대응 누락 | descriptions의 marker 수와 wireframe에서 marker가 매핑된 요소 수 불일치 |
+| W7 | 누락 요소 | descriptions의 특정 marker에 대응하는 wireframe 요소가 아예 없음 |
+| W8 | 타입 부적합 | wireframe 요소의 type이 description 내용 키워드와 맞지 않음 |
+
+#### W6 — marker 대응 누락 검사 방법
+
+`descriptions[]`의 marker 번호 목록과 wireframe[] 요소의 marker 번호 목록을 비교한다.
+**items 수가 아닌 marker 수 기준**으로 비교한다.
+
+```
+descriptions marker 목록: [1, 2, 3, 4, 5]  ← 5개
+wireframe marker 목록:    [1, 2, 3, 5]      ← 4개 (4 누락)
+차이 ≥ 1 → WARN
+```
+
+> ⚠ items는 기능 명세 세부항목 단위(1개 컴포넌트에 여러 items 존재), wireframe은 컴포넌트 단위 — items 수로 비교하지 않는다.
+
+#### W7 — 누락 요소 검사 방법
+
+descriptions의 각 `marker` 번호에 대응하는 wireframe 요소가 존재하는지 1:1 체크한다.
+
+```
+descriptions marker 목록: [1, 2, 3, 4, 5]
+wireframe marker 목록:    [1, 2, 3,    5]
+누락 marker: 4 → WARN
+```
+
+#### W8 — 타입 적합성 검사 방법
+
+wireframe 요소의 `type`이 같은 `marker`의 description 텍스트와 맞는지 아래 키워드 매핑으로 판단한다.
+
+| description 키워드 | 적합한 type |
+|-------------------|------------|
+| 카드 / 그리드 / 목록형 | `card` 또는 `group`(children=card) |
+| 검색 / 입력 / 폼 | `input` |
+| 버튼 / CTA / 토글 | `button` |
+| 이미지 / 갤러리 / 사진 | `image` |
+| 표 / 테이블 | `table` |
+| 탭 / 메뉴 / 네비게이션 | `nav` 또는 `gnb` |
+| 텍스트 / 제목 / 설명 | `text` |
+
+키워드-type 불일치 시 WARN. **단, group 타입은 children 구성으로 표현 가능하므로 children 내 type이 적합하면 PASS.**
 
 **판정 결과 예시:**
 ```
@@ -83,6 +125,9 @@ wc -c < "{절대경로}"    # 크로스플랫폼 대안
 [W3] UI-003 목록: image#5 label 없음 — WARN
 [W4] PASS
 [W5] PASS
+[W6] UI-003 목록: description 5건 vs wireframe 주요 요소 2건 (차이 3) — WARN
+[W7] UI-003 목록: marker 3, 4 누락 — WARN
+[W8] UI-003 목록: marker#2 description="카드 그리드" / wireframe type="text" 불일치 — WARN
 ```
 
 ---
@@ -127,6 +172,25 @@ wireframe의 `marker` 번호가 descriptions의 `marker` 번호와 불일치 시
 wireframe[]이 3개 미만인 screen:
 - description 항목 수를 기준으로 누락된 요소 추가
 
+#### W6/W7 — 누락 요소 보강
+
+descriptions의 marker 중 wireframe에 대응 요소가 없는 것을 추가한다.
+
+1. 누락된 marker의 description.items 텍스트를 읽는다
+2. 키워드 매핑(W8 표 참조)으로 적합한 type 결정
+3. wireframe[]에 해당 요소 삽입 (marker 순서 유지)
+4. label = description items[0]의 첫 문장 (30자 이내로 축약)
+5. group 타입으로 구성 시 description 내용에서 children 1~3개 추출
+
+**삽입 위치**: header/gnb 다음, footer/banner 이전 — marker 번호 순서대로
+
+#### W8 — 타입 부적합 보강
+
+wireframe 요소의 type이 description 내용과 불일치 시:
+- W8 키워드 매핑 기준으로 type 교체
+- 단, `group` 타입은 children 구성이 맞으면 유지 (type 교체 없음)
+- type 교체 시 children 구조도 함께 재구성
+
 ---
 
 ### Phase 3: 변경사항 적용 + 리포트
@@ -148,11 +212,16 @@ wireframe[]이 3개 미만인 screen:
     ├ [W2] group 빈 박스: {n}건
     ├ [W3] 레이블 공백: {n}건
     ├ [W4] 마커 불일치: {n}건
-    └ [W5] 최소 요소 미달: {n}건
+    ├ [W5] 최소 요소 미달: {n}건
+    ├ [W6] marker 대응 누락: {n}건 (description marker {n}개 / wireframe marker {n}개)
+    ├ [W7] 누락 요소: {n}건 (marker {목록})
+    └ [W8] 타입 부적합: {n}건
 ▶ 와이어프레임 보강 ({n}건)
   ├ group 빈 박스 해소: {n}건
   ├ 레이블 추가: {n}건
   ├ wireframe 신규 생성: {n}건
+  ├ 누락 요소 삽입 (W7): {n}건
+  ├ 타입 교체 (W8): {n}건
   └ 마커 재채번: {n}건
 WARN 목록:
   └ {interfaceName}: {사유}
