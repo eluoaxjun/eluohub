@@ -688,6 +688,26 @@ function renderWfElement(el) {
           <div class="wf-header-right">${rightHtml}</div>
         </div>`;
       }
+      // children 없는 경우: label을 | 구분자로 파싱해 구조화 시도
+      // 형식: "로고명 | 메뉴1/메뉴2/메뉴3 | 우측아이템1 | 우측아이템2"
+      const parts = (el.label || '').split('|').map(p => p.trim()).filter(Boolean);
+      if (parts.length >= 2) {
+        const logoText = parts[0];
+        // parts[1]을 /로 split → 메뉴 탭들
+        const menuItems = parts[1].split('/').map(m => m.trim()).filter(Boolean);
+        // parts[2..] → 우측 아이템 (검색, 언어 버튼 등)
+        const rightItems = parts.slice(2);
+        const menuTabsHtml = menuItems.map(m => `<span class="wf-nav-tab">${m}</span>`).join('');
+        const rightHtml = rightItems.length > 0
+          ? rightItems.map(r => `<div class="wf-header-search">${r}</div>`).join('')
+          : '';
+        return `<div class="wf-el wf-el--header-structured${markedCls}" style="${h}">
+          ${markerHtml}
+          <div class="wf-header-left"><div class="wf-header-logo">${logoText}</div></div>
+          <div class="wf-header-center">${menuTabsHtml}</div>
+          <div class="wf-header-right">${rightHtml}</div>
+        </div>`;
+      }
       return `<div class="wf-el wf-el--header${markedCls}" style="${h}">${markerHtml}${el.label || 'Header'}</div>`;
     }
     case 'nav':
@@ -1394,6 +1414,20 @@ ${renderHistory(data)}
 ${renderOverview(data)}
 ${screens}
 ${renderEndOfDocument(data)}
+<script>
+(function() {
+  var SLIDE_W = 1920;
+  function autoScale() {
+    var avail = window.innerWidth - 80;
+    var scale = Math.min(1, avail / SLIDE_W);
+    document.querySelectorAll('.slide').forEach(function(s) {
+      s.style.zoom = scale;
+    });
+  }
+  document.addEventListener('DOMContentLoaded', autoScale);
+  window.addEventListener('resize', autoScale);
+})();
+</script>
 </body>
 </html>`;
 }
