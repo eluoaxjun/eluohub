@@ -133,21 +133,6 @@ body {
 .req-footer { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--c-border); display: flex; gap: 16px; font-size: 12px; color: var(--c-text-sub); flex-wrap: wrap; }
 .req-footer strong { color: var(--c-text); }
 
-/* NFR Card */
-.nfr-card {
-  background: var(--c-surface);
-  border: 1px solid var(--c-border);
-  border-radius: var(--radius);
-  padding: 18px 20px;
-  box-shadow: var(--shadow);
-  border-left: 4px solid var(--c-purple);
-  margin-bottom: 12px;
-}
-.nfr-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
-.nfr-id { font-size: 11px; font-weight: 700; background: var(--c-purple); color: #fff; padding: 2px 8px; border-radius: 4px; }
-.nfr-title { font-size: 15px; font-weight: 600; color: var(--c-text); margin-bottom: 6px; }
-.nfr-body { font-size: 14px; color: var(--c-text-sub); }
-.nfr-metric { font-size: 13px; font-weight: 600; color: var(--c-primary-mid); background: var(--c-bg-alt); padding: 6px 12px; border-radius: var(--radius); margin-top: 8px; display: inline-block; }
 
 /* BG Table */
 .bg-table { width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid var(--c-border); border-radius: var(--radius); overflow: hidden; }
@@ -210,8 +195,8 @@ body {
         <div class="summary-label">Must</div>
       </div>
       <div class="summary-card green">
-        <div class="summary-value">{NFR수}</div>
-        <div class="summary-label">NFR</div>
+        <div class="summary-value">{Should수}</div>
+        <div class="summary-label">Should</div>
       </div>
       <div class="summary-card warn">
         <div class="summary-value">{미확인수}</div>
@@ -226,7 +211,6 @@ body {
   <nav class="tab-nav">
     <button class="tab-btn active" data-tab="overview">개요</button>
     <button class="tab-btn" data-tab="fr">기능 요구사항 (FR)</button>
-    <button class="tab-btn" data-tab="nfr">비기능 요구사항 (NFR)</button>
   </nav>
 </div>
 
@@ -319,64 +303,6 @@ body {
 </div>
 </div>
 
-<!-- ===== TAB: 비기능 요구사항 ===== -->
-<div class="tab-panel" id="panel-nfr">
-<div class="container">
-  <div class="inner-section">
-    <div class="s-label">Non-Functional Requirements</div>
-    <div class="s-title">비기능 요구사항</div>
-
-    <!-- NFR-001 성능부터 순서대로 -->
-    <div class="nfr-card">
-      <div class="nfr-header">
-        <span class="nfr-id">NFR-001</span>
-      </div>
-      <div class="nfr-title">성능</div>
-      <div class="nfr-body">{성능 요건 설명}</div>
-      <span class="nfr-metric">LCP ≤ {N}초 / FCP ≤ {N}초 / Lighthouse ≥ {N}점</span>
-    </div>
-
-    <div class="nfr-card">
-      <div class="nfr-header">
-        <span class="nfr-id">NFR-002</span>
-      </div>
-      <div class="nfr-title">반응형</div>
-      <div class="nfr-body">{반응형 요건 설명}</div>
-      <span class="nfr-metric">모바일 ≤ {N}px / 태블릿 ≤ {N}px / 데스크톱 ≥ {N}px</span>
-    </div>
-
-    <div class="nfr-card">
-      <div class="nfr-header">
-        <span class="nfr-id">NFR-003</span>
-      </div>
-      <div class="nfr-title">접근성</div>
-      <div class="nfr-body">{접근성 요건 설명}</div>
-      <span class="nfr-metric">WCAG 2.1 AA / {검사 도구}</span>
-    </div>
-
-    <div class="nfr-card">
-      <div class="nfr-header">
-        <span class="nfr-id">NFR-004</span>
-      </div>
-      <div class="nfr-title">SEO</div>
-      <div class="nfr-body">{SEO 요건 설명}</div>
-      <span class="nfr-metric">{메타/스키마 요건}</span>
-    </div>
-
-    <div class="nfr-card">
-      <div class="nfr-header">
-        <span class="nfr-id">NFR-005</span>
-      </div>
-      <div class="nfr-title">보안</div>
-      <div class="nfr-body">{보안 요건 설명}</div>
-      <span class="nfr-metric">SSL / {인증 요건}</span>
-    </div>
-
-    <!-- 추가 NFR은 동일 패턴으로 반복 -->
-
-  </div>
-</div>
-</div>
 
 <div class="report-footer">
   <div class="container">&copy; {작성연도} {작성사명}</div>

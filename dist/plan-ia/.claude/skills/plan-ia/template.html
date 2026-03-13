@@ -26,8 +26,13 @@
   --radius-lg: 12px;
   --shadow: 0 1px 3px rgba(0,0,0,0.06);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-  --shadow-lg: 0 8px 24px rgba(0,0,0,0.1);
   --max-w: 960px;
+  /* Depth colors */
+  --d0-bg: #1B3A5C; --d0-fg: #fff;
+  --d1-bg: #EBF4FF; --d1-fg: #1e40af;  --d1-bd: #BFDBFE;
+  --d2-bg: #F0FDF4; --d2-fg: #065f46;  --d2-bd: #A7F3D0;
+  --d3-bg: #FDF4FF; --d3-fg: #6d28d9;  --d3-bd: #DDD6FE;
+  --d4-bg: #FFF7ED; --d4-fg: #92400e;  --d4-bd: #FDE68A;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -84,27 +89,200 @@ body {
 .info-table td { padding: 10px 14px; border-bottom: 1px solid var(--c-border); font-size: 14px; }
 .info-table tr:last-child th, .info-table tr:last-child td { border-bottom: none; }
 
-/* Sitemap Tree */
-.sitemap-wrap {
-  background: var(--c-bg-alt);
-  border: 1px solid var(--c-border);
-  border-radius: var(--radius);
-  padding: 20px 24px;
-  overflow-x: auto;
-}
-.sitemap-tree {
-  font-family: 'Consolas', 'D2Coding', 'Nanum Gothic Coding', monospace;
-  font-size: 14px;
-  line-height: 1.8;
-  color: var(--c-text);
-  white-space: pre;
-}
-.sitemap-tree .ia-id {
-  color: var(--c-text-sub);
+/* ===== SITEMAP VISUAL TREE ===== */
+.sm-legend {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
   font-size: 12px;
+  color: var(--c-text-sub);
+}
+.sm-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sm-legend-dot {
+  width: 12px; height: 12px;
+  border-radius: 3px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.ld0 { background: var(--d0-bg); }
+.ld1 { background: var(--d1-bd); border: 1px solid var(--d1-fg); }
+.ld2 { background: var(--d2-bd); border: 1px solid var(--d2-fg); }
+.ld3 { background: var(--d3-bd); border: 1px solid var(--d3-fg); }
+.ld4 { background: var(--d4-bd); border: 1px solid var(--d4-fg); }
+
+/* GNB 그룹 — 1depth 메뉴 단위로 수평 분할 */
+.sm-gnb-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-/* Page Inventory Table */
+/* GNB 하나의 블록 */
+.sm-gnb-block {
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+/* L0: 홈 행 */
+.sm-home-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--d0-bg);
+  color: var(--d0-fg);
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.sm-home-row .sm-ia-id {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  margin-left: auto;
+}
+
+/* L1: 메뉴 헤더 */
+.sm-l1-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--d1-bg);
+  border-left: 4px solid var(--d1-fg);
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--d1-fg);
+  cursor: pointer;
+  user-select: none;
+}
+.sm-l1-row .sm-ia-id { font-size: 10px; font-weight: 600; color: var(--c-text-sub); margin-left: auto; }
+.sm-l1-row .sm-toggle { font-size: 10px; color: var(--c-text-sub); margin-left: 6px; transition: transform 0.2s; }
+.sm-l1-row.collapsed .sm-toggle { transform: rotate(-90deg); }
+
+/* L1 children container */
+.sm-l1-children {
+  border-top: 1px solid var(--c-border);
+}
+.sm-l1-children.hidden { display: none; }
+
+/* L2 row */
+.sm-l2-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px 7px 28px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--d2-fg);
+  background: var(--c-surface);
+  border-bottom: 1px solid #f3f4f6;
+  position: relative;
+}
+.sm-l2-row::before {
+  content: '';
+  position: absolute;
+  left: 16px; top: 50%;
+  width: 6px; height: 1px;
+  background: var(--d2-fg);
+  opacity: 0.4;
+}
+.sm-l2-row .sm-ia-id { font-size: 10px; color: var(--c-text-sub); margin-left: auto; }
+.sm-l2-row .sm-badges { display: flex; gap: 4px; }
+
+/* L2 children */
+.sm-l2-children { background: var(--d2-bg); }
+
+/* L3 row */
+.sm-l3-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 44px;
+  font-size: 12px;
+  color: var(--d3-fg);
+  background: transparent;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+  position: relative;
+}
+.sm-l3-row::before {
+  content: '';
+  position: absolute;
+  left: 32px; top: 50%;
+  width: 6px; height: 1px;
+  background: var(--d3-fg);
+  opacity: 0.35;
+}
+.sm-l3-row .sm-ia-id { font-size: 10px; color: var(--c-text-sub); margin-left: auto; }
+
+/* L3 children */
+.sm-l3-children { background: var(--d3-bg); }
+
+/* L4 row */
+.sm-l4-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px 5px 60px;
+  font-size: 11px;
+  color: var(--d4-fg);
+  background: transparent;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+  position: relative;
+}
+.sm-l4-row::before {
+  content: '';
+  position: absolute;
+  left: 48px; top: 50%;
+  width: 6px; height: 1px;
+  background: var(--d4-fg);
+  opacity: 0.35;
+}
+.sm-l4-row .sm-ia-id { font-size: 10px; color: var(--c-text-sub); margin-left: auto; }
+
+/* 공통 유틸 블록 */
+.sm-util-section {
+  margin-top: 12px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.sm-util-header {
+  background: #374151;
+  color: #fff;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Depth badge */
+.depth-badge {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 2px;
+  margin-right: 2px;
+  flex-shrink: 0;
+}
+.dep0 { background: rgba(255,255,255,0.2); color: #fff; }
+.dep1 { background: var(--d1-bd); color: var(--d1-fg); }
+.dep2 { background: var(--d2-bd); color: var(--d2-fg); }
+.dep3 { background: var(--d3-bd); color: var(--d3-fg); }
+.dep4 { background: var(--d4-bd); color: var(--d4-fg); }
+
+/* Page type icon */
+.pg-type { font-size: 12px; }
+
+/* ===== PAGE INVENTORY TABLE ===== */
 .inventory-table {
   width: 100%;
   border-collapse: collapse;
@@ -125,32 +303,39 @@ body {
   white-space: nowrap;
 }
 .inventory-table tbody td {
-  padding: 8px 10px;
+  padding: 7px 10px;
   border-bottom: 1px solid var(--c-border);
   vertical-align: middle;
   font-size: 12px;
 }
 .inventory-table tbody tr:last-child td { border-bottom: none; }
-.inventory-table tbody tr:nth-child(even) { background: var(--c-bg-alt); }
 .table-scroll { overflow-x: auto; }
 
-/* Page Status Badge */
+/* Depth indent in inventory */
+.d0 { font-weight: 700; }
+.d1 { padding-left: 12px; }
+.d2 { padding-left: 24px; color: var(--c-text-sub); }
+.d3 { padding-left: 36px; color: var(--c-text-sub); font-size: 11px; }
+.d4 { padding-left: 48px; color: var(--c-text-sub); font-size: 11px; font-style: italic; }
+
+/* Depth row highlight */
+.inventory-table tr.r-d0 td { background: #EBF4FF; font-weight: 700; }
+.inventory-table tr.r-d1 td { }
+.inventory-table tr.r-d2 td { background: var(--c-bg-alt); }
+.inventory-table tr.r-d3 td { }
+.inventory-table tr.r-d4 td { background: #FFFBEB; }
+
+/* Page ID */
+.page-id { font-size: 11px; font-weight: 700; color: var(--c-primary-mid); white-space: nowrap; }
+
+/* Badge */
 .badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 3px; }
 .b-new   { background: #dbeafe; color: #1e40af; }
 .b-edit  { background: #fef3c7; color: #92400e; }
 .b-keep  { background: #f1f5f9; color: #475569; }
 .b-del   { background: #fee2e2; color: #991b1b; }
 
-/* Depth Indent */
-.d0 { font-weight: 700; }
-.d1 { padding-left: 14px; }
-.d2 { padding-left: 28px; }
-.d3 { padding-left: 42px; color: var(--c-text-sub); }
-
-/* Page ID */
-.page-id { font-size: 11px; font-weight: 700; color: var(--c-primary-mid); white-space: nowrap; }
-
-/* Template Badge */
+/* Template badge */
 .tmpl { font-size: 10px; color: var(--c-text-sub); background: var(--c-bg-alt); padding: 1px 5px; border-radius: 3px; border: 1px solid var(--c-border); white-space: nowrap; }
 
 /* Footer */
@@ -218,58 +403,180 @@ body {
 <!-- ===== STICKY TAB ===== -->
 <div class="tab-wrap">
   <nav class="tab-nav">
-    <button class="tab-btn active" data-tab="overview">개요</button>
-    <button class="tab-btn" data-tab="sitemap">사이트맵</button>
+    <button class="tab-btn active" data-tab="sitemap">사이트맵</button>
     <button class="tab-btn" data-tab="inventory">페이지 인벤토리</button>
+    <button class="tab-btn" data-tab="overview">개요</button>
   </nav>
 </div>
 
-<!-- ===== TAB: 개요 ===== -->
-<div class="tab-panel active" id="panel-overview">
-<div class="container">
-
-  <div class="inner-section">
-    <div class="s-label">Document Overview</div>
-    <div class="s-title">문서 개요</div>
-    <table class="info-table">
-      <tr><th>프로젝트명</th><td>{프로젝트 전체명}</td></tr>
-      <tr><th>전체 페이지</th><td>{N}페이지 (IA-P001 ~ IA-P{NNN})</td></tr>
-      <tr><th>GNB 구성</th><td>{1depth 메뉴명 나열 — 최대 7개}</td></tr>
-      <tr><th>최대 Depth</th><td>{N}depth (브레드크럼 필수: {depth 이상})</td></tr>
-      <tr><th>URL 규칙</th><td>영문 소문자, 하이픈 구분, 최대 3세그먼트</td></tr>
-      <tr><th>상위 문서</th><td>FN_{코드}_v1.0</td></tr>
-    </table>
-  </div>
-
-</div>
-</div>
-
 <!-- ===== TAB: 사이트맵 ===== -->
-<div class="tab-panel" id="panel-sitemap">
+<div class="tab-panel active" id="panel-sitemap">
 <div class="container">
   <div class="inner-section">
     <div class="s-label">Sitemap</div>
-    <div class="s-title">사이트맵 트리</div>
-    <!-- 트리 구조: 아이콘 + ID + 페이지명 형식 유지 -->
-    <div class="sitemap-wrap">
-      <pre class="sitemap-tree">🏠 홈 (IA-P001)
-├── 📂 {1depth 메뉴명} (IA-P100)
-│   ├── 📄 {2depth 서브메뉴} (IA-P101)
-│   │   ├── 📄 {3depth 상세} (IA-P110)
-│   │   └── 📄 {3depth 상세} (IA-P111)
-│   └── 📄 {2depth 서브메뉴} (IA-P102)
-├── 📂 {1depth 메뉴명} (IA-P200)
-│   ├── 📄 {2depth 서브메뉴} (IA-P201)
-│   └── 📄 {2depth 서브메뉴} (IA-P202)
-├── 📂 {1depth 메뉴명} (IA-P300)
-│   └── 📄 {2depth 서브메뉴} (IA-P301)
-└── 📂 공통/유틸리티
-    ├── 📄 로그인 (IA-P901)
-    ├── 📄 회원가입 (IA-P902)
-    ├── 📄 마이페이지 (IA-P910)
-    ├── 📄 통합검색 (IA-P920)
-    └── 📄 에러 (IA-P990)</pre>
+    <div class="s-title">사이트맵</div>
+
+    <!-- Depth 범례 -->
+    <div class="sm-legend">
+      <span class="sm-legend-item"><span class="sm-legend-dot ld0"></span>L0 홈</span>
+      <span class="sm-legend-item"><span class="sm-legend-dot ld1"></span>L1 GNB 메뉴</span>
+      <span class="sm-legend-item"><span class="sm-legend-dot ld2"></span>L2 서브메뉴 / 목록</span>
+      <span class="sm-legend-item"><span class="sm-legend-dot ld3"></span>L3 상세 페이지</span>
+      <span class="sm-legend-item"><span class="sm-legend-dot ld4"></span>L4 모달 / 오버레이</span>
     </div>
+
+    <div class="sm-gnb-wrap">
+
+      <!-- 홈 (L0) -->
+      <div class="sm-gnb-block">
+        <div class="sm-home-row">
+          <span class="pg-type">🏠</span>
+          <span>홈</span>
+          <span class="sm-ia-id">IA-P001 · /</span>
+        </div>
+      </div>
+
+      <!-- GNB 1: {1depth 메뉴명} -->
+      <div class="sm-gnb-block">
+        <!-- L1 헤더 (클릭으로 접기/펼치기) -->
+        <div class="sm-l1-row" onclick="toggleL1(this)">
+          <span class="depth-badge dep1">L1</span>
+          <span class="pg-type">📂</span>
+          <span>{1depth 메뉴명}</span>
+          <span class="sm-ia-id">IA-P100 · /{slug}</span>
+          <span class="sm-toggle">▼</span>
+        </div>
+        <!-- L1 자식들 -->
+        <div class="sm-l1-children">
+          <!-- L2 -->
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📄</span>
+            <span>{2depth 서브메뉴}</span>
+            <div class="sm-badges">
+              <span class="sm-ia-id">IA-P101</span>
+            </div>
+          </div>
+          <!-- L2에 L3 자식 있는 경우 -->
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📋</span>
+            <span>{2depth 목록 페이지}</span>
+            <div class="sm-badges">
+              <span class="sm-ia-id">IA-P102</span>
+            </div>
+          </div>
+          <div class="sm-l2-children">
+            <!-- L3 -->
+            <div class="sm-l3-row">
+              <span class="depth-badge dep3">L3</span>
+              <span class="pg-type">📄</span>
+              <span>{3depth 상세}</span>
+              <span class="sm-ia-id">IA-P110 · /{slug}/{slug}/{id}</span>
+            </div>
+            <div class="sm-l3-row">
+              <span class="depth-badge dep3">L3</span>
+              <span class="pg-type">📄</span>
+              <span>{3depth 상세 2}</span>
+              <span class="sm-ia-id">IA-P111</span>
+            </div>
+            <!-- L3에 L4 자식 (모달/오버레이) -->
+            <div class="sm-l3-children">
+              <div class="sm-l4-row">
+                <span class="depth-badge dep4">L4</span>
+                <span class="pg-type">🔲</span>
+                <span>{4depth 모달/레이어}</span>
+                <span class="sm-ia-id">IA-P112</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GNB 2: {1depth 메뉴명} -->
+      <div class="sm-gnb-block">
+        <div class="sm-l1-row" onclick="toggleL1(this)">
+          <span class="depth-badge dep1">L1</span>
+          <span class="pg-type">📂</span>
+          <span>{1depth 메뉴명}</span>
+          <span class="sm-ia-id">IA-P200 · /{slug}</span>
+          <span class="sm-toggle">▼</span>
+        </div>
+        <div class="sm-l1-children">
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📄</span>
+            <span>{2depth 서브메뉴}</span>
+            <span class="sm-ia-id">IA-P201</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📄</span>
+            <span>{2depth 서브메뉴}</span>
+            <span class="sm-ia-id">IA-P202</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- GNB 3: {1depth 메뉴명} -->
+      <div class="sm-gnb-block">
+        <div class="sm-l1-row" onclick="toggleL1(this)">
+          <span class="depth-badge dep1">L1</span>
+          <span class="pg-type">📂</span>
+          <span>{1depth 메뉴명}</span>
+          <span class="sm-ia-id">IA-P300 · /{slug}</span>
+          <span class="sm-toggle">▼</span>
+        </div>
+        <div class="sm-l1-children">
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">📄</span>
+            <span>{2depth 서브메뉴}</span>
+            <span class="sm-ia-id">IA-P301</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 공통/유틸리티 -->
+      <div class="sm-util-section">
+        <div class="sm-util-header">
+          <span>⚙</span> 공통 / 유틸리티
+        </div>
+        <div class="sm-l1-children" style="display:block;">
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">🔑</span>
+            <span>로그인</span>
+            <span class="sm-ia-id">IA-P901 · /login</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">✏</span>
+            <span>회원가입</span>
+            <span class="sm-ia-id">IA-P902 · /join</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">👤</span>
+            <span>마이페이지</span>
+            <span class="sm-ia-id">IA-P910 · /mypage</span>
+          </div>
+          <div class="sm-l2-row">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">🔍</span>
+            <span>통합검색</span>
+            <span class="sm-ia-id">IA-P920 · /search</span>
+          </div>
+          <div class="sm-l2-row" style="border-bottom:none;">
+            <span class="depth-badge dep2">L2</span>
+            <span class="pg-type">⚠</span>
+            <span>에러 (404 / 500)</span>
+            <span class="sm-ia-id">IA-P990 · /404</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /sm-gnb-wrap -->
   </div>
 </div>
 </div>
@@ -281,14 +588,14 @@ body {
     <div class="s-label">Page Inventory</div>
     <div class="s-title">페이지 인벤토리</div>
     <!-- 상태 배지: b-new(신규) / b-edit(수정) / b-keep(유지) / b-del(삭제) -->
+    <!-- 행 클래스: r-d0~r-d4 (Depth별 배경색) -->
     <div class="table-scroll">
       <table class="inventory-table">
         <thead>
           <tr>
             <th style="width:80px">ID</th>
+            <th style="width:30px">D</th>
             <th>페이지명</th>
-            <th style="width:50px">Depth</th>
-            <th>상위메뉴</th>
             <th>URL</th>
             <th style="width:70px">템플릿</th>
             <th style="width:50px">상태</th>
@@ -299,11 +606,10 @@ body {
         </thead>
         <tbody>
           <!-- Depth 0: 홈 -->
-          <tr>
+          <tr class="r-d0">
             <td><span class="page-id">IA-P001</span></td>
-            <td class="d0">홈</td>
-            <td>0</td>
-            <td>-</td>
+            <td><span class="depth-badge dep0">L0</span></td>
+            <td class="d0">🏠 홈</td>
             <td>/</td>
             <td><span class="tmpl">main</span></td>
             <td><span class="badge b-new">신규</span></td>
@@ -311,12 +617,11 @@ body {
             <td>FN-{###}</td>
             <td></td>
           </tr>
-          <!-- Depth 1 -->
+          <!-- Depth 1: GNB 메뉴 -->
           <tr>
             <td><span class="page-id">IA-P100</span></td>
-            <td class="d1">{1depth 메뉴명}</td>
-            <td>1</td>
-            <td>홈</td>
+            <td><span class="depth-badge dep1">L1</span></td>
+            <td class="d1">📂 {1depth 메뉴명}</td>
             <td>/{slug}</td>
             <td><span class="tmpl">list</span></td>
             <td><span class="badge b-new">신규</span></td>
@@ -324,12 +629,11 @@ body {
             <td>FN-{###}</td>
             <td></td>
           </tr>
-          <!-- Depth 2 -->
-          <tr>
+          <!-- Depth 2: 서브메뉴 -->
+          <tr class="r-d2">
             <td><span class="page-id">IA-P101</span></td>
-            <td class="d2">{2depth 서브메뉴}</td>
-            <td>2</td>
-            <td>{1depth}</td>
+            <td><span class="depth-badge dep2">L2</span></td>
+            <td class="d2">📄 {2depth 서브메뉴}</td>
             <td>/{slug}/{slug}</td>
             <td><span class="tmpl">list</span></td>
             <td><span class="badge b-new">신규</span></td>
@@ -337,25 +641,35 @@ body {
             <td>FN-{###}</td>
             <td></td>
           </tr>
-          <!-- Depth 3 -->
+          <!-- Depth 3: 상세 페이지 -->
           <tr>
             <td><span class="page-id">IA-P110</span></td>
-            <td class="d3">{3depth 상세}</td>
-            <td>3</td>
-            <td>{2depth}</td>
-            <td>/{slug}/{slug}/{slug}</td>
+            <td><span class="depth-badge dep3">L3</span></td>
+            <td class="d3">📄 {3depth 상세}</td>
+            <td>/{slug}/{slug}/{id}</td>
             <td><span class="tmpl">detail</span></td>
             <td><span class="badge b-new">신규</span></td>
             <td>FR-{###}</td>
             <td>FN-{###}</td>
             <td></td>
           </tr>
+          <!-- Depth 4: 모달/오버레이 -->
+          <tr class="r-d4">
+            <td><span class="page-id">IA-P112</span></td>
+            <td><span class="depth-badge dep4">L4</span></td>
+            <td class="d4">🔲 {4depth 모달/레이어}</td>
+            <td>— (오버레이)</td>
+            <td><span class="tmpl">modal</span></td>
+            <td><span class="badge b-new">신규</span></td>
+            <td>FR-{###}</td>
+            <td>FN-{###}</td>
+            <td>로그인 필요</td>
+          </tr>
           <!-- 유틸리티 -->
           <tr>
             <td><span class="page-id">IA-P901</span></td>
-            <td class="d1">로그인</td>
-            <td>1</td>
-            <td>-</td>
+            <td><span class="depth-badge dep1">L1</span></td>
+            <td class="d1">🔑 로그인</td>
             <td>/login</td>
             <td><span class="tmpl">form</span></td>
             <td><span class="badge b-new">신규</span></td>
@@ -363,11 +677,10 @@ body {
             <td>FN-{###}</td>
             <td></td>
           </tr>
-          <tr>
+          <tr class="r-d2">
             <td><span class="page-id">IA-P990</span></td>
-            <td class="d1">에러 (404)</td>
-            <td>1</td>
-            <td>-</td>
+            <td><span class="depth-badge dep1">L1</span></td>
+            <td class="d1">⚠ 에러 (404)</td>
             <td>/404</td>
             <td><span class="tmpl">error</span></td>
             <td><span class="badge b-new">신규</span></td>
@@ -383,12 +696,31 @@ body {
 </div>
 </div>
 
+<!-- ===== TAB: 개요 ===== -->
+<div class="tab-panel" id="panel-overview">
+<div class="container">
+  <div class="inner-section">
+    <div class="s-label">Document Overview</div>
+    <div class="s-title">문서 개요</div>
+    <table class="info-table">
+      <tr><th>프로젝트명</th><td>{프로젝트 전체명}</td></tr>
+      <tr><th>전체 페이지</th><td>{N}페이지 (IA-P001 ~ IA-P{NNN})</td></tr>
+      <tr><th>GNB 구성</th><td>{1depth 메뉴명 나열 — 최대 7개}</td></tr>
+      <tr><th>최대 Depth</th><td>{N}depth (L4: 모달/오버레이 포함 시)</td></tr>
+      <tr><th>URL 규칙</th><td>영문 소문자, 하이픈 구분, 최대 3세그먼트 + ID 파라미터</td></tr>
+      <tr><th>상위 문서</th><td>FN_{코드}_v1.0</td></tr>
+    </table>
+  </div>
+</div>
+</div>
+
 <div class="report-footer">
   <div class="container">&copy; {작성연도} {작성사명}</div>
 </div>
 
 <script>
 (function() {
+  /* ── 탭 전환 ── */
   var btns = document.querySelectorAll('.tab-btn');
   var panels = document.querySelectorAll('.tab-panel');
   btns.forEach(function(btn) {
@@ -403,6 +735,14 @@ body {
     });
   });
 })();
+
+/* ── L1 접기/펼치기 ── */
+function toggleL1(el) {
+  var children = el.nextElementSibling;
+  if (!children) return;
+  var isHidden = children.classList.toggle('hidden');
+  el.classList.toggle('collapsed', isHidden);
+}
 </script>
 </body>
 </html>

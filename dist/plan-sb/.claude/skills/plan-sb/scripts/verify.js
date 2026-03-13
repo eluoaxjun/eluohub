@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 /**
  * 화면설계서 출력물 검증기 v2
- * Usage: node verify.js <output.html> [--output-dir path] [--context-dir path]
+ * Usage: node verify.js <output.html> [--output-dir path] [--context-dir path] [--data-file path]
  *
  * 검증 항목:
+ * - [사전] wireframe[] type 유효성: element-types.js 등록 타입 외 사용 → WARN
  * - viewport: 1280×720 고정 확인
  * - overflow: .slide 내 scrollHeight > 720px → WARN
  * - 콘텐츠 밀도: 콘텐츠 영역 < 30% → WARN
@@ -14,6 +15,31 @@
 
 const path = require('path');
 const fs = require('fs');
+const { ELEMENT_TYPES } = require('./lib/element-types');
+
+const VALID_TYPES = new Set(ELEMENT_TYPES.map(e => e.type));
+
+/**
+ * wireframe[] JSON에서 미등록 타입 사전 검증 (HTML 렌더링 전)
+ * @param {Array} screens - data.json의 screens 배열
+ * @returns {string[]} 경고 메시지 배열
+ */
+function checkWireframeTypes(screens) {
+  const warnings = [];
+  screens.forEach((screen, si) => {
+    if (!screen.wireframe) return;
+    const check = (els, prefix) => {
+      els.forEach(el => {
+        if (!VALID_TYPES.has(el.type)) {
+          warnings.push(`[WARN-PRE] Screen ${si + 1} (${screen.interfaceName || ''}) ${prefix}미등록 type: "${el.type}"`);
+        }
+        if (el.children) check(el.children, 'children > ');
+      });
+    };
+    check(screen.wireframe, '');
+  });
+  return warnings;
+}
 
 async function main() {
   const args = process.argv.slice(2);
@@ -25,6 +51,8 @@ async function main() {
       flags.outputDir = args[++i];
     } else if (args[i] === '--context-dir' && args[i + 1]) {
       flags.contextDir = args[++i];
+    } else if (args[i] === '--data-file' && args[i + 1]) {
+      flags.dataFile = args[++i];
     } else if (!args[i].startsWith('--')) {
       positional.push(args[i]);
     }
@@ -61,9 +89,31 @@ async function main() {
     isLinkedMode = fs.existsSync(contextFn);
   }
 
+  // ─── [사전 검증] wireframe[] 타입 유효성 ────────────────────────────────
+  const preWarns = [];
+  if (flags.dataFile) {
+    const dataPath = path.resolve(flags.dataFile);
+    if (fs.existsSync(dataPath)) {
+      try {
+        const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+        if (data.screens) {
+          const typeWarns = checkWireframeTypes(data.screens);
+          preWarns.push(...typeWarns);
+        }
+      } catch (e) {
+        preWarns.push(`[WARN-PRE] data-file 파싱 실패: ${e.message}`);
+      }
+    } else {
+      preWarns.push(`[WARN-PRE] data-file 없음: ${dataPath}`);
+    }
+  }
+
   console.log(`[INFO] 검증 대상: ${htmlPath}`);
   console.log(`[INFO] 연계 모드: ${isLinkedMode ? 'YES (context/fn.md 존재)' : 'NO (독립 모드)'}`);
   console.log(`[INFO] 스크린샷 저장: ${verifyDir}`);
+  if (flags.dataFile) {
+    console.log(`[INFO] 사전 검증 (wireframe 타입): ${preWarns.length === 0 ? 'PASS' : `${preWarns.length}건 WARN`}`);
+  }
   console.log('');
 
   // Playwright 자동 설치
@@ -200,15 +250,16 @@ async function main() {
   console.log(`스크린샷: ${verifyDir}`);
   console.log('');
 
-  if (verifyResults.errors.length === 0 && verifyResults.warns.length === 0) {
+  if (preWarns.length === 0 && verifyResults.errors.length === 0 && verifyResults.warns.length === 0) {
     console.log('[PASS] 모든 검증 항목 통과');
   }
 
+  preWarns.forEach(w => console.log(w));
   verifyResults.errors.forEach(e => console.log(e));
   verifyResults.warns.forEach(w => console.log(w));
 
   console.log('');
-  console.log(`ERROR: ${verifyResults.errors.length}건 / WARN: ${verifyResults.warns.length}건`);
+  console.log(`PRE-WARN: ${preWarns.length}건 / ERROR: ${verifyResults.errors.length}건 / WARN: ${verifyResults.warns.length}건`);
   console.log('='.repeat(60));
 
   // ERROR 1건 이상이면 비정상 종료

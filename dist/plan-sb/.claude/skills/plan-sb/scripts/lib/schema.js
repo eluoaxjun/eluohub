@@ -147,6 +147,7 @@ function normalizeScreen(s) {
     uiImagePath: s.uiImagePath || '',
     hasDivider: !!s.hasDivider,
     divider: s.divider || null,
+    wfHtml: s.wfHtml || null,
     wireframe: s.wireframe || null,
     // P0-3: Header/Footer/LNB 맥락
     persistent: s.persistent || null,

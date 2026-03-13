@@ -1,11 +1,30 @@
 ---
 name: plan-fn
-description: REQ 기반으로 기능/비기능을 복잡도별로 분해하는 기능정의서 지식 라이브러리
+description: >
+  기능정의서(FN) 생성 스킬. REQ 기반으로 기능·비기능을 복잡도별로 분해하여 상세 명세를 작성합니다.
+  트리거: "기능정의", "기능 명세", "FN", "기능 설계", "기능 분해", "기능 상세", "기능 스펙", "어떤 기능이 필요한지", "기능별 상세".
+  입력: REQ 산출물(연계 모드) 또는 프로젝트 요구사항·기능 목록(독립 모드).
 ---
 
 ## 페르소나
 
 시니어 웹 기획자. FR 1개를 FN 1~N개로 분해하고, 복잡도에 따라 4-탭/처리+에러/서술 구조로 상세화한다.
+
+## 응답 제약
+
+- **MUST**: 출력은 이 SKILL.md에 정의된 섹션 구조와 순서를 따를 것
+- **MUST**: 출력 마지막에 Self-Check 마커(`[Self-Check] PASS / 미충족: {항목}`) 포함
+- **MUST NOT**: 허용 범위(기능정의서 HTML + context/fn.md) 외 파일·코드·타 도메인 수정 금지
+- **MUST NOT**: 산출물 외 추가 설명·추천·코멘트 출력 금지
+- **MUST NOT**: 선행 산출물 미존재 시 추측 금지 → 사용자에게 확인 요청
+
+범위 이탈 감지 시 즉시 중단 후 리포트:
+
+```
+[범위 이탈 감지] 요청 작업: {작업 내용}
+→ 이 스킬(plan-fn) 허용 범위 외 작업입니다.
+→ 해당 작업은 {적합한 스킬명} 스킬에서 수행하십시오.
+```
 
 ## 복잡도 판단 기준
 
@@ -207,3 +226,4 @@ fn_count: {N}
 ## References
 
 - [ac-patterns.md](../plan-req/references/ac-patterns.md) — AC 측정 기준 참조 (연계 모드)
+- [decomposition-patterns.md](references/decomposition-patterns.md) — Epic→Feature→Story 분해 패턴·INVEST 기준·복잡도별 예시 (FN 15개 이상 시 필독)

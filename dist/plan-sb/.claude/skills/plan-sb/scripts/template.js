@@ -277,13 +277,14 @@ function css(theme) {
   .msg-type-process { color: #0070c0; font-weight: 600; }
 
   /* ── text 역할별 스타일 ── */
-  .wf-el--text-title { background: transparent; border: none; padding: 2px 0; }
+  /* flex-direction:row 명시 — .wf-el 기본값 column 상속 방지 */
+  .wf-el--text-title { background: transparent; border: none; padding: 2px 0; flex-direction: row; align-items: center; }
   .wf-text-title { font-size: 16px; font-weight: 700; color: #1a1a1a; line-height: 1.3; }
-  .wf-el--text-subtitle { background: transparent; border: none; padding: 2px 0; }
+  .wf-el--text-subtitle { background: transparent; border: none; padding: 2px 0; flex-direction: row; align-items: center; }
   .wf-text-subtitle { font-size: 13px; font-weight: 600; color: #444; }
-  .wf-el--text-breadcrumb { background: transparent; border: none; padding: 2px 0; }
+  .wf-el--text-breadcrumb { background: transparent; border: none; padding: 2px 0; flex-direction: row; align-items: center; }
   .wf-breadcrumb { font-size: 10px; color: #aaa; letter-spacing: 0.02em; }
-  .wf-el--text-count { background: transparent; border: none; padding: 2px 0; }
+  .wf-el--text-count { background: transparent; border: none; padding: 2px 0; flex-direction: row; align-items: center; }
   .wf-count-text { font-size: 12px; color: #666; font-weight: 500; }
 
   /* ── 카드 뱃지 ── */
@@ -295,6 +296,19 @@ function css(theme) {
   .wf-lnb-tab:first-child { color: #555; font-weight: 600; border-bottom-color: #555; }
   .msg-type-positive { color: #2e8b57; font-weight: 600; }
   .msg-type-negative { color: #e67700; font-weight: 600; }
+
+  /* ── 이미지 갤러리 ── */
+  .wf-el--gallery { display: flex; flex-direction: row; gap: 5px; padding: 5px 0; background: transparent; border: none; overflow: hidden; }
+  .wf-el--gallery .wf-el--image { flex: 1; min-width: 0; margin: 0; border-radius: 3px; }
+
+  /* ── 지도 ── */
+  .wf-el--map { background: repeating-linear-gradient(0deg,#e4ede4,#e4ede4 20px,#dce8dc 20px,#dce8dc 21px), repeating-linear-gradient(90deg,#e4ede4,#e4ede4 20px,#dce8dc 20px,#dce8dc 21px); border: 1px solid #bbb; display: flex; flex-direction: row; align-items: center; justify-content: center; color: #555; min-height: 140px; gap: 6px; font-size: 12px; font-weight: 500; }
+  .wf-el--map::before { content: '📍'; font-size: 20px; }
+
+  /* ── 키워드 태그 그룹 ── */
+  .wf-el--group--tags { display: flex; flex-direction: row; flex-wrap: wrap; gap: 6px; padding: 5px 0; background: transparent; border: none; }
+  .wf-el--group--tags .wf-el { flex: none; margin: 0; }
+  .wf-el--tag { display: inline-flex; align-items: center; height: 24px; padding: 0 12px; border-radius: 12px; font-size: 10px; font-weight: 500; background: #f0f4ff; border: 1px solid #c0d0f0; color: #3a5a99; cursor: default; }
 
   /* Component guide */
   .comp-guide-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; }
@@ -826,6 +840,16 @@ function renderWfElement(el) {
     }
     case 'image':
       return `<div class="wf-el wf-el--image${markedCls}" style="${h}">${markerHtml}${el.label || 'Image'}</div>`;
+    case 'gallery': {
+      const count = el.count || (el.images && el.images.length) || 4;
+      const thumbH = el.thumbHeight || '90px';
+      const imgs = el.images && el.images.length > 0
+        ? el.images.map(img => `<div class="wf-el wf-el--image" style="min-height:${thumbH}">${img.label || ''}</div>`).join('')
+        : Array.from({length: count}, (_, i) => `<div class="wf-el wf-el--image" style="min-height:${thumbH}">이미지 ${i+1}</div>`).join('');
+      return `<div class="wf-el wf-el--gallery${markedCls}" style="${h}">${markerHtml}${imgs}</div>`;
+    }
+    case 'map':
+      return `<div class="wf-el wf-el--map${markedCls}" style="${h}">${markerHtml}${el.label || '지도 (카카오맵 API)'}</div>`;
     case 'list': {
       const items = (el.items || []).map(i => `<li>${i}</li>`).join('');
       return `<div class="wf-el wf-el--list${markedCls}" style="${h}">${markerHtml}${labelHtml}<ul>${items}</ul></div>`;
@@ -865,6 +889,15 @@ function renderWfElement(el) {
     }
     case 'group': {
       const layout = el.layout || 'default';
+
+      if (layout === 'tags') {
+        const kids = el.children || [];
+        const tagsHtml = kids.map(c => {
+          const txt = c.content || c.label || '';
+          return `<span class="wf-el--tag">#${txt}</span>`;
+        }).join('');
+        return `<div class="wf-el wf-el--group--tags${markedCls}" style="${h}">${markerHtml}${tagsHtml}</div>`;
+      }
 
       if (layout === 'popup') {
         const kids = el.children || [];
