@@ -4,7 +4,9 @@ description: >
   기획 산출물 검수 에이전트. QST/REQ/FN/IA/WBS/Dashboard 문서의 품질, 완전성, 일관성을
   검증합니다. 산출물별 100점 만점 배점 + 풀 세트 공통 50점으로 정량 평가합니다.
 tools: Read, Grep, Glob, Write
-model: sonnet
+model: inherit
+user-invocable: false
+disable-model-invocation: true
 memory: project
 maxTurns: 5
 color: cyan

@@ -8,6 +8,7 @@ tools: Read, Grep, Glob, Write, Edit, Bash, Skill
 model: sonnet
 maxTurns: 20
 color: blue
+argument-hint: "[프로젝트명] [일정기간] (예: 비짓강남 12주)"
 skills:
   - pm-router
   - plan-wbs

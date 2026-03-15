@@ -8,6 +8,7 @@ tools: Read, Grep, Glob, Write, Edit, Bash, Skill
 model: sonnet
 maxTurns: 20
 color: blue
+argument-hint: "[프로젝트명] [클라이언트명] (예: 비짓강남 강남구청)"
 skills:
   - pm-router
   - plan-qst
