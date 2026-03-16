@@ -102,6 +102,11 @@ async function main() {
   await page.goto(fileUrl, { waitUntil: 'networkidle' });
 
   // 16:9 landscape 고정 PDF (1920×1080)
+  await page.emulateMedia({ media: 'print' });
+  await page.evaluate(() => {
+    document.querySelectorAll('.slide').forEach(s => { s.style.zoom = ''; });
+  });
+
   const frameCount = await page.evaluate(() => document.querySelectorAll('.slide').length);
   console.log(`[PDF] 슬라이드 ${frameCount}개, 1920×1080 landscape`);
 
