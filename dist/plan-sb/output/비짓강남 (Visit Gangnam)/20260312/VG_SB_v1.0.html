@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>화면설계서 - 비짓강남 (Visit Gangnam)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; background: #fff; }
+
+  /* 화면용: 세로 나열 (수직 스크롤) */
+  @media screen {
+    body { background: #4a4a4a; display: flex; flex-direction: column; align-items: center; gap: 40px; padding: 40px; overflow-y: auto; }
+  }
+
+  /* 인쇄/PDF용: 16:9 landscape */
+  @page {
+    size: 1920px 1080px landscape;
+    margin: 0;
+  }
+  @media print {
+    body { display: block; padding: 0; background: #fff; margin: 0; }
+    .slide { page-break-after: always; border: none !important; }
+    .slide:last-child { page-break-after: auto; }
+  }
+
+  /* 슬라이드 컨테이너: 1920×1080 고정 */
+  .slide {
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    position: relative;
+    background: #fff;
+    border: 2px solid #3366CC;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  /* 슬라이드 헤더: 54px */
+  .slide-header {
+    background: #3366CC;
+    color: #fff;
+    padding: 0 24px;
+    height: 54px;
+    min-height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+  .slide-header .hd-left { display: flex; align-items: center; gap: 14px; }
+  .slide-header .hd-id { font-weight: 700; font-size: 18px; letter-spacing: 0.5px; }
+  .slide-header .hd-sep { opacity: 0.5; }
+  .slide-header .hd-name { opacity: 0.9; }
+  .slide-header .hd-right { opacity: 0.8; font-size: 14px; }
+
+  /* 슬라이드 본문: 남은 영역 전부 */
+  .slide-body {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  /* 슬라이드 푸터: 36px */
+  .slide-footer {
+    background: #f8f9fa;
+    border-top: 1px solid #e0e0e0;
+    padding: 0 24px;
+    height: 36px;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #999;
+    flex-shrink: 0;
+  }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; font-size: 16px; }
+  th { background: #f5f5f5; font-weight: 600; padding: 10px 14px; border: 1px solid #ddd; text-align: center; }
+  td { padding: 10px 14px; border: 1px solid #ddd; vertical-align: top; }
+  .section-title { font-size: 22px; font-weight: 700; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #333; }
+
+  /* Cover */
+  .cover-body { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; gap: 12px; }
+  .cover-logo { font-size: 26px; font-weight: 700; color: #666; letter-spacing: 3px; margin-bottom: 24px; }
+  .cover-logo-img { max-height: 96px; margin-bottom: 24px; }
+  .cover-title { font-size: 40px; font-weight: 700; color: #1a1a2e; text-align: center; }
+  .cover-version { font-size: 18px; color: #888; }
+  .cover-meta { width: 60%; max-width: 780px; border-collapse: collapse; margin-top: 36px; font-size: 16px; }
+  .cover-meta th { background: #f0f0f0; font-weight: 600; padding: 8px 12px; border: 1px solid #ddd; text-align: center; width: 120px; }
+  .cover-meta td { padding: 8px 12px; border: 1px solid #ddd; text-align: center; }
+
+  /* Design 레이아웃: 좌 60% / 우 40% */
+  .design-layout { display: flex; flex: 1; overflow: hidden; min-height: 0; }
+  .wireframe-area { flex: 0 0 60%; overflow: hidden; border-right: 1px solid #ddd; position: relative; }
+  .description-panel { flex: 0 0 40%; overflow-y: auto; padding: 18px 20px; display: flex; flex-direction: column; }
+
+  /* Description */
+  .desc-table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.6; }
+  .desc-table th { background: #f5f5f5; font-weight: 600; padding: 7px 10px; border: 1px solid #ddd; text-align: center; font-size: 14px; }
+  .desc-table td { padding: 7px 10px; border: 1px solid #ddd; vertical-align: top; font-size: 14px; }
+  .desc-table .desc-num-cell { width: 56px; text-align: center; font-weight: 700; color: #333; }
+  .desc-table .desc-content-cell { color: #333; }
+  .desc-table .desc-common-row td { background: #fafafa; }
+  .desc-indent-1 { }
+  .desc-indent-2 { padding-left: 14px; }
+  .desc-indent-3 { padding-left: 28px; }
+  .desc-indent-4 { padding-left: 42px; }
+  .desc-var { color: #e67700; font-weight: 600; }
+  .desc-important { color: #c00000; font-weight: 600; }
+  .desc-continuation { font-size: 10px; color: #999; font-style: italic; text-align: center; padding: 5px 0; border-top: 1px dashed #ddd; }
+  .desc-change-tag { display: inline-block; font-size: 8px; font-weight: 700; padding: 1px 4px; border-radius: 2px; margin-left: 3px; vertical-align: middle; }
+  .desc-change-tag--modify { background: #fff3f3; color: #c00; border: 1px solid #c00; }
+  .desc-change-tag--add { background: #f0f7ff; color: #0070c0; border: 1px solid #0070c0; }
+  .desc-change-tag--delete { background: #f5f5f5; color: #666; border: 1px solid #999; text-decoration: line-through; }
+  .desc-label { font-size: 9px; font-weight: 700; color: #888; margin: 2px 0; }
+  .desc-before { background: #fff3f3; padding: 5px 7px; margin: 3px 0; border-left: 2px solid #CC3333; font-size: 10px; }
+  .desc-after { background: #f0fff0; padding: 5px 7px; margin: 3px 0; border-left: 2px solid #2e8b57; font-size: 10px; }
+
+  /* fnRef 섹션 */
+  .fn-ref-section { margin-top: auto; padding-top: 8px; border-top: 1px dashed #ddd; }
+  .fn-ref-title { font-size: 10px; font-weight: 700; color: #888; margin-bottom: 4px; }
+  .fn-ref-list { font-size: 10px; color: #3366CC; font-family: monospace; line-height: 1.6; }
+
+  /* Wireframe 영역 */
+  .wf-container { height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+  .wf-scroll { flex: 1; overflow-y: auto; padding: 12px 15px; }
+  .wf-el { border: 1px dashed #ccc; background: #fafafa; padding: 10px 14px; margin: 0 0 7px 0; font-size: 13px; color: #666; position: relative; display: flex; flex-direction: column; }
+  .wf-el:last-child { margin-bottom: 0; }
+  .wf-el--header { background: #e8e8e8; border: 1px solid #bbb; min-height: 48px; display: flex; flex-direction: row; align-items: center; justify-content: center; font-weight: 600; color: #555; font-size: 14px; }
+  .wf-el--nav { background: #f0f0f0; border: 1px solid #ccc; min-height: 40px; display: flex; flex-direction: row; align-items: center; gap: 16px; padding: 0 16px; }
+  .wf-el--nav span { font-size: 13px; color: #888; }
+  .wf-el--text { background: #fff; border: 1px dashed #ddd; padding: 8px 10px; }
+  .wf-el--text .wf-content { color: #333; font-size: 11px; margin-top: 3px; }
+  .wf-el--input { background: #fff; border: 1px solid #ccc; border-radius: 3px; min-height: 30px; display: flex; flex-direction: row; align-items: center; padding: 0 8px; color: #aaa; font-size: 11px; }
+  .wf-el--button { display: inline-flex; align-items: center; justify-content: center; min-height: 30px; padding: 0 16px; border-radius: 3px; font-size: 11px; font-weight: 600; border: 1px solid #999; background: #f5f5f5; color: #333; cursor: default; }
+  .wf-el--button-primary { background: #333; color: #fff; border-color: #333; }
+  .wf-el--button-outline { background: transparent; border: 1px solid #999; color: #666; }
+  .wf-el--card { background: #fff; border: 1px solid #ddd; border-radius: 5px; padding: 10px; }
+  .wf-el--image { background: repeating-linear-gradient(45deg, #e0e0e0, #e0e0e0 4px, #f0f0f0 4px, #f0f0f0 12px); border: 1px solid #ccc; display: flex; flex-direction: row; align-items: center; justify-content: center; color: #999; min-height: 80px; }
+  .wf-el--image::before { content: '\1F5BC'; font-size: 16px; margin-right: 5px; }
+  .wf-el--list { background: #fff; border: 1px dashed #ddd; padding: 6px 10px 6px 24px; }
+  .wf-el--list li { font-size: 10px; color: #555; margin-bottom: 3px; list-style: disc; }
+  .wf-el--banner { background: linear-gradient(135deg, #e8e8e8, #f5f5f5); border: 1px solid #ccc; min-height: 80px; display: flex; flex-direction: row; align-items: center; justify-content: center; font-size: 15px; color: #888; font-weight: 600; }
+  .wf-el--divider { border: none; border-top: 1px solid #ddd; margin: 6px 0; padding: 0; min-height: 0; background: transparent; }
+  .wf-el--group { border: 1px dashed #bbb; background: #fcfcfc; padding: 6px; gap: 5px; }
+  .wf-el--group--horizontal { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
+  .wf-el--group--horizontal > .wf-el { flex: 1; min-width: 0; margin: 0 3px 3px 0; }
+
+  /* group layout: popup */
+  .wf-el--group--popup { position: relative; background: #fff; border: 2px solid #aaa !important; border-radius: 6px; padding: 0; gap: 0; }
+  .wf-grp-close { position: absolute; top: 6px; right: 8px; display: flex; align-items: center; gap: 3px; z-index: 3; }
+  .wf-grp-close-btn { width: 22px; height: 22px; background: rgba(0,0,0,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; font-weight: 700; flex-shrink: 0; }
+  .wf-grp-image { min-height: 90px; background: #e0e0e0; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #999; position: relative; flex: 1; }
+  .wf-grp-image::before { content: '\1F5BC'; font-size: 18px; margin-right: 5px; }
+  .wf-grp-nav { display: flex; align-items: center; justify-content: space-between; padding: 4px 10px; border-top: 1px solid #eee; position: relative; }
+  .wf-grp-footer { display: flex; align-items: center; gap: 6px; padding: 6px 10px; border-top: 1px solid #eee; background: #fafafa; position: relative; }
+  .wf-grp-footer > .wf-el { flex: 1; }
+  .wf-marker-inline { display: inline-flex; width: 16px; height: 16px; background: #CC3333; color: #fff; border-radius: 50%; font-size: 8px; font-weight: 700; align-items: center; justify-content: center; flex-shrink: 0; }
+
+  /* popup */
+  .wf-el--popup { background: #fff; border: 2px solid #aaa; border-radius: 6px; padding: 0; overflow: hidden; position: relative; min-height: 180px; gap: 0; }
+  .wf-popup-close { position: absolute; top: 6px; right: 8px; width: 22px; height: 22px; background: rgba(0,0,0,0.25); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; z-index: 2; font-weight: 700; }
+  .wf-popup-image { background: #e0e0e0; min-height: 110px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #aaa; }
+  .wf-popup-image::before { content: '\1F5BC'; font-size: 20px; margin-right: 6px; }
+  .wf-popup-nav { display: flex; align-items: center; justify-content: space-between; padding: 4px 10px; }
+  .wf-popup-nav-btn { width: 22px; height: 22px; border: 1px solid #ccc; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #666; background: #fff; }
+  .wf-popup-dots { display: flex; gap: 5px; align-items: center; }
+  .wf-popup-dots span { width: 7px; height: 7px; border-radius: 50%; background: #ccc; display: inline-block; }
+  .wf-popup-dots span.active { background: #555; }
+  .wf-popup-actions { display: flex; gap: 6px; padding: 6px 10px; border-top: 1px solid #eee; background: #fafafa; }
+  .wf-popup-actions > * { flex: 1; }
+
+  /* card with thumbnail */
+  .wf-el--card { background: #fff; border: 1px solid #ddd; border-radius: 5px; padding: 0; overflow: hidden; }
+  .wf-card-thumb { background: #e8e8e8; min-height: 70px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #aaa; border-bottom: 1px solid #ddd; }
+  .wf-card-thumb::before { content: '\1F5BC'; font-size: 16px; margin-right: 4px; }
+  .wf-card-body { padding: 8px 10px; }
+  .wf-el--table { background: #fff; }
+  .wf-el--table table { width: 100%; border-collapse: collapse; font-size: 9px; }
+  .wf-el--table th { background: #f0f0f0; padding: 3px 5px; border: 1px solid #ddd; font-size: 9px; }
+  .wf-el--table td { padding: 3px 5px; border: 1px solid #ddd; font-size: 9px; }
+  .wf-label { font-size: 12px; color: #999; font-weight: 600; text-transform: uppercase; margin-bottom: 3px; }
+  .wf-marker { position: absolute; top: 50%; left: -28px; transform: translateY(-50%); width: 24px; height: 24px; background: #CC3333; color: #fff; border-radius: 50%; text-align: center; line-height: 24px; font-size: 12px; font-weight: 700; z-index: 2; }
+  .wf-el--marked { border: 2px dashed #CC3333 !important; background: rgba(204, 51, 51, 0.03); }
+  .wf-viewport { padding: 0 0 0 34px; }
+
+  /* ── Auto-generated wireframe tight layout ── */
+  .wf-auto > .wf-el { margin-bottom: 0; width: 100%; box-sizing: border-box; }
+  .wf-auto > .wf-el--divider { margin: 0; }
+  .wf-auto > .wf-el--group--card-grid { margin-bottom: 0; }
+  .wf-auto > .wf-el--text-title,
+  .wf-auto > .wf-el--text-subtitle,
+  .wf-auto > .wf-el--text-breadcrumb,
+  .wf-auto > .wf-el--text-count { margin-bottom: 0; }
+
+  /* ── Header 구조 레이아웃 ── */
+  .wf-el--header-structured { display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding: 0 20px; gap: 12px; background: #e8e8e8; border: 1px solid #bbb; min-height: 56px; }
+  .wf-header-left { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .wf-header-logo { font-size: 15px; font-weight: 700; color: #333; white-space: nowrap; }
+  .wf-header-center { display: flex; align-items: center; gap: 4px; flex: 1; justify-content: center; }
+  .wf-header-center .wf-nav-tab { font-size: 13px; color: #777; padding: 6px 14px; cursor: default; border-bottom: 2px solid transparent; white-space: nowrap; }
+  .wf-header-center .wf-nav-tab:first-child { color: #222; font-weight: 600; border-bottom-color: #333; }
+  .wf-header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .wf-header-search { background: #fff; border: 1px solid #ccc; border-radius: 14px; padding: 5px 14px; font-size: 11px; color: #aaa; min-width: 140px; }
+  .wf-header-icon { width: 28px; height: 28px; background: #d0d0d0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #666; }
+
+  /* ── GNB 탭 바 ── */
+  .wf-el--gnb-tabs { background: #f7f7f7; border-bottom: 2px solid #ddd; padding: 0 20px; display: flex; flex-direction: row; align-items: flex-end; gap: 0; min-height: 44px; overflow: hidden; }
+  .wf-gnb-tab { padding: 8px 18px; font-size: 13px; color: #999; cursor: default; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; }
+  .wf-gnb-tab:first-child { color: #222; font-weight: 700; border-bottom-color: #333; }
+
+  /* ── 버튼 필터 행 ── */
+  .wf-el--group--btn-row { display: flex; flex-direction: row; flex-wrap: wrap; gap: 8px; padding: 10px 16px; align-items: center; background: #fafafa; border: 1px solid #e0e0e0; }
+  .wf-el--group--btn-row .wf-el--button { margin: 0; flex: none; font-size: 12px; padding: 0 14px; height: 28px; border-radius: 14px; }
+  .wf-el--group--btn-row .wf-el--button:first-child { background: #333; color: #fff; border-color: #333; }
+
+  /* ── 카드 그리드 ── */
+  .wf-el--group--card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 14px; background: #fcfcfc; border: 1px dashed #ccc; align-items: start; }
+  .wf-el--group--card-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .wf-el--group--card-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+  .wf-el--group--card-grid .wf-el--card { margin: 0; }
+
+  /* ── 카드 개선 ── */
+  .wf-card-meta { display: flex; align-items: center; justify-content: space-between; padding: 4px 10px 8px; font-size: 10px; color: #aaa; }
+  .wf-card-title { font-size: 12px; font-weight: 600; color: #333; margin-bottom: 3px; }
+  .wf-card-desc { font-size: 10px; color: #888; line-height: 1.4; }
+  .wf-card-action { margin-top: 8px; }
+  .wf-card-action .wf-el--button { width: 100%; justify-content: center; font-size: 11px; height: 26px; background: #f0f0f0; border-color: #ccc; }
+
+  /* 이미지 UI 캡처 */
+  .ui-capture { flex: 1; background: #f9f9f9; border-right: 1px solid #ddd; display: flex; align-items: center; justify-content: center; color: #999; font-size: 13px; overflow: hidden; }
+  .ui-capture-inner { position: relative; display: inline-block; max-width: 100%; max-height: 100%; }
+  .ui-capture-inner img { display: block; max-width: 100%; max-height: 1000px; }
+  .marker-overlay { position: absolute; border: 2px dashed #CC3333; pointer-events: none; z-index: 1; }
+  .marker-number { position: absolute; top: -10px; left: -10px; width: 20px; height: 20px; background: #CC3333; color: #fff; border-radius: 50%; text-align: center; line-height: 20px; font-size: 10px; font-weight: 700; z-index: 2; }
+
+  /* Persistent */
+  .wf-persistent-header { background: #e0e0e0; border-bottom: 2px solid #bbb; padding: 8px 18px; min-height: 48px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  .wf-persistent-header .site-logo { font-weight: 700; font-size: 15px; color: #333; }
+  .wf-persistent-gnb { display: flex; gap: 14px; }
+  .wf-persistent-gnb span { font-size: 10px; color: #666; }
+  .wf-persistent-breadcrumb { font-size: 9px; color: #999; padding: 4px 12px; background: #fafafa; border-bottom: 1px solid #eee; flex-shrink: 0; }
+  .wf-persistent-lnb { width: 130px; background: #f7f7f7; border-right: 1px solid #ddd; padding: 8px 0; font-size: 10px; flex-shrink: 0; }
+  .wf-persistent-lnb ul { list-style: none; padding: 0; margin: 0; }
+  .wf-persistent-lnb li { padding: 6px 12px; color: #666; }
+  .wf-persistent-lnb li.active { color: #333; font-weight: 700; background: #e8e8e8; }
+  .wf-persistent-footer { background: #e0e0e0; border-top: 2px solid #bbb; padding: 8px 12px; min-height: 36px; font-size: 9px; color: #888; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .wf-with-lnb { display: flex; flex: 1; overflow: hidden; min-height: 0; }
+  .wf-main-content { flex: 1; overflow-y: auto; }
+
+  /* Divider 슬라이드 */
+  .divider-section-no { font-size: 56px; font-weight: 900; color: rgba(255,255,255,0.15); margin-bottom: 8px; }
+  .divider-toc { list-style: none; padding: 0; margin-top: 20px; text-align: left; display: inline-block; }
+  .divider-toc li { font-size: 12px; color: #bbb; margin-bottom: 6px; display: flex; gap: 10px; align-items: baseline; }
+  .divider-toc .toc-id { color: #777; font-size: 10px; min-width: 80px; font-family: monospace; }
+  .divider-toc .toc-name { color: #ddd; }
+
+  /* MSG Case table */
+  .msg-case-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; }
+  .msg-case-table th { background: #f5f5f5; font-weight: 600; padding: 5px 7px; border: 1px solid #ddd; text-align: center; font-size: 11px; }
+  .msg-case-table td { padding: 5px 7px; border: 1px solid #ddd; vertical-align: top; font-size: 11px; }
+  .msg-type-error { color: #c00000; font-weight: 600; }
+  .msg-type-process { color: #0070c0; font-weight: 600; }
+
+  /* ── text 역할별 스타일 ── */
+  .wf-el--text-title { background: transparent; border: none; padding: 2px 0; }
+  .wf-text-title { font-size: 16px; font-weight: 700; color: #1a1a1a; line-height: 1.3; }
+  .wf-el--text-subtitle { background: transparent; border: none; padding: 2px 0; }
+  .wf-text-subtitle { font-size: 13px; font-weight: 600; color: #444; }
+  .wf-el--text-breadcrumb { background: transparent; border: none; padding: 2px 0; }
+  .wf-breadcrumb { font-size: 10px; color: #aaa; letter-spacing: 0.02em; }
+  .wf-el--text-count { background: transparent; border: none; padding: 2px 0; }
+  .wf-count-text { font-size: 12px; color: #666; font-weight: 500; }
+
+  /* ── 카드 뱃지 ── */
+  .wf-card-badge { display: inline-block; font-size: 9px; padding: 2px 7px; border-radius: 10px; background: #e8f0fe; color: #3b5998; font-weight: 600; margin-bottom: 4px; }
+
+  /* ── LNB 탭 (nav) — GNB와 분리 ── */
+  .wf-el--nav-lnb { background: #fff; border-bottom: 1px solid #eee; padding: 0 16px; display: flex; flex-direction: row; align-items: flex-end; gap: 0; min-height: 40px; overflow: hidden; }
+  .wf-lnb-tab { padding: 8px 14px; font-size: 12px; color: #aaa; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; cursor: default; }
+  .wf-lnb-tab:first-child { color: #555; font-weight: 600; border-bottom-color: #555; }
+  .msg-type-positive { color: #2e8b57; font-weight: 600; }
+  .msg-type-negative { color: #e67700; font-weight: 600; }
+
+  /* Component guide */
+  .comp-guide-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; }
+  .comp-guide-table th { background: #f5f5f5; font-weight: 600; padding: 5px 7px; border: 1px solid #ddd; text-align: center; font-size: 11px; }
+  .comp-guide-table td { padding: 5px 7px; border: 1px solid #ddd; vertical-align: top; font-size: 11px; }
+  .comp-state-label { display: inline-block; font-size: 9px; padding: 1px 5px; border-radius: 3px; font-weight: 600; margin-right: 3px; }
+  .comp-state-default { background: #e8f5e9; color: #2e7d32; }
+  .comp-state-focus { background: #e3f2fd; color: #1565c0; }
+  .comp-state-error { background: #ffebee; color: #c62828; }
+  .comp-state-disabled { background: #f5f5f5; color: #9e9e9e; }
+
+  /* Modified marker + Version stamp */
+  .modified-marker { position: absolute; top: 8px; right: 10px; background: #fff3f3; color: #c00; font-size: 8px; font-weight: 700; padding: 2px 6px; border: 1px solid #c00; border-radius: 2px; z-index: 3; }
+  .version-stamp { font-size: 9px; color: #999; }
+
+  /* PM Comments */
+  .pm-comment-section { margin-top: 10px; padding-top: 8px; border-top: 1px dashed #e0a030; }
+  .pm-comment-section h5 { font-size: 10px; font-weight: 700; color: #b07800; margin-bottom: 6px; }
+  .pm-comment { background: #fffbf0; border-left: 3px solid #e0a030; padding: 6px 8px; margin-bottom: 6px; font-size: 10px; line-height: 1.5; }
+  .pm-badge { display: inline-block; font-size: 8px; font-weight: 700; padding: 1px 4px; border-radius: 3px; margin-right: 4px; vertical-align: middle; }
+  .pm-badge--risk { background: #ffdddd; color: #c00; }
+  .pm-badge--question { background: #fff3cd; color: #856404; }
+  .pm-badge--suggestion { background: #d4edda; color: #155724; }
+  .pm-badge--reject { background: #e0e0e0; color: #333; }
+  .pm-author { font-size: 9px; color: #999; margin-left: 3px; }
+
+  /* 일반 콘텐츠 패딩 */
+  .slide-content { padding: 24px 30px; overflow-y: auto; flex: 1; }
+
+  /* Description: section 소제목 행 */
+  .desc-section-row td { background: #efefef; font-weight: 700; font-size: 13px; color: #333; border-top: 2px solid #ccc; text-align: left; padding: 5px 10px; letter-spacing: 0.3px; }
+
+  /* Description: ISSUE 행 */
+  .desc-issue-row td { background: #fff8f8; }
+  .desc-issue-label { color: #c00000 !important; font-weight: 700 !important; font-size: 11px !important; text-align: center; }
+
+  /* Description: standalone continuation 행 */
+  .desc-cont-row td { background: #f8f8ff; text-align: center; font-size: 11px; color: #666; font-style: italic; padding: 4px 10px; border-top: 1px dashed #bbb; }
+
+  /* 슬라이드 우측 변경이력 메모 */
+  .slide-changelog { position: absolute; right: 10px; top: 64px; width: 210px; background: #fffdf0; border: 1px solid #d4aa00; border-radius: 4px; padding: 8px 10px; font-size: 10px; z-index: 100; box-shadow: 2px 2px 6px rgba(0,0,0,0.12); }
+  .slide-changelog-title { font-weight: 700; color: #8a6800; margin-bottom: 6px; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .slide-changelog-item { margin-bottom: 5px; border-left: 2px solid #d4aa00; padding-left: 6px; }
+  .slide-changelog-ver { font-weight: 700; color: #555; margin-bottom: 1px; }
+  .slide-changelog-date { color: #999; font-size: 9px; margin-left: 3px; }
+  .slide-changelog-desc { color: #333; line-height: 1.5; }
+
+  /* 헤더 2행 (location 존재 시) */
+  .slide-header--2row { height: auto; min-height: 54px; flex-direction: column; padding: 0; align-items: stretch; }
+  .slide-header--2row .hd-row1 { display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 54px; width: 100%; box-sizing: border-box; }
+  .slide-header--2row .hd-row2 { display: flex; align-items: center; padding: 0 24px; height: 26px; min-height: 26px; width: 100%; background: rgba(0,0,0,0.18); font-size: 12px; opacity: 0.9; border-top: 1px solid rgba(255,255,255,0.15); box-sizing: border-box; }
+  </style>
+</head>
+<body>
+
+<div class="slide" data-slide-type="cover">
+  <div class="slide-header" style="background: #3366CC;">
+    <div class="hd-left"><span class="hd-id">화면설계서</span></div>
+    <div class="hd-right">강남구청 | ELUO Planning</div>
+  </div>
+  <div class="slide-body cover-body">
+    <div class="cover-logo">강남구청</div>
+    <div class="cover-title">비짓강남 (Visit Gangnam)</div>
+    <div class="cover-version">Ver 1.0 &nbsp;|&nbsp; 2026-03-11</div>
+    
+    
+  </div>
+  <div class="slide-footer"><span>강남구청</span><span>2026-03-11</span></div>
+</div>
+
+<div class="slide" data-slide-type="history">
+  <div class="slide-header">
+  <div class="hd-left"><span class="hd-id">History</span></div>
+  <div class="hd-right">강남구청 | ELUO Planning | 2026-03-11</div>
+</div>
+  <div class="slide-body slide-content">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:70px">Version</th>
+          <th style="width:100px">Update Date</th>
+          <th>Update Detail</th>
+          <th style="width:50px">page</th>
+          <th style="width:60px">Writer</th>
+          <th>Remarkers</th>
+        </tr>
+      </thead>
+      <tbody>
+    <tr>
+      <td style="text-align:center">v1.0</td>
+      <td style="text-align:center">2026-03-11</td>
+      <td>최초 작성 — 관광지 목록 페이지 + 관광지 상세 페이지 (FN-002, FN-003 기반)</td>
+      <td style="text-align:center">1-2</td>
+      <td style="text-align:center">ELUO Planning</td>
+      <td></td>
+    </tr></tbody>
+    </table>
+  </div>
+  <div class="slide-footer">
+  <span>강남구청</span>
+  <span>ELUO Planning</span>
+</div>
+</div>
+
+<div class="slide" data-slide-type="overview">
+  <div class="slide-header">
+  <div class="hd-left"><span class="hd-id">화면 개요</span></div>
+  <div class="hd-right">강남구청 | ELUO Planning | 2026-03-11</div>
+</div>
+  <div class="slide-body slide-content">
+    <table style="width:100%; border-collapse:collapse; margin-bottom:16px;"><tr><td style="width:100px; padding:6px 10px; font-weight:600; color:#555; background:#f8f9fa; border:1px solid #e0e0e0; font-size:11px;">프로젝트명</td><td style="padding:6px 10px; border:1px solid #e0e0e0; font-size:11px; color:#333;">비짓강남 (Visit Gangnam)</td></tr><tr><td style="width:100px; padding:6px 10px; font-weight:600; color:#555; background:#f8f9fa; border:1px solid #e0e0e0; font-size:11px;">버전</td><td style="padding:6px 10px; border:1px solid #e0e0e0; font-size:11px; color:#333;">Ver 1.0</td></tr><tr><td style="width:100px; padding:6px 10px; font-weight:600; color:#555; background:#f8f9fa; border:1px solid #e0e0e0; font-size:11px;">작성일</td><td style="padding:6px 10px; border:1px solid #e0e0e0; font-size:11px; color:#333;">2026-03-11</td></tr><tr><td style="width:100px; padding:6px 10px; font-weight:600; color:#555; background:#f8f9fa; border:1px solid #e0e0e0; font-size:11px;">작성자</td><td style="padding:6px 10px; border:1px solid #e0e0e0; font-size:11px; color:#333;">ELUO Planning</td></tr></table>
+    <div style="font-size:12px; line-height:1.8; color:#333; padding:10px 14px; background:#f8f9fa; border-left:3px solid #1a1a1a;">
+      비짓강남 공식 관광 포털 리뉴얼 프로젝트의 화면설계서입니다. 본 문서는 관광지·명소 콘텐츠 목록 조회(FN-002) 및 상세 조회(FN-003) 2개 화면을 다룹니다. PC 뷰포트(1920px) 기준으로 작성되었으며, 기능정의서 FN-VG-001 v1.0을 참조합니다.
+    </div>
+  </div>
+  <div class="slide-footer">
+  <span>강남구청</span>
+  <span>ELUO Planning</span>
+</div>
+</div>
+
+<div class="slide" data-slide-type="divider" style="background:#1a1a1a; color:#fff;">
+  <div class="slide-header" style="background:#111; color:#fff; border-bottom:1px solid #333;">
+    <div class="hd-left"><span class="hd-id" style="color:#fff;">Section</span></div>
+    <div class="hd-right" style="color:#888;">강남구청</div>
+  </div>
+  <div class="slide-body cover-body">
+    <div style="font-size:13px; color:#aaa; margin-bottom:10px;">관광지·명소 콘텐츠 목록 조회</div><div style="font-size:26px; font-weight:700; margin-bottom:20px;">01. 관광지 목록 페이지</div><ul style="font-size:14px; color:#ccc; text-align:left; display:inline-block;">
+      <li style="list-style:disc; margin-left:18px; margin-bottom:10px;">FN-002: 관광지·명소 콘텐츠 목록 조회</li><li style="list-style:disc; margin-left:18px; margin-bottom:10px;">FN-011: GNB 및 글로벌 내비게이션</li><li style="list-style:disc; margin-left:18px; margin-bottom:10px;">카테고리 필터 + 카드 리스트 + 페이지네이션</li>
+    </ul>
+  </div>
+  <div class="slide-footer" style="background:#111; border-top:1px solid #333; color:#666;">
+    <span>강남구청</span><span>ELUO Planning</span>
+  </div>
+</div>
+
+<div class="slide" data-slide-type="design" style="position:relative;">
+  <div class="slide-header slide-header--2row">
+  <div class="hd-row1">
+    <div class="hd-left">
+      <span class="hd-id">VG-LIST-001</span>
+      <span class="hd-sep">|</span><span class="hd-name">관광지 목록</span>
+      <span class="hd-sep">|</span><span>관광지 목록 페이지</span>
+    </div>
+    <div class="hd-right">강남구청 | ELUO Planning | 2026-03-11</div>
+  </div>
+  <div class="hd-row2">관광 > 관광지·명소 > 목록</div>
+</div>
+  
+  
+  <div class="slide-body">
+        <div class="design-layout">
+  <div class="wireframe-area"><div class="wf-container">
+      <div class="wf-scroll"><div class="wf-viewport" style="max-width:100%;"><div class='wf-el wf-el--header-structured' style='height:60px;margin-bottom:0'><div class='wf-header-left'><span class='wf-header-logo'>Visit Gangnam</span></div><div class='wf-header-center'><span class='wf-nav-tab'>관광지</span><span class='wf-nav-tab'>먹거리</span><span class='wf-nav-tab'>축제·행사</span><span class='wf-nav-tab'>숙박·교통</span></div><div class='wf-header-right'><span class='wf-header-search'>검색</span><span class='wf-header-icon' style='font-size:10px'>KO</span></div></div><div class='wf-el wf-el--nav-lnb' style='height:44px;margin-bottom:0'><span class='wf-lnb-tab'>전체</span><span class='wf-lnb-tab'>궁궐·역사</span><span class='wf-lnb-tab'>공원·자연</span><span class='wf-lnb-tab'>문화·예술</span><span class='wf-lnb-tab'>쇼핑</span><span class='wf-lnb-tab'>기타</span></div><div class='wf-el wf-el--text-title' style='height:48px;display:flex;align-items:center;padding:0 16px;margin-bottom:0'><span class='wf-text-title'>관광지 · 명소</span></div><div class='wf-el wf-el--group--btn-row wf-el--marked' style='min-height:44px;padding:8px 16px'><span class='wf-marker'>1</span><span class='wf-el wf-el--button' style='background:#333;color:#fff;border-color:#333;flex:none'>전체</span><span class='wf-el wf-el--button wf-el--button-outline' style='flex:none'>궁궐·역사</span><span class='wf-el wf-el--button wf-el--button-outline' style='flex:none'>공원·자연</span><span class='wf-el wf-el--button wf-el--button-outline' style='flex:none'>문화·예술</span><span class='wf-el wf-el--button wf-el--button-outline' style='flex:none'>쇼핑</span></div><div class='wf-el wf-el--text-count wf-el--marked' style='height:28px;display:flex;align-items:center;padding:0 16px;margin-bottom:0'><span class='wf-marker'>2</span><span class='wf-count-text'>총 48건</span></div><div class='wf-el wf-el--group--card-grid wf-el--marked' style='min-height:300px'><span class='wf-marker'>3</span><div class='wf-el wf-el--card' style='margin:0'><div class='wf-card-thumb'></div><div class='wf-card-body'><span class='wf-card-badge'>궁궐·역사</span><div class='wf-card-title'>COEX 아쿠아리움</div></div></div><div class='wf-el wf-el--card' style='margin:0'><div class='wf-card-thumb'></div><div class='wf-card-body'><span class='wf-card-badge'>공원·자연</span><div class='wf-card-title'>양재 시민의 숲</div></div></div><div class='wf-el wf-el--card' style='margin:0'><div class='wf-card-thumb'></div><div class='wf-card-body'><span class='wf-card-badge'>문화·예술</span><div class='wf-card-title'>강남구립 논현도서관</div></div></div></div><div class='wf-el wf-el--marked' style='height:40px;display:flex;align-items:center;justify-content:center;gap:6px;background:#fafafa;border:1px solid #e0e0e0;margin-bottom:0'><span class='wf-marker'>4</span><span class='wf-el wf-el--button wf-el--button-outline' style='margin:0;flex:none'>&lt; 이전</span><span class='wf-el wf-el--button' style='margin:0;flex:none;background:#333;color:#fff;border-color:#333;min-width:32px;justify-content:center'>1</span><span class='wf-el wf-el--button wf-el--button-outline' style='margin:0;flex:none;min-width:32px;justify-content:center'>2</span><span class='wf-el wf-el--button wf-el--button-outline' style='margin:0;flex:none;min-width:32px;justify-content:center'>3</span><span class='wf-el wf-el--button wf-el--button-outline' style='margin:0;flex:none'>다음 &gt;</span></div><div class='wf-el wf-el--banner' style='height:56px;margin-bottom:0'>Footer — 개인정보 처리방침 | 사이트맵 | 강남구청 ⓒ 2026</div></div></div>
+    </div></div>
+  <div class="description-panel">
+    
+  <table class="desc-table">
+    <thead><tr><th colspan="2">Description</th></tr></thead>
+    <tbody><tr>
+      <td class="desc-num-cell">1</td>
+      <td class="desc-content-cell"><div style="font-weight:700; margin-bottom:3px;">카테고리 필터 탭</div><div class="desc-indent-1">- 필터 탭은 '전체' 포함 최소 5개 항목 이상 가로 나열</div><div class="desc-indent-1">- 선택된 탭은 Primary 스타일로 강조, 비선택은 Outline</div><div class="desc-indent-1">- 탭 클릭 시 URL 쿼리 파라미터(?category=xx) 반영 — 공유 가능한 상태 유지</div><div class="desc-indent-1">- 필터 적용 결과 0건 시: '검색 결과가 없습니다' 안내 + [필터 초기화] 버튼 노출</div></td>
+    </tr><tr>
+      <td class="desc-num-cell">2</td>
+      <td class="desc-content-cell"><div style="font-weight:700; margin-bottom:3px;">검색 결과 건수 표시</div><div class="desc-indent-1">- 필터 적용 결과 총 건수를 '총 N건' 형식으로 표시</div><div class="desc-indent-1">- 필터 변경 시 건수 즉시 갱신 (로딩 스피너 표시 후 업데이트)</div></td>
+    </tr><tr>
+      <td class="desc-num-cell">3</td>
+      <td class="desc-content-cell"><div style="font-weight:700; margin-bottom:3px;">관광지 카드 그리드</div><div class="desc-indent-1">- 카드 구성: 대표 이미지(상단) + 카테고리 태그 + 명칭</div><div class="desc-indent-1">- PC 3열 / 태블릿 2열 / 모바일 1열 반응형 (FN-016 연동)</div><div class="desc-indent-1">- 대표 이미지 비율 16:9 고정, 로드 실패 시 alt 텍스트 및 플레이스홀더 표시</div><div class="desc-indent-1">- 카드 전체 클릭 시 관광지 상세 페이지(VG-DETAIL-001)로 이동</div><div class="desc-indent-1">- hover 상태: 카드 테두리 강조 + 이미지 살짝 줌 효과</div></td>
+    </tr><tr>
+      <td class="desc-num-cell">4</td>
+      <td class="desc-content-cell"><div style="font-weight:700; margin-bottom:3px;">페이지네이션</div><div class="desc-indent-1">- 페이지 단위 이동 방식, 현재 페이지 번호 Primary 강조</div><div class="desc-indent-1">- 첫 페이지에서 '< 이전' 비활성, 마지막 페이지에서 '다음 >' 비활성</div><div class="desc-indent-1">- 페이지 이동 시 상단으로 스크롤 자동 이동</div></td>
+    </tr></tbody>
+  </table>
+  
+    <div class="fn-ref-section">
+  <div class="fn-ref-title">FN 참조</div>
+  <div class="fn-ref-list">FN-002, FN-011</div>
+</div>
+  </div>
+</div>
+      </div>
+  <div class="slide-footer">
+  <span>강남구청</span>
+  <span>ELUO Planning</span>
+</div>
+</div>
+
+<div class="slide" data-slide-type="divider" style="background:#1a1a1a; color:#fff;">
+  <div class="slide-header" style="background:#111; color:#fff; border-bottom:1px solid #333;">
+    <div class="hd-left"><span class="hd-id" style="color:#fff;">Section</span></div>
+    <div class="hd-right" style="color:#888;">강남구청</div>
+  </div>
+  <div class="slide-body cover-body">
+    <div style="font-size:13px; color:#aaa; margin-bottom:10px;">관광지·명소 콘텐츠 상세 조회</div><div style="font-size:26px; font-weight:700; margin-bottom:20px;">02. 관광지 상세 페이지</div><ul style="font-size:14px; color:#ccc; text-align:left; display:inline-block;">
+      <li style="list-style:disc; margin-left:18px; margin-bottom:10px;">FN-003: 관광지·명소 콘텐츠 상세 조회</li><li style="list-style:disc; margin-left:18px; margin-bottom:10px;">FN-021: 소셜 미디어 공유</li><li style="list-style:disc; margin-left:18px; margin-bottom:10px;">6개 필수 정보 항목 + 소셜 공유 버튼</li>
+    </ul>
+  </div>
+  <div class="slide-footer" style="background:#111; border-top:1px solid #333; color:#666;">
+    <span>강남구청</span><span>ELUO Planning</span>
+  </div>
+</div>
+
+<div class="slide" data-slide-type="design" style="position:relative;">
+  <div class="slide-header slide-header--2row">
+  <div class="hd-row1">
+    <div class="hd-left">
+      <span class="hd-id">VG-DETAIL-001</span>
+      <span class="hd-sep">|</span><span class="hd-name">관광지 상세</span>
+      <span class="hd-sep">|</span><span>관광지 상세 페이지</span>
+    </div>
+    <div class="hd-right">강남구청 | ELUO Planning | 2026-03-11</div>
+  </div>
+  <div class="hd-row2">관광 > 관광지·명소 > 상세</div>
+</div>
+  
+  
+  <div class="slide-body">
+        <div class="design-layout">
+  <div class="wireframe-area"><div class="wf-container">
+      <div class="wf-scroll"><div class="wf-viewport" style="max-width:100%;"><div class='wf-el wf-el--header-structured' style='height:60px;margin-bottom:0'><div class='wf-header-left'><span class='wf-header-logo'>Visit Gangnam</span></div><div class='wf-header-center'><span class='wf-nav-tab'>관광지</span><span class='wf-nav-tab'>먹거리</span><span class='wf-nav-tab'>축제·행사</span><span class='wf-nav-tab'>숙박·교통</span></div><div class='wf-header-right'><span class='wf-header-search'>검색</span><span class='wf-header-icon' style='font-size:10px'>KO</span></div></div><div class='wf-el wf-el--text-breadcrumb' style='height:32px;display:flex;align-items:center;padding:0 16px;margin-bottom:0'><span class='wf-breadcrumb'>홈 &gt; 관광 &gt; 관광지·명소 &gt; COEX 아쿠아리움</span></div><div class='wf-el wf-el--image wf-el--marked' style='height:220px;margin-bottom:0'><span class='wf-marker'>1</span>대표 이미지 (전폭, 최대 800×450)</div><div class='wf-el wf-el--marked' style='min-height:52px;display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px dashed #ddd;padding:0 16px;margin-bottom:0'><span class='wf-marker'>2</span><div style='display:flex;align-items:center;gap:10px'><span style='font-size:15px;font-weight:700;color:#1a1a1a'>COEX 아쿠아리움</span><span class='wf-card-badge'>궁궐·역사</span></div><div style='display:flex;gap:8px'><span class='wf-el wf-el--button wf-el--button-outline' style='margin:0;flex:none'>카카오톡 공유</span><span class='wf-el wf-el--button wf-el--button-outline' style='margin:0;flex:none'>링크 복사</span></div></div><div class='wf-el wf-el--text wf-el--marked' style='min-height:72px;padding:10px 16px;margin-bottom:0'><span class='wf-marker'>3</span><div class='wf-content' style='margin-top:4px'>강남구 삼성동에 위치한 COEX 아쿠아리움은 서울 도심 속 대형 수족관으로, 다양한 해양 생물을 만날 수 있는 도심 속 관광 명소입니다.</div></div><div class='wf-el wf-el--table wf-el--marked' style='margin-bottom:0'><span class='wf-marker'>4</span><table><thead><tr><th style='width:120px'>항목</th><th>내용</th></tr></thead><tbody><tr><td>주소</td><td>서울특별시 강남구 영동대로 513 (삼성동)</td></tr><tr><td>운영시간</td><td>10:00 ~ 20:00 (연중무휴, 입장 마감 19:00)</td></tr><tr><td>연락처</td><td>02-6002-6200</td></tr></tbody></table></div><div class='wf-el wf-el--divider' style='margin:6px 0'></div><div class='wf-el wf-el--text-subtitle' style='height:32px;display:flex;align-items:center;padding:0 16px;margin-bottom:0'><span class='wf-text-subtitle'>함께 둘러보세요</span></div><div class='wf-el wf-el--group--card-grid wf-el--marked' style='min-height:160px'><span class='wf-marker'>5</span><div class='wf-el wf-el--card' style='margin:0'><div class='wf-card-thumb'></div><div class='wf-card-body'><div class='wf-card-title'>봉은사</div></div></div><div class='wf-el wf-el--card' style='margin:0'><div class='wf-card-thumb'></div><div class='wf-card-body'><div class='wf-card-title'>선릉·정릉</div></div></div><div class='wf-el wf-el--card' style='margin:0'><div class='wf-card-thumb'></div><div class='wf-card-body'><div class='wf-card-title'>코엑스 별마당도서관</div></div></div></div><div class='wf-el wf-el--banner' style='height:56px;margin-bottom:0'>Footer — 개인정보 처리방침 | 사이트맵 | 강남구청 ⓒ 2026</div></div></div>
+    </div></div>
+  <div class="description-panel">
+    
+  <table class="desc-table">
+    <thead><tr><th colspan="2">Description</th></tr></thead>
+    <tbody><tr>
+      <td class="desc-num-cell">1</td>
+      <td class="desc-content-cell"><div style="font-weight:700; margin-bottom:3px;">대표 이미지 영역</div><div class="desc-indent-1">- 콘텐츠 ID에 대응하는 대표 이미지를 전폭으로 표시 (max-height: 450px)</div><div class="desc-indent-1">- 이미지 로드 실패 시 alt 텍스트로 대체, 레이아웃 유지</div><div class="desc-indent-1">- WebP 포맷 우선 적용, 미지원 브라우저에서 JPG/PNG 폴백 (FN-017 연동)</div></td>
+    </tr><tr>
+      <td class="desc-num-cell">2</td>
+      <td class="desc-content-cell"><div style="font-weight:700; margin-bottom:3px;">명칭 + 소셜 공유 버튼 영역</div><div class="desc-indent-1">- 관광지 명칭 H1 태그로 마크업 (SEO, FN-015 연동)</div><div class="desc-indent-1">- 카테고리 태그: 배지 형태로 명칭 우측 배치</div><div class="desc-indent-1">- [카카오톡 공유]: 클릭 시 썸네일·제목·URL 포함 카카오톡 공유 실행</div><div class="desc-indent-1">- [링크 복사]: 클릭 시 현재 URL 클립보드 복사 → '복사되었습니다' 토스트 2초 표시</div><div class="desc-indent-1">- 소셜 공유 버튼은 명칭 우측 정렬, 타이틀 행 상단에 위치</div></td>
+    </tr><tr>
+      <td class="desc-num-cell">3</td>
+      <td class="desc-content-cell"><div style="font-weight:700; margin-bottom:3px;">소개 텍스트</div><div class="desc-indent-1">- CMS에서 입력된 소개 텍스트를 그대로 렌더링 (위지윅 출력 허용)</div><div class="desc-indent-1">- 텍스트 미입력 시 해당 영역 미표시 (레이아웃 유지)</div></td>
+    </tr><tr>
+      <td class="desc-num-cell">4</td>
+      <td class="desc-content-cell"><div style="font-weight:700; margin-bottom:3px;">기본 정보 테이블 (주소·운영시간·연락처)</div><div class="desc-indent-1">- 6개 필수 항목 중 주소·운영시간·연락처 3개를 테이블로 표시</div><div class="desc-indent-1">- 미입력 항목은 '정보 없음' 표기, 테이블 행 유지</div><div class="desc-indent-1">- 연락처는 tel: 링크로 마크업하여 모바일 클릭 시 전화 연결 가능</div><div class="desc-indent-1">- 주소 우측에 지도 보기 링크(선택) 제공 — 외부 지도 서비스 연동</div></td>
+    </tr><tr>
+      <td class="desc-num-cell">5</td>
+      <td class="desc-content-cell"><div style="font-weight:700; margin-bottom:3px;">관련 관광지 추천 섹션</div><div class="desc-indent-1">- 동일 카테고리 또는 인근 위치 관광지 최대 3건 카드 형태 제공</div><div class="desc-indent-1">- 카드 클릭 시 해당 관광지 상세 페이지로 이동</div><div class="desc-indent-1">- 추천 데이터 미존재 시 해당 섹션 미표시</div></td>
+    </tr></tbody>
+  </table>
+  
+    <div class="fn-ref-section">
+  <div class="fn-ref-title">FN 참조</div>
+  <div class="fn-ref-list">FN-003, FN-021, FN-002</div>
+</div>
+  </div>
+</div>
+      </div>
+  <div class="slide-footer">
+  <span>강남구청</span>
+  <span>ELUO Planning</span>
+</div>
+</div>
+
+<div class="slide" data-slide-type="end">
+  <div class="slide-header">
+  <div class="hd-left"><span class="hd-id">END</span></div>
+  <div class="hd-right">강남구청 | ELUO Planning | 2026-03-11</div>
+</div>
+  <div class="slide-body cover-body">
+    <div style="font-size:32px; font-weight:700; color:#999; margin-bottom:10px;">END</div>
+    <div style="font-size:13px; color:#bbb;">감사합니다</div>
+  </div>
+  <div class="slide-footer">
+  <span>강남구청</span>
+  <span>ELUO Planning</span>
+</div>
+</div>
+<script>
+(function() {
+  var SLIDE_W = 1920;
+  function autoScale() {
+    var avail = window.innerWidth - 80;
+    var scale = Math.min(1, avail / SLIDE_W);
+    document.querySelectorAll('.slide').forEach(function(s) {
+      s.style.zoom = scale;
+    });
+  }
+  document.addEventListener('DOMContentLoaded', autoScale);
+  window.addEventListener('resize', autoScale);
+})();
+</script>
+</body>
+</html>
