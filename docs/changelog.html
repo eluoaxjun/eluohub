@@ -54,11 +54,59 @@
         Eluo Hub 플러그인 마켓플레이스의 버전별 변경사항을 기록합니다.
       </p>
 
+      <!-- v1.2.0 -->
+      <div style="margin-bottom: var(--space-10);">
+        <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4);">
+          <h2 style="margin: 0;">v1.2.0</h2>
+          <span class="tag tag--primary">최신</span>
+          <span style="font-size: var(--font-sm); color: var(--color-text-secondary);">2026-03-16</span>
+        </div>
+
+        <p style="margin-bottom: var(--space-4); color: var(--color-text-secondary);">
+          산출물 템플릿 UX 개선. 아코디언 토글, 전체 펼치기/접기, Print/PDF A4 최적화를 4개 스킬에 적용합니다.
+        </p>
+
+        <h3 style="font-size: var(--font-base); margin-bottom: var(--space-3);">템플릿 개선 (4개 스킬)</h3>
+        <ul style="margin: 0 0 var(--space-4); padding-left: var(--space-5); color: var(--color-text-secondary); font-size: var(--font-sm);">
+          <li><strong>plan-qst</strong> — 아코디언 토글 + 전체 펼치기/접기 바 + A4 인쇄 최적화</li>
+          <li><strong>plan-req</strong> — 아코디언 토글 + 전체 펼치기/접기 바 + A4 인쇄 최적화</li>
+          <li><strong>plan-ia</strong> — L1 섹션 전체 펼치기/접기 바 + A4 Landscape 인쇄 최적화</li>
+          <li><strong>plan-wbs</strong> — 간트 차트 Print/PDF 최적화 (A4 Landscape, 페이즈 컬러 보존)</li>
+        </ul>
+
+        <h3 style="font-size: var(--font-base); margin-bottom: var(--space-3);">docs 업데이트</h3>
+        <ul style="margin: 0; padding-left: var(--space-5); color: var(--color-text-secondary); font-size: var(--font-sm);">
+          <li>setup.md — 스킬 카탈로그에 plan-ia, plan-wbs, plan-sb 추가, MCP 섹션 갱신</li>
+          <li>changelog.html — v1.1.0, v1.2.0 이력 추가</li>
+        </ul>
+      </div>
+
+      <!-- v1.1.0 -->
+      <div style="margin-bottom: var(--space-10);">
+        <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4);">
+          <h2 style="margin: 0;">v1.1.0</h2>
+          <span style="font-size: var(--font-sm); color: var(--color-text-secondary);">2026-03-13</span>
+        </div>
+
+        <p style="margin-bottom: var(--space-4); color: var(--color-text-secondary);">
+          skill-creator 기준 전면 재구조화. 단일 소스 원칙, progressive disclosure, 응답 제약 블록을 6개 스킬에 적용합니다.
+        </p>
+
+        <h3 style="font-size: var(--font-base); margin-bottom: var(--space-3);">구조 개선 (Phase A~F)</h3>
+        <ul style="margin: 0; padding-left: var(--space-5); color: var(--color-text-secondary); font-size: var(--font-sm);">
+          <li><strong>plan-sb</strong> — element-types.js 단일 소스, verify.js 타입 사전 검증, SKILL.md references/ 분리</li>
+          <li><strong>plan-fn</strong> — references/decomposition-patterns.md 추가, Dual-View(고객/내부) 아키텍처</li>
+          <li><strong>plan-wbs</strong> — references/estimation-guide.md 추가</li>
+          <li><strong>전체 6개 스킬</strong> — 응답 제약 블록 + 범위 격리 메커니즘 적용</li>
+          <li><strong>전체 6개 스킬</strong> — rules/cron-patterns.md 신규, pipeline.md 도구 선택 기준 추가</li>
+          <li><strong>5개 스킬</strong> — .mcp.json 정리 (빈 객체 통일)</li>
+        </ul>
+      </div>
+
       <!-- v1.0.0 -->
       <div style="margin-bottom: var(--space-10);">
         <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4);">
           <h2 style="margin: 0;">v1.0.0</h2>
-          <span class="tag tag--primary">최신</span>
           <span style="font-size: var(--font-sm); color: var(--color-text-secondary);">2026-02-27</span>
         </div>
 
@@ -139,7 +187,7 @@
           <a href="guide.html" class="footer__link">설치 가이드</a>
           <a href="changelog.html" class="footer__link">변경 이력</a>
         </div>
-        <p class="footer__copy">v1.0.0 &middot; Eluo Digital Agency &middot; 내부 사용</p>
+        <p class="footer__copy">v1.2.0 &middot; Eluo Digital Agency &middot; 내부 사용</p>
       </div>
     </div>
   </footer>

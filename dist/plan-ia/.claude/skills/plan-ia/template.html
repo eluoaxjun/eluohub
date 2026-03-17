@@ -338,6 +338,17 @@ body {
 /* Template badge */
 .tmpl { font-size: 10px; color: var(--c-text-sub); background: var(--c-bg-alt); padding: 1px 5px; border-radius: 3px; border: 1px solid var(--c-border); white-space: nowrap; }
 
+/* ===== Expand-All Bar ===== */
+.expand-bar {
+  display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 12px;
+}
+.expand-btn {
+  padding: 6px 14px; font-size: 12px; font-weight: 600;
+  color: var(--c-text-sub); background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: var(--radius); cursor: pointer; font-family: inherit; transition: all 0.2s;
+}
+.expand-btn:hover { background: var(--c-bg-alt); color: var(--c-text); }
+
 /* Footer */
 .report-footer { text-align: center; padding: 28px 0; color: var(--c-text-sub); font-size: 12px; border-top: 1px solid var(--c-border); }
 
@@ -351,12 +362,23 @@ body {
   .cover-title { font-size: 20px; }
   .meta-grid { flex-direction: column; gap: 6px; }
 }
+/* ===== Print / PDF ===== */
 @media print {
-  .summary-area, .tab-wrap { display: none; }
-  .tab-panel { display: block !important; page-break-before: always; }
+  body { font-size: 12px; line-height: 1.5; background: #fff; }
+  .container { max-width: 100%; padding: 0; }
+  .cover { padding: 32px 0 24px; }
+  .cover::after { display: none; }
+  .summary-area { display: block !important; border-bottom: 2px solid var(--c-border); }
+  .tab-wrap { display: none !important; }
+  .tab-panel { display: block !important; }
   .tab-panel:first-of-type { page-break-before: avoid; }
+  #panel-sitemap { page-break-after: always; }
+  .sm-gnb-block { break-inside: avoid; margin-bottom: 8px; }
+  .sm-l1-children.hidden { display: block !important; }
+  .sm-l1-row.collapsed .sm-toggle { transform: none; }
+  .expand-bar { display: none !important; }
   .inventory-table { font-size: 10px; }
-  @page { margin: 14mm 10mm; size: A4 landscape; }
+  @page { size: A4 landscape; margin: 14mm 10mm; }
 }
 </style>
 </head>
@@ -423,6 +445,11 @@ body {
       <span class="sm-legend-item"><span class="sm-legend-dot ld2"></span>L2 서브메뉴 / 목록</span>
       <span class="sm-legend-item"><span class="sm-legend-dot ld3"></span>L3 상세 페이지</span>
       <span class="sm-legend-item"><span class="sm-legend-dot ld4"></span>L4 모달 / 오버레이</span>
+    </div>
+
+    <div class="expand-bar">
+      <button class="expand-btn" data-action="expand">전체 펼치기</button>
+      <button class="expand-btn" data-action="collapse">전체 접기</button>
     </div>
 
     <div class="sm-gnb-wrap">
@@ -743,6 +770,25 @@ function toggleL1(el) {
   var isHidden = children.classList.toggle('hidden');
   el.classList.toggle('collapsed', isHidden);
 }
+
+/* ── 전체 펼치기/접기 ── */
+document.querySelectorAll('.expand-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var action = btn.dataset.action;
+    var l1Rows = document.querySelectorAll('.sm-l1-row');
+    l1Rows.forEach(function(row) {
+      var children = row.nextElementSibling;
+      if (!children) return;
+      if (action === 'collapse') {
+        children.classList.add('hidden');
+        row.classList.add('collapsed');
+      } else {
+        children.classList.remove('hidden');
+        row.classList.remove('collapsed');
+      }
+    });
+  });
+});
 </script>
 </body>
 </html>

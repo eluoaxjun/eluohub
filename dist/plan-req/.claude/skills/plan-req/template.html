@@ -133,6 +133,29 @@ body {
 .req-footer { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--c-border); display: flex; gap: 16px; font-size: 12px; color: var(--c-text-sub); flex-wrap: wrap; }
 .req-footer strong { color: var(--c-text); }
 
+/* ===== Accordion Toggle ===== */
+.req-toggle {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-left: auto; padding: 4px 10px; font-size: 11px; font-weight: 600;
+  color: var(--c-text-sub); background: var(--c-bg-alt); border: 1px solid var(--c-border);
+  border-radius: 4px; cursor: pointer; font-family: inherit; transition: all 0.2s;
+}
+.req-toggle:hover { background: var(--c-border); color: var(--c-text); }
+.req-toggle::after { content: '▼'; font-size: 8px; transition: transform 0.2s; }
+.req-card.collapsed .req-toggle::after { transform: rotate(-90deg); }
+.req-card-body { transition: max-height 0.3s ease, opacity 0.2s ease; overflow: hidden; }
+.req-card.collapsed .req-card-body { max-height: 0 !important; opacity: 0; padding: 0; }
+
+/* ===== Expand-All Bar ===== */
+.expand-bar {
+  display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 12px;
+}
+.expand-btn {
+  padding: 6px 14px; font-size: 12px; font-weight: 600;
+  color: var(--c-text-sub); background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: var(--radius); cursor: pointer; font-family: inherit; transition: all 0.2s;
+}
+.expand-btn:hover { background: var(--c-bg-alt); color: var(--c-text); }
 
 /* BG Table */
 .bg-table { width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid var(--c-border); border-radius: var(--radius); overflow: hidden; }
@@ -157,12 +180,22 @@ body {
   .meta-grid { flex-direction: column; gap: 6px; }
   .req-card, .nfr-card { padding: 14px 16px; }
 }
+/* ===== Print / PDF ===== */
 @media print {
-  .summary-area, .tab-wrap { display: none; }
-  .tab-panel { display: block !important; page-break-before: always; }
+  body { font-size: 12px; line-height: 1.5; background: #fff; }
+  .container { max-width: 100%; padding: 0; }
+  .cover { padding: 32px 0 24px; }
+  .cover::after { display: none; }
+  .summary-area { display: block !important; border-bottom: 2px solid var(--c-border); }
+  .tab-wrap { display: none !important; }
+  .tab-panel { display: block !important; }
   .tab-panel:first-of-type { page-break-before: avoid; }
-  .req-card, .nfr-card { break-inside: avoid; }
-  @page { margin: 14mm 10mm; }
+  #panel-overview { page-break-after: always; }
+  .req-card, .nfr-card { break-inside: avoid; margin-bottom: 8px; }
+  .req-card { box-shadow: none; border: 1px solid #ccc; }
+  .req-card.collapsed .req-card-body { max-height: none !important; opacity: 1 !important; }
+  .req-toggle, .expand-bar { display: none !important; }
+  @page { size: A4; margin: 16mm 14mm; }
 }
 </style>
 </head>
@@ -257,6 +290,10 @@ body {
     <div class="s-title">기능 요구사항 목록</div>
 
     <!-- req-card 클래스: must / should / could / wont -->
+    <div class="expand-bar">
+      <button class="expand-btn" data-action="expand">전체 펼치기</button>
+      <button class="expand-btn" data-action="collapse">전체 접기</button>
+    </div>
     <div class="req-list">
 
       <!-- FR 예시: Must -->
@@ -264,17 +301,20 @@ body {
         <div class="req-header">
           <span class="req-id">FR-001</span>
           <span class="priority-badge p-must">Must</span>
+          <button class="req-toggle">접기</button>
         </div>
-        <div class="req-title">{요구사항명 — 동사형}</div>
-        <div class="req-desc">{1~2문장 상세 설명}</div>
-        <ul class="ac-list">
-          <li>{AC 조건 1 — "~할 때 ~한다" 형식}</li>
-          <li>{AC 조건 2}</li>
-          <li>{AC 조건 3}</li>
-        </ul>
-        <div class="req-footer">
-          <span><strong>QST 근거:</strong> Q-00{N}</span>
-          <span><strong>연관 IA:</strong> IA-P{###}</span>
+        <div class="req-card-body">
+          <div class="req-title">{요구사항명 — 동사형}</div>
+          <div class="req-desc">{1~2문장 상세 설명}</div>
+          <ul class="ac-list">
+            <li>{AC 조건 1 — "~할 때 ~한다" 형식}</li>
+            <li>{AC 조건 2}</li>
+            <li>{AC 조건 3}</li>
+          </ul>
+          <div class="req-footer">
+            <span><strong>QST 근거:</strong> Q-00{N}</span>
+            <span><strong>연관 IA:</strong> IA-P{###}</span>
+          </div>
         </div>
       </div>
 
@@ -283,16 +323,19 @@ body {
         <div class="req-header">
           <span class="req-id">FR-002</span>
           <span class="priority-badge p-should">Should</span>
+          <button class="req-toggle">접기</button>
         </div>
-        <div class="req-title">{요구사항명}</div>
-        <div class="req-desc">{상세 설명}</div>
-        <ul class="ac-list">
-          <li>{AC 조건 1}</li>
-          <li>{AC 조건 2}</li>
-        </ul>
-        <div class="req-footer">
-          <span><strong>QST 근거:</strong> Q-00{N}</span>
-          <span><strong>연관 IA:</strong> IA-P{###}</span>
+        <div class="req-card-body">
+          <div class="req-title">{요구사항명}</div>
+          <div class="req-desc">{상세 설명}</div>
+          <ul class="ac-list">
+            <li>{AC 조건 1}</li>
+            <li>{AC 조건 2}</li>
+          </ul>
+          <div class="req-footer">
+            <span><strong>QST 근거:</strong> Q-00{N}</span>
+            <span><strong>연관 IA:</strong> IA-P{###}</span>
+          </div>
         </div>
       </div>
 
@@ -310,6 +353,7 @@ body {
 
 <script>
 (function() {
+  /* ── 탭 전환 ── */
   var btns = document.querySelectorAll('.tab-btn');
   var panels = document.querySelectorAll('.tab-panel');
   btns.forEach(function(btn) {
@@ -321,6 +365,34 @@ body {
         p.classList.toggle('active', p.id === 'panel-' + target);
       });
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  /* ── 아코디언 토글 ── */
+  document.addEventListener('click', function(e) {
+    var toggle = e.target.closest('.req-toggle');
+    if (!toggle) return;
+    var card = toggle.closest('.req-card');
+    if (!card) return;
+    var isCollapsed = card.classList.toggle('collapsed');
+    toggle.textContent = isCollapsed ? '펼치기' : '접기';
+  });
+
+  /* ── 전체 펼치기/접기 ── */
+  document.querySelectorAll('.expand-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var action = btn.dataset.action;
+      var cards = document.querySelectorAll('.req-card');
+      cards.forEach(function(card) {
+        var tog = card.querySelector('.req-toggle');
+        if (action === 'collapse') {
+          card.classList.add('collapsed');
+          if (tog) tog.textContent = '펼치기';
+        } else {
+          card.classList.remove('collapsed');
+          if (tog) tog.textContent = '접기';
+        }
+      });
     });
   });
 })();

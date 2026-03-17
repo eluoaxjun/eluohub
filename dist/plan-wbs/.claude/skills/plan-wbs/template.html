@@ -113,7 +113,24 @@ thead .g-id,thead .g-name,thead .g-owner,thead .g-dur{z-index:4;background:var(-
 .report-footer{text-align:center;padding:28px 0;color:var(--c-text-sub);font-size:12px;border-top:1px solid var(--c-border);}
 @media(max-width:768px){.cover{padding:44px 0 36px;}.cover-title{font-size:22px;}.summary-strip{grid-template-columns:repeat(2,1fr);}.tab-btn{padding:11px 14px;font-size:13px;}.milestone-grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:480px){.cover-title{font-size:20px;}.meta-grid{flex-direction:column;gap:6px;}.milestone-grid{grid-template-columns:1fr;}}
-@media print{.summary-area,.tab-wrap{display:none;}.tab-panel{display:block !important;page-break-before:always;}.tab-panel:first-of-type{page-break-before:avoid;}.wbs-table{font-size:9px;}.gantt-outer{overflow:visible;}@page{margin:14mm 10mm;size:A4 landscape;}}
+/* ===== Print / PDF ===== */
+@media print {
+  body { font-size: 12px; line-height: 1.5; background: #fff; }
+  .container { max-width: 100%; padding: 0; }
+  .cover { padding: 32px 0 24px; }
+  .cover::after { display: none; }
+  .summary-area { display: block !important; border-bottom: 2px solid var(--c-border); }
+  .tab-wrap { display: none !important; }
+  .tab-panel { display: block !important; }
+  .tab-panel:first-of-type { page-break-before: avoid; }
+  #panel-wbs { page-break-after: always; }
+  .wbs-table { font-size: 9px; }
+  .phase-row td { background: var(--c-primary-mid) !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .gantt-outer { overflow: visible; }
+  .gantt-table { font-size: 9px; }
+  .milestone-card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+  @page { size: A4 landscape; margin: 14mm 10mm; }
+}
 </style>
 </head>
 <body>
@@ -341,7 +358,9 @@ var WBS_ROWS = [
 
   /* ── 공통 날짜 계산 (ganttTable에서 읽음) ── */
   var table      = document.getElementById('ganttTable');
-  var projStart  = new Date((table && table.dataset.projStart) || '2026-01-01');
+  var rawStart   = (table && table.dataset.projStart) || '';
+  var projStart  = new Date(rawStart);
+  if (isNaN(projStart.getTime())) projStart = new Date('2026-01-01');
   var totalWeeks = parseInt((table && table.dataset.totalWeeks)) || 12;
   var _today = new Date(); _today.setHours(0,0,0,0);
   var _diff  = _today - projStart;

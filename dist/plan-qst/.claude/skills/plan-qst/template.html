@@ -363,6 +363,30 @@ body {
 .risk-mid  { display:inline-block; background:#fef3c7; color:#92400e; font-size:11px; font-weight:700; padding:2px 7px; border-radius:4px; }
 .risk-low  { display:inline-block; background:#eff6ff; color:#1e40af; font-size:11px; font-weight:700; padding:2px 7px; border-radius:4px; }
 
+/* ===== Accordion Toggle ===== */
+.q-toggle {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-left: auto; padding: 4px 10px; font-size: 11px; font-weight: 600;
+  color: var(--c-text-sub); background: var(--c-bg-alt); border: 1px solid var(--c-border);
+  border-radius: 4px; cursor: pointer; font-family: inherit; transition: all 0.2s;
+}
+.q-toggle:hover { background: var(--c-border); color: var(--c-text); }
+.q-toggle::after { content: '▼'; font-size: 8px; transition: transform 0.2s; }
+.q-card.collapsed .q-toggle::after { transform: rotate(-90deg); }
+.q-card-body { transition: max-height 0.3s ease, opacity 0.2s ease; overflow: hidden; }
+.q-card.collapsed .q-card-body { max-height: 0 !important; opacity: 0; padding: 0; }
+
+/* ===== Expand-All Bar ===== */
+.expand-bar {
+  display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 12px;
+}
+.expand-btn {
+  padding: 6px 14px; font-size: 12px; font-weight: 600;
+  color: var(--c-text-sub); background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: var(--radius); cursor: pointer; font-family: inherit; transition: all 0.2s;
+}
+.expand-btn:hover { background: var(--c-bg-alt); color: var(--c-text); }
+
 /* ===== Footer ===== */
 .report-footer {
   text-align: center;
@@ -389,16 +413,22 @@ body {
   .q-card { padding: 14px 16px; }
 }
 
-/* ===== Print ===== */
+/* ===== Print / PDF ===== */
 @media print {
-  body { font-size: 11px; }
-  .summary-area { display: none; }
-  .tab-wrap { display: none; }
-  .tab-panel { display: block !important; page-break-before: always; }
+  body { font-size: 12px; line-height: 1.5; background: #fff; }
+  .container { max-width: 100%; padding: 0; }
+  .cover { padding: 32px 0 24px; }
+  .cover::after { display: none; }
+  .summary-area { display: block !important; border-bottom: 2px solid var(--c-border); }
+  .tab-wrap { display: none !important; }
+  .tab-panel { display: block !important; }
   .tab-panel:first-of-type { page-break-before: avoid; }
-  .container { max-width: 100%; }
-  .q-card, .confirm-box { break-inside: avoid; }
-  @page { margin: 14mm 10mm; }
+  #panel-overview { page-break-after: always; }
+  .q-card, .confirm-box { break-inside: avoid; margin-bottom: 8px; }
+  .q-card { box-shadow: none; border: 1px solid #ccc; }
+  .q-card.collapsed .q-card-body { max-height: none !important; opacity: 1 !important; }
+  .q-toggle, .expand-bar { display: none !important; }
+  @page { size: A4; margin: 16mm 14mm; }
 }
 </style>
 </head>
@@ -486,6 +516,10 @@ body {
 
     <!-- q-card 클래스: confirmed / pending -->
     <!-- q-category 클래스: biz / tech / content / design / ops -->
+    <div class="expand-bar">
+      <button class="expand-btn" data-action="expand">전체 펼치기</button>
+      <button class="expand-btn" data-action="collapse">전체 접기</button>
+    </div>
     <div class="q-list">
 
       <!-- Q-카드 예시: 확인됨 -->
@@ -494,15 +528,18 @@ body {
           <span class="q-id">Q-001</span>
           <span class="q-category biz">사업</span>
           <span class="q-status status-confirmed">✓ 확인됨</span>
+          <button class="q-toggle">접기</button>
         </div>
-        <div class="q-title">{질의 제목}</div>
-        <div class="q-body">
-          <div class="q-question"><strong>Q.</strong> {질문 내용 (A/B/C 선택형)}</div>
-          <div class="q-answer has-answer"><strong>A.</strong> {고객 답변 내용}</div>
-        </div>
-        <div class="q-footer">
-          <span><strong>영향 범위:</strong> {REQ FR-### / FN-###}</span>
-          <span><strong>확인 방법:</strong> {회의/이메일}</span>
+        <div class="q-card-body">
+          <div class="q-title">{질의 제목}</div>
+          <div class="q-body">
+            <div class="q-question"><strong>Q.</strong> {질문 내용 (A/B/C 선택형)}</div>
+            <div class="q-answer has-answer"><strong>A.</strong> {고객 답변 내용}</div>
+          </div>
+          <div class="q-footer">
+            <span><strong>영향 범위:</strong> {REQ FR-### / FN-###}</span>
+            <span><strong>확인 방법:</strong> {회의/이메일}</span>
+          </div>
         </div>
       </div>
 
@@ -512,15 +549,18 @@ body {
           <span class="q-id">Q-002</span>
           <span class="q-category tech">기술</span>
           <span class="q-status status-pending">⚠ 미확인</span>
+          <button class="q-toggle">접기</button>
         </div>
-        <div class="q-title">{질의 제목}</div>
-        <div class="q-body">
-          <div class="q-question"><strong>Q.</strong> {질문 내용 (A/B/C 선택형)}</div>
-          <div class="q-answer"><strong>A.</strong> 답변 대기 중</div>
-        </div>
-        <div class="q-footer">
-          <span><strong>영향 범위:</strong> {REQ FR-### / FN-###}</span>
-          <span><strong>확인 방법:</strong> {회의/이메일}</span>
+        <div class="q-card-body">
+          <div class="q-title">{질의 제목}</div>
+          <div class="q-body">
+            <div class="q-question"><strong>Q.</strong> {질문 내용 (A/B/C 선택형)}</div>
+            <div class="q-answer"><strong>A.</strong> 답변 대기 중</div>
+          </div>
+          <div class="q-footer">
+            <span><strong>영향 범위:</strong> {REQ FR-### / FN-###}</span>
+            <span><strong>확인 방법:</strong> {회의/이메일}</span>
+          </div>
         </div>
       </div>
 
@@ -553,20 +593,27 @@ body {
     </div>
 
     <!-- 미확인 Q-카드 목록 -->
+    <div class="expand-bar">
+      <button class="expand-btn" data-action="expand">전체 펼치기</button>
+      <button class="expand-btn" data-action="collapse">전체 접기</button>
+    </div>
     <div class="q-list">
       <div class="q-card pending">
         <div class="q-header">
           <span class="q-id">Q-002</span>
           <span class="q-category tech">기술</span>
           <span class="q-status status-pending">⚠ 미확인</span>
+          <button class="q-toggle">접기</button>
         </div>
-        <div class="q-title">{질의 제목}</div>
-        <div class="q-body">
-          <div class="q-question"><strong>Q.</strong> {질문}</div>
-          <div class="q-answer"><strong>A.</strong> 답변 대기 중</div>
-        </div>
-        <div class="q-footer">
-          <span><strong>영향 범위:</strong> {범위}</span>
+        <div class="q-card-body">
+          <div class="q-title">{질의 제목}</div>
+          <div class="q-body">
+            <div class="q-question"><strong>Q.</strong> {질문}</div>
+            <div class="q-answer"><strong>A.</strong> 답변 대기 중</div>
+          </div>
+          <div class="q-footer">
+            <span><strong>영향 범위:</strong> {범위}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -608,6 +655,7 @@ body {
 
 <script>
 (function() {
+  /* ── 탭 전환 ── */
   var btns = document.querySelectorAll('.tab-btn');
   var panels = document.querySelectorAll('.tab-panel');
   btns.forEach(function(btn) {
@@ -619,6 +667,35 @@ body {
         p.classList.toggle('active', p.id === 'panel-' + target);
       });
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  /* ── 아코디언 토글 ── */
+  document.addEventListener('click', function(e) {
+    var toggle = e.target.closest('.q-toggle');
+    if (!toggle) return;
+    var card = toggle.closest('.q-card');
+    if (!card) return;
+    var isCollapsed = card.classList.toggle('collapsed');
+    toggle.textContent = isCollapsed ? '펼치기' : '접기';
+  });
+
+  /* ── 전체 펼치기/접기 ── */
+  document.querySelectorAll('.expand-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var action = btn.dataset.action;
+      var panel = btn.closest('.tab-panel') || document;
+      var cards = panel.querySelectorAll('.q-card');
+      cards.forEach(function(card) {
+        var tog = card.querySelector('.q-toggle');
+        if (action === 'collapse') {
+          card.classList.add('collapsed');
+          if (tog) tog.textContent = '펼치기';
+        } else {
+          card.classList.remove('collapsed');
+          if (tog) tog.textContent = '접기';
+        }
+      });
     });
   });
 })();

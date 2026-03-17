@@ -1,8 +1,0 @@
-{
-  "primaryColor": "#5bb5a2",
-  "accentColor": "#e4002b",
-  "neutralColor": "#666666",
-  "logo": { "type": "text", "html": "k<span style=\"color:#e4002b\">t</span>" },
-  "fonts": { "primary": "'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif" },
-  "frame": { "width": 1200, "minHeight": 800, "borderWidth": 2 }
-}

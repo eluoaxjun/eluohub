@@ -4,12 +4,39 @@
 
 ---
 
-## 사전 요구사항
+## 0단계: Claude Code 설치
 
-| 항목 | 최소 버전 | 확인 방법 |
-|------|----------|----------|
-| Claude Code | v2.1 이상 | `claude --version` |
-| Node.js | 18 이상 | `node --version` |
+> 이미 설치되어 있다면 이 단계를 건너뛰세요.
+
+### 설치 여부 확인
+
+```bash
+claude --version
+```
+
+버전 번호가 출력되면 **1단계**로 이동하세요.
+
+### 설치 (OS별)
+
+**Windows** (PowerShell 관리자 권한)
+```powershell
+irm https://claude.ai/install.ps1 | iex
+```
+- Git for Windows가 필요합니다. 미설치 시: `winget install --id Git.Git -e`
+
+**macOS** (Terminal)
+```bash
+curl -fsSL https://claude.ai/install.sh | bash
+```
+- Node.js 불필요. 설치 후 터미널을 재시작하세요.
+
+### 설치 후 최초 인증
+
+```bash
+claude
+```
+
+처음 실행하면 브라우저가 열리며 Anthropic 계정 로그인을 요청합니다. 로그인 완료 후 터미널로 돌아오면 인증 완료입니다.
 
 ---
 
@@ -24,6 +51,9 @@
 | 고객질의서 | `plan-qst/` | 고객 요구사항 수집 |
 | 요구사항정의서 | `plan-req/` | 기능·비기능 요구사항 정의 |
 | 기능정의서 | `plan-fn/` | 입력-처리-출력 상세 명세 |
+| 정보구조설계 | `plan-ia/` | 사이트맵·페이지 인벤토리·URL 설계 |
+| 작업분해구조 | `plan-wbs/` | 일정 산정·간트 차트·크리티컬 패스 |
+| 화면설계서 | `plan-sb/` | 와이어프레임 JSON → HTML 자동 생성 |
 
 > 전체 스킬 목록은 [스킬 카탈로그](index.html)를 참고하세요.
 
@@ -88,9 +118,9 @@ plan-req/                    ← 이 폴더에서 Claude Code 실행
 
 ## MCP 서버
 
-대부분의 스킬은 **MCP 서버가 필요 없습니다.**
+**Planning 스킬은 MCP 서버가 필요 없습니다.** 모든 외부 도구 연동(사이트 방문 등)은 내장 CLI 스크립트(`visit.js` 등)로 처리됩니다.
 
-일부 스킬(디자인 벤치마킹, QA 성능 테스트 등)은 MCP 서버(Playwright 등)가 필요할 수 있습니다. 해당 스킬의 README.md에 설치 안내가 포함됩니다.
+향후 추가될 디자인·QA 플러그인 중 일부는 MCP 서버가 필요할 수 있습니다. 해당 스킬의 README.md에 설치 안내가 포함됩니다.
 
 ---
 
