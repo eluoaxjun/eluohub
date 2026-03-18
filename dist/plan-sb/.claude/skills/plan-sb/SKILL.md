@@ -66,6 +66,20 @@ node .claude/skills/plan-sb/scripts/visit.js {URL} [output-dir]
 
 **모드 판정 출력**: `[입력 감지] JSON: {n건/없음} | 이미지: {n건/없음} | FN: {n건/없음} → {자동/대화형} 모드`
 
+### 캡쳐 출처 분류 (이미지 입력 시 필수)
+
+이미지 입력 감지 시 아래 기준으로 출처를 분류한다.
+
+| 출처 | 판별 기준 | 콘텐츠 처리 |
+|------|----------|------------|
+| **타겟 사이트 캡쳐** (운영 수정) | 타겟 URL 도메인과 일치 / 사용자 "현행 사이트" 언급 | 콘텐츠 보존 — 텍스트·상품명·가격 그대로 유지, 수정 지시만 반영 |
+| **레퍼런스 사이트 캡쳐** (리뉴얼) | 타겟과 다른 도메인 / 사용자 "참고", "레퍼런스" 언급 | 레이아웃·패턴만 참조 — 텍스트·상품명·가격은 타겟에서 별도 수집 |
+| **판별 불가** | 도메인 불명·사용자 언급 없음 | 사용자에게 1회 확인: "이 이미지는 수정 대상 사이트인가요, 참고 사이트인가요?" |
+
+**출력 마커**: `[캡쳐 출처] 타겟/레퍼런스/미분류 → {처리 방식}`
+
+**MUST NOT**: 레퍼런스 캡쳐의 텍스트(상품명, 가격, 카피)를 타겟 산출물에 그대로 사용 금지
+
 **기존 SB JSON 포맷 유지 모드**: `input/*.json`이 기존 SB 산출물인 경우 wireframe[], descriptions[], msgCases[]만 수정·보강.
 
 | 판별 기준 | 처리 방식 |
@@ -97,7 +111,31 @@ node .claude/skills/plan-sb/scripts/visit.js {URL} [output-dir]
 2. group은 반드시 children 1개 이상 (빈 group 금지)
 3. descriptions marker 수와 wireframe marker 수 일치 필수
 4. 모든 요소에 label 필수 (빈 label 금지)
-5. height는 실제 UI 비율 반영: header 50~70px, 필터 바 45~60px, 카드 그리드 300~500px
+5. height는 슬라이드 본문 990px(= 1080 - 54 header - 36 footer) 기준 비율 배분:
+   - 전체 요소 height 합계 ≈ 990px (±50px 허용). 합계 초과 시 overflow 발생
+   - header/gnb: 50~70px (5~7%)
+   - 히어로/배너: 250~350px (25~35%) — 500px 이상 금지
+   - 카드 그리드/리스트: 200~350px (20~35%)
+   - 필터/탭 바: 40~60px (4~6%)
+   - 푸터: 60~100px (6~10%)
+   - 캡쳐 이미지 기반 시: Vision 분석으로 각 섹션 비율 추정 → 990px에 비례 배분
+
+### 비정상 상태(MSG Case) 정의 기준
+
+design 스크린에 대해 아래 조건 해당 시 msgCase 슬라이드를 별도 생성한다.
+
+| 상태 | 정의 조건 | 예시 |
+|------|----------|------|
+| Empty | 데이터 0건 가능 영역 | 검색 결과 없음, 장바구니 비어있음, 게시글 없음 |
+| Error | 서버/네트워크 오류 가능 | API 타임아웃, 결제 실패, 인증 만료 |
+| Loading | 비동기 로딩 영역 | 리스트 로딩 중, 이미지 로딩, 무한스크롤 |
+| Permission | 권한 부족 시 | 비로그인 접근, 권한 없는 페이지 |
+
+**적용 규칙**:
+- 검색·필터·목록이 있는 화면 → Empty 필수
+- 폼 제출이 있는 화면 → Error 필수
+- 외부 데이터 의존 영역 → Loading 권장
+- 해당 없으면 msgCases: [] (빈 배열)으로 명시적 스킵
 
 ---
 
@@ -127,6 +165,7 @@ JSON 작성 전 반드시 읽을 것: `scripts/template.js` (renderWfElement 등
 | msgCases[] | O* | msgCase 타입 필수 |
 | components[] | O* | component 타입 필수 |
 | uiImagePath | - | UI 캡처 이미지 경로. 설정 시 wireframe 렌더링 비활성화 |
+| pmComments[] | - | PM 코멘트 배열 (marker + type + author + comment). 제안 필요 시에만 생성 |
 | hasDivider | - | `true` + `divider` 객체 **둘 다** 설정 시 Divider 프레임 자동 삽입 |
 | wireframe[] | - | 와이어프레임 요소 배열 (Option A 권장) |
 | wfHtml | - | 직접 작성 HTML (Option B, 복잡 레이아웃 한정). 존재 시 wireframe[] 보다 우선 |
@@ -156,6 +195,26 @@ JSON 작성 전 반드시 읽을 것: `scripts/template.js` (renderWfElement 등
 - 슬라이드 구조: slide-header(54px) + slide-body(flex:1) + slide-footer(36px)
 - Design 레이아웃: 좌 60% wireframe-area + 우 40% description-panel
 - MSG Case 자동 분리: `screenType:'design'` + `msgCases` 동시 존재 시 별도 슬라이드 자동 생성 (인라인 혼재 금지)
+
+## pmComments 필드 명세
+
+`screens[].pmComments: object[]` — Description 패널 하단에 PM 코멘트 블록 렌더링
+
+| 필드 | 필수 | 설명 |
+|------|------|------|
+| marker | O | 연결할 Description marker 번호 |
+| type | O | `question` / `suggestion` / `risk` / `reject` |
+| author | - | 작성자 (기본값: "PM") |
+| comment | O | 코멘트 내용 |
+
+**생성 기준** — 제안할 것이 있을 때만 생성, 무조건 채우지 않는다:
+
+| 조건 | type | 예시 |
+|------|------|------|
+| 레이아웃 대안이 있을 때 | `suggestion` | "카드 4열 → 3열 변경 시 모바일 대응 유리" |
+| 콘텐츠 확인이 필요할 때 | `question` | "배너 슬라이드 자동 롤링 속도 확인 필요" |
+| UX 리스크 감지 시 | `risk` | "GNB 메뉴 8개 초과 — 인지 부하 우려" |
+| 해당 없음 | — | pmComments 생략 (빈 배열 불필요) |
 
 ## fnRef 필드 명세
 
@@ -193,6 +252,10 @@ JSON 작성 전 반드시 읽을 것: `scripts/template.js` (renderWfElement 등
 - FN 처리 로직·알고리즘·AC 수치 기준을 Description에 복사 금지
 - `[미확인]`, `[미정]` 항목 잔존 금지
 - design 슬라이드 내 msgCases 인라인 혼재 금지
+- 레퍼런스 캡쳐의 텍스트·상품명·가격을 타겟 산출물에 복사 금지
+- 레퍼런스에서 추출 허용: 섹션 구조, 카드 배치, GNB 패턴, 컬러 톤, CTA 배치
+- 레퍼런스에서 추출 금지: 브랜드명, 제품명, 가격, 마케팅 카피, 이벤트명
+- 타겟 콘텐츠 미확보 시: `[타겟 콘텐츠 필요: {영역}]` 플레이스홀더 사용 (임의 생성 금지)
 
 ## Self-Check
 
