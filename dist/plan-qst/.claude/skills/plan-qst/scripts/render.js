@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 /**
- * 기획 산출물 MD → HTML → PDF 렌더러
+ * 기획 산출물 MD → HTML → PDF 렌더러 v3
  * Usage: node render.js <input.md>
  * Output: <input>.html + <input>.pdf (MD와 동일 디렉토리)
+ *
+ * v3: 간지 제거, H2 섹션별 page-break만 적용 (내용이 길면 자연스럽게 다음 페이지로)
  */
 
 const fs = require('fs');
@@ -19,6 +21,10 @@ async function main() {
   if (!fs.existsSync(mdPath)) {
     console.error(`File not found: ${mdPath}`);
     process.exit(1);
+  }
+
+  if (!mdFile.toLowerCase().endsWith('.md')) {
+    console.warn('[WARN] 입력 파일이 .md가 아닙니다. .md 파일을 사용해 주세요.');
   }
 
   const content = fs.readFileSync(mdPath, 'utf-8');
@@ -46,7 +52,8 @@ async function main() {
   const toc = buildToc(mdBody);
 
   // 5. 메타데이터 추출
-  const title = meta.title || path.basename(mdPath, '.md');
+  const ext = path.extname(mdPath);
+  const title = meta.title || path.basename(mdPath, ext);
   const version = meta.version || '';
   const date = meta.date || new Date().toISOString().slice(0, 10);
   const author = meta.author || meta.writer || '';
@@ -54,8 +61,8 @@ async function main() {
   // 6. A4 HTML 템플릿 적용
   const html = buildHtml({ title, version, date, author, toc, body: htmlBody });
 
-  // 7. HTML 저장
-  const basePath = mdPath.replace(/\.md$/, '');
+  // 7. 출력 파일명 — 확장자 안전 처리
+  const basePath = ext ? mdPath.slice(0, -ext.length) : mdPath;
   const htmlPath = basePath + '.html';
   fs.writeFileSync(htmlPath, html, 'utf-8');
   console.log(`[OK] HTML: ${htmlPath}`);
@@ -134,9 +141,10 @@ function buildToc(mdBody) {
 }
 
 function buildHtml({ title, version, date, author, toc, body }) {
+  // H2에 id + page-break 클래스 부여
   const bodyWithBreaks = body.replace(/<h2>(.+?)<\/h2>/g, (_, text) => {
     const id = text.toLowerCase().replace(/[^\w가-힣]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-    return `<h2 id="${id}" class="page-break">${text}</h2>`;
+    return `<h2 id="${id}" class="section-start">${text}</h2>`;
   });
 
   return `<!DOCTYPE html>
@@ -160,8 +168,7 @@ function buildHtml({ title, version, date, author, toc, body }) {
   .toc a { color: #4a6cf7; text-decoration: none; font-size: 10pt; }
   .content { padding: 0 40px 60px; }
   h1 { font-size: 20pt; margin: 32px 0 16px; color: #1a1a2e; }
-  h2.page-break { font-size: 15pt; margin: 0 0 16px; padding: 12px 16px; background: #f0f4ff; border-left: 4px solid #4a6cf7; color: #1a1a2e; page-break-before: always; }
-  h2.page-break:first-of-type { page-break-before: avoid; }
+  h2.section-start { font-size: 15pt; margin: 0 0 16px; padding: 12px 16px; background: #f0f4ff; border-left: 4px solid #4a6cf7; color: #1a1a2e; page-break-before: always; }
   h3 { font-size: 12pt; margin: 20px 0 10px; color: #2d3a6e; }
   h4 { font-size: 11pt; margin: 16px 0 8px; color: #3a4a7e; }
   p { margin: 8px 0; }
@@ -177,9 +184,9 @@ function buildHtml({ title, version, date, author, toc, body }) {
   blockquote { border-left: 4px solid #4a6cf7; padding: 8px 16px; margin: 12px 0; color: #666; background: #f9fafb; }
   hr { border: none; border-top: 1px solid #dde3f0; margin: 24px 0; }
   .doc-footer { background: #f0f4ff; border-top: 1px solid #dde3f0; padding: 8px 40px; display: flex; justify-content: space-between; font-size: 8pt; color: #888; margin-top: 32px; }
+
   @media print {
-    h2.page-break { page-break-before: always; }
-    h2.page-break:first-of-type { page-break-before: avoid; }
+    h2.section-start { page-break-before: always; }
   }
 </style>
 </head>

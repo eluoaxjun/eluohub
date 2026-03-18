@@ -1132,6 +1132,83 @@ function renderDescriptionTableV2(descriptions, pmComments) {
 }
 
 /**
+ * Description 높이 추정 (px) — 자동 분할 판단용
+ * 슬라이드 가용 높이: 1080 - 54(header) - 36(footer) - 40(padding) = 950px
+ * Description 패널(40%)의 가용 높이: ~920px (padding 포함)
+ */
+const DESC_MAX_HEIGHT_DESIGN = 880;   // design 슬라이드 (40% 패널)
+const DESC_MAX_HEIGHT_FULLWIDTH = 900; // 전폭 description 슬라이드
+
+function estimateItemHeight(d) {
+  if (d.type === 'section') return 32;
+  if (!d.marker && !d.label && !(d.items && d.items.length) && d.continuation) return 28;
+  let h = 38; // base row (marker cell + padding + border)
+  if (d.label) h += 22;
+  if (d.items && d.items.length > 0) h += d.items.length * 22;
+  else if (d.details && d.details.length > 0) h += d.details.length * 22;
+  if (d.before) h += 40;
+  if (d.after) h += 40;
+  return h;
+}
+
+function estimateDescHeight(descriptions) {
+  if (!descriptions || descriptions.length === 0) return 0;
+  let total = 40; // table header
+  for (const d of descriptions) {
+    total += estimateItemHeight(d);
+  }
+  return total;
+}
+
+/**
+ * 와이어프레임 요소에서 visibleMarkers에 포함된 marker만 남기고 나머지는 marker 제거
+ * 구조(레이아웃)는 유지하되 넘버링만 숨긴다
+ */
+function filterWireframeMarkers(wireframe, visibleMarkers) {
+  if (!wireframe) return wireframe;
+  const markerSet = new Set(visibleMarkers);
+  return wireframe.map(el => {
+    const filtered = { ...el };
+    if (filtered.marker && !markerSet.has(filtered.marker)) {
+      delete filtered.marker;
+    }
+    if (filtered.children) {
+      filtered.children = filterWireframeMarkers(filtered.children, visibleMarkers);
+    }
+    return filtered;
+  });
+}
+
+/**
+ * Description 항목을 높이 제한에 맞게 청크로 분할
+ * 모든 슬라이드 동일 maxH 적용 (와이어프레임 유지 방식)
+ */
+function splitDescriptions(descriptions, firstMax, contMax) {
+  const chunks = [];
+  let current = [];
+  let currentHeight = 40; // table header overhead
+  let isFirst = true;
+  const maxH = () => isFirst ? firstMax : contMax;
+
+  for (const d of descriptions) {
+    // 기존 수동 continuation 마커는 건너뜀 (자동 재생성)
+    if (!d.marker && !d.label && !(d.items && d.items.length) && d.continuation) continue;
+
+    const itemH = estimateItemHeight(d);
+    if (currentHeight + itemH > maxH() && current.length > 0) {
+      chunks.push(current);
+      current = [];
+      currentHeight = 40;
+      isFirst = false;
+    }
+    current.push(d);
+    currentHeight += itemH;
+  }
+  if (current.length > 0) chunks.push(current);
+  return chunks;
+}
+
+/**
  * Persistent 영역 — Header/GNB/Breadcrumb/LNB/Footer
  */
 function renderPersistentHeader(persistent) {
@@ -1448,7 +1525,62 @@ function renderScreen(screen, data) {
 
     case 'design':
     default: {
-      // Design 슬라이드: 좌 60% 와이어프레임 / 우 40% Description
+      // Description 높이 추정 → overflow 시 자동 분할
+      const estHeight = estimateDescHeight(screen.descriptions);
+      const needsSplit = estHeight > DESC_MAX_HEIGHT_DESIGN
+        && screen.descriptions && screen.descriptions.length > 1;
+
+      if (needsSplit) {
+        const chunks = splitDescriptions(
+          screen.descriptions, DESC_MAX_HEIGHT_DESIGN, DESC_MAX_HEIGHT_DESIGN
+        );
+        const totalPages = chunks.length;
+        console.log(`[SPLIT] ${screen.interfaceName || screen.pageId}: ${screen.descriptions.length}건 → ${totalPages}페이지 (추정 ${estHeight}px)`);
+
+        chunks.forEach((chunk, ci) => {
+          const isFirst = ci === 0;
+          const isLast = ci === totalPages - 1;
+          const pageLabel = ` (${ci + 1}/${totalPages})`;
+
+          // continuation 마커 삽입
+          const descWithMarkers = [...chunk];
+          if (!isFirst) {
+            descWithMarkers.unshift({ continuation: 'prev' });
+          }
+          if (!isLast) {
+            descWithMarkers.push({ continuation: 'next' });
+          }
+
+          const chunkHeader = renderSlideHeader(
+            { ...screen, interfaceName: (screen.interfaceName || '') + pageLabel },
+            data, null
+          );
+
+          // 모든 슬라이드: 와이어프레임(60%) + 해당 chunk description(40%)
+          // 와이어프레임 마커는 이 chunk에 있는 description marker만 표시
+          const chunkMarkers = chunk.filter(d => d.marker).map(d => d.marker);
+          const chunkScreen = {
+            ...screen,
+            wireframe: filterWireframeMarkers(screen.wireframe, chunkMarkers),
+            descriptions: descWithMarkers,
+            pmComments: isLast ? screen.pmComments : null
+          };
+          const chunkBody = `<div class="slide-body">${renderDesignLayout(chunkScreen)}</div>`;
+
+          slides.push(`
+<div class="slide" data-slide-type="design" style="position:relative;">
+  ${chunkHeader}
+  ${isFirst ? modifiedHtml : ''}
+  ${isFirst ? changeLogHtml : ''}
+  ${chunkBody}
+  ${footer}
+</div>`);
+        });
+        // 자동 분할 완료 — default push 건너뜀
+        break;
+      }
+
+      // overflow 없음 — 단일 슬라이드
       bodyHtml = `<div class="slide-body">
         ${renderDesignLayout(screen)}
       </div>`;
@@ -1456,7 +1588,9 @@ function renderScreen(screen, data) {
     }
   }
 
-  slides.push(`
+  // 자동 분할이 아닌 경우에만 default 슬라이드 push
+  if (bodyHtml !== undefined) {
+    slides.push(`
 <div class="slide" data-slide-type="${screenType}" style="position:relative;">
   ${header}
   ${modifiedHtml}
@@ -1464,6 +1598,7 @@ function renderScreen(screen, data) {
   ${bodyHtml}
   ${footer}
 </div>`);
+  }
 
   // design 타입 + msgCases 존재 → 별도 MSG Case 슬라이드 자동 생성
   if (screenType === 'design' && screen.msgCases && screen.msgCases.length > 0) {
