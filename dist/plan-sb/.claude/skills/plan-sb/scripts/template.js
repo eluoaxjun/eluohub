@@ -263,9 +263,9 @@ function css(theme) {
   .wf-card-action .wf-el--button { width: 100%; justify-content: center; font-size: 11px; height: 26px; background: #f0f0f0; border-color: #ccc; }
 
   /* 이미지 UI 캡처 */
-  .ui-capture { flex: 1; background: #f9f9f9; border-right: 1px solid #ddd; display: flex; align-items: center; justify-content: center; color: #999; font-size: 13px; overflow: hidden; }
-  .ui-capture-inner { position: relative; display: inline-block; max-width: 100%; max-height: 100%; }
-  .ui-capture-inner img { display: block; max-width: 100%; max-height: 1000px; }
+  .ui-capture { flex: 1; background: #f9f9f9; border-right: 1px solid #ddd; display: flex; align-items: flex-start; justify-content: center; color: #999; font-size: 13px; overflow: hidden; padding: 8px; }
+  .ui-capture-inner { position: relative; display: inline-block; width: 100%; }
+  .ui-capture-inner img { display: block; width: 100%; height: auto; }
   .marker-overlay { position: absolute; border: 3px dashed ${theme.accentColor}; background: rgba(204,51,51,0.08); pointer-events: none; z-index: 1; border-radius: 6px; }
   .marker-number { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: ${theme.accentColor}; color: #fff; border-radius: 50%; text-align: center; line-height: 24px; font-size: 12px; font-weight: 700; z-index: 2; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
 
