@@ -69,6 +69,31 @@ async function main() {
   fs.writeFileSync(htmlPath, html, 'utf-8');
   console.log(`[OK] HTML: ${htmlPath}`);
 
+  // 2.5. sources.json — 참조 이력 기록 (output/_ref/)
+  const refDir = path.join(outputDir, '_ref');
+  if (!fs.existsSync(refDir)) fs.mkdirSync(refDir, { recursive: true });
+  const inputs = [];
+  if (fs.existsSync(inputDir)) {
+    for (const f of fs.readdirSync(inputDir).filter(f => !f.startsWith('.'))) {
+      const ext = path.extname(f).toLowerCase();
+      let type = 'unknown';
+      if (['.png','.jpg','.jpeg','.gif','.webp'].includes(ext)) type = 'capture';
+      else if (['.pdf','.pptx','.ppt'].includes(ext)) type = 'format';
+      else if (ext === '.json') type = 'data';
+      else if (ext === '.md') type = 'document';
+      const usages = [];
+      if (type === 'capture' && data.screens) {
+        data.screens.forEach((s, i) => {
+          if (s.uiImagePath && s.uiImagePath.includes(f)) usages.push(`uiImagePath (screen ${i})`);
+        });
+      }
+      inputs.push({ file: f, type, usage: usages.join(', ') || 'input 참조' });
+    }
+  }
+  const sourcesPath = path.join(refDir, 'sources.json');
+  fs.writeFileSync(sourcesPath, JSON.stringify({ created: new Date().toISOString().slice(0,10), dataFile: path.basename(dataPath), inputs }, null, 2), 'utf-8');
+  console.log(`[OK] sources: ${sourcesPath}`);
+
   // 3. PDF 생성 (Playwright)
   let playwright;
   try {

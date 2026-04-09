@@ -106,6 +106,20 @@ function css(theme) {
   /* Design 레이아웃: 좌 60% / 우 40% */
   .design-layout { display: flex; flex: 1; overflow: hidden; min-height: 0; }
   .wireframe-area { flex: 0 0 60%; overflow: hidden; border-right: 1px solid #ddd; position: relative; }
+
+  /* containerType: chatbot-panel — 우하단 플로팅 배치, 좁은 영역 */
+  .container-chatbot { flex: 0 0 42%; display: flex; align-items: flex-end; justify-content: flex-end; background: #e8e8e8; border-right: 1px solid #ddd; padding: 16px 20px; position: relative; }
+  .chatbot-panel-frame { width: 340px; max-height: 92%; background: #fff; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.18); display: flex; flex-direction: column; overflow: hidden; border: 1px solid #ddd; }
+
+  /* containerType: modal */
+  .container-modal { flex: 0 0 60%; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); border-right: 1px solid #ddd; padding: 30px; }
+  .modal-frame { width: 520px; max-height: 90%; background: #fff; border-radius: 8px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); display: flex; flex-direction: column; overflow: hidden; }
+  .modal-frame .wf-scroll { flex: 1; overflow-y: auto; padding: 16px 20px; }
+
+  /* containerType: floating-panel */
+  .container-floating { flex: 0 0 60%; display: flex; align-items: flex-end; justify-content: flex-end; background: #e8e8e8; border-right: 1px solid #ddd; padding: 20px; }
+  .floating-frame { width: 360px; max-height: 85%; background: #fff; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.12); display: flex; flex-direction: column; overflow: hidden; border: 1px solid #ccc; }
+  .floating-frame .wf-scroll { flex: 1; overflow-y: auto; padding: 12px; }
   .description-panel { flex: 0 0 40%; overflow-y: auto; padding: 18px 20px; display: flex; flex-direction: column; }
 
   /* Description */
@@ -161,28 +175,35 @@ function css(theme) {
   .wf-el--group--horizontal > .wf-el { flex: 1; min-width: 0; margin: 0 3px 3px 0; }
 
   /* group layout: popup */
-  .wf-el--group--popup { position: relative; background: #fff; border: 2px solid #aaa !important; border-radius: 6px; padding: 0; gap: 0; }
-  .wf-grp-close { position: absolute; top: 6px; right: 8px; display: flex; align-items: center; gap: 3px; z-index: 3; }
-  .wf-grp-close-btn { width: 22px; height: 22px; background: rgba(0,0,0,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; font-weight: 700; flex-shrink: 0; }
-  .wf-grp-image { min-height: 90px; background: #e0e0e0; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #999; position: relative; flex: 1; }
-  .wf-grp-image::before { content: '\\1F5BC'; font-size: 18px; margin-right: 5px; }
-  .wf-grp-nav { display: flex; align-items: center; justify-content: space-between; padding: 4px 10px; border-top: 1px solid #eee; position: relative; }
-  .wf-grp-footer { display: flex; align-items: center; gap: 6px; padding: 6px 10px; border-top: 1px solid #eee; background: #fafafa; position: relative; }
-  .wf-grp-footer > .wf-el { flex: 1; }
+  .wf-el--group--popup { position: relative; background: #fff; border: 2px solid #aaa !important; border-radius: 12px; padding: 0; gap: 0; box-shadow: 0 8px 32px rgba(0,0,0,0.2); overflow: hidden; }
+  .wf-grp-close { position: absolute; top: 8px; right: 10px; display: flex; align-items: center; gap: 3px; z-index: 3; }
+  .wf-grp-close-btn { width: 28px; height: 28px; background: rgba(0,0,0,0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #fff; font-weight: 700; flex-shrink: 0; cursor: default; }
+  .wf-grp-image { min-height: 200px; background: #e0e0e0; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #999; position: relative; flex: 1; }
+  .wf-grp-image::before { content: '\\1F5BC'; font-size: 24px; margin-right: 5px; }
+  .wf-grp-nav { display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; border-top: 1px solid #eee; position: relative; }
+  .wf-grp-footer { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 12px 16px; border-top: 1px solid #eee; background: #fafafa; position: relative; }
+  .wf-grp-footer > .wf-el { flex: none; }
   .wf-marker-inline { display: inline-flex; width: 16px; height: 16px; background: ${theme.accentColor}; color: #fff; border-radius: 50%; font-size: 8px; font-weight: 700; align-items: center; justify-content: center; flex-shrink: 0; }
 
-  /* popup */
-  .wf-el--popup { background: #fff; border: 2px solid #aaa; border-radius: 6px; padding: 0; overflow: hidden; position: relative; min-height: 180px; gap: 0; }
-  .wf-popup-close { position: absolute; top: 6px; right: 8px; width: 22px; height: 22px; background: rgba(0,0,0,0.25); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; z-index: 2; font-weight: 700; }
-  .wf-popup-image { background: #e0e0e0; min-height: 110px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #aaa; }
-  .wf-popup-image::before { content: '\\1F5BC'; font-size: 20px; margin-right: 6px; }
-  .wf-popup-nav { display: flex; align-items: center; justify-content: space-between; padding: 4px 10px; }
-  .wf-popup-nav-btn { width: 22px; height: 22px; border: 1px solid #ccc; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #666; background: #fff; }
+  /* popup — 센터 모달: 어두운 배경 + 가운데 팝업 프레임 */
+  .wf-popup-wrap { display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.45); width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+  .wf-el--popup { background: #fff; border: none; border-radius: 12px; padding: 0; overflow: hidden; position: relative; min-height: 200px; gap: 0; box-shadow: 0 8px 32px rgba(0,0,0,0.25); max-width: 320px; width: 80%; }
+  .wf-popup-close { position: absolute; top: 8px; right: 10px; width: 28px; height: 28px; background: rgba(0,0,0,0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #fff; z-index: 2; font-weight: 700; cursor: default; }
+  .wf-popup-image { background: #e0e0e0; min-height: 200px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #aaa; }
+  .wf-popup-image::before { content: '\\1F5BC'; font-size: 24px; margin-right: 6px; }
+  .wf-popup-nav { display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; }
+  .wf-popup-nav-btn { width: 24px; height: 24px; border: 1px solid #ccc; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #666; background: #fff; }
   .wf-popup-dots { display: flex; gap: 5px; align-items: center; }
   .wf-popup-dots span { width: 7px; height: 7px; border-radius: 50%; background: #ccc; display: inline-block; }
   .wf-popup-dots span.active { background: #555; }
-  .wf-popup-actions { display: flex; gap: 6px; padding: 6px 10px; border-top: 1px solid #eee; background: #fafafa; }
-  .wf-popup-actions > * { flex: 1; }
+  .wf-popup-actions { display: flex; gap: 12px; padding: 12px 16px; border-top: 1px solid #eee; background: #fafafa; justify-content: center; border-radius: 0 0 12px 12px; }
+  .wf-popup-actions > * { flex: none; font-size: 11px; }
+
+  /* popup variant: 바텀시트 */
+  .wf-popup-wrap--bottom { align-items: flex-end; justify-content: center; }
+  .wf-el--popup--bottom { border-radius: 16px 16px 0 0; max-width: 375px; width: 90%; }
+  .wf-popup-handle { width: 40px; height: 4px; background: #ddd; border-radius: 2px; margin: 10px auto; }
+  .wf-popup-actions--bottom { border-radius: 0; }
 
   /* card with thumbnail */
   .wf-el--card { background: #fff; border: 1px solid #ddd; border-radius: 5px; padding: 0; overflow: hidden; }
@@ -245,7 +266,8 @@ function css(theme) {
   .ui-capture { flex: 1; background: #f9f9f9; border-right: 1px solid #ddd; display: flex; align-items: center; justify-content: center; color: #999; font-size: 13px; overflow: hidden; }
   .ui-capture-inner { position: relative; display: inline-block; max-width: 100%; max-height: 100%; }
   .ui-capture-inner img { display: block; max-width: 100%; max-height: 1000px; }
-  .marker-overlay { position: absolute; border: 2px dashed ${theme.accentColor}; pointer-events: none; z-index: 1; }
+  .marker-overlay { position: absolute; border: 3px solid ${theme.accentColor}; background: rgba(204,51,51,0.15); pointer-events: none; z-index: 1; border-radius: 4px; }
+  .marker-number { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: ${theme.accentColor}; color: #fff; border-radius: 50%; text-align: center; line-height: 24px; font-size: 12px; font-weight: 700; z-index: 2; }
   .marker-number { position: absolute; top: -10px; left: -10px; width: 20px; height: 20px; background: ${theme.accentColor}; color: #fff; border-radius: 50%; text-align: center; line-height: 20px; font-size: 10px; font-weight: 700; z-index: 2; }
 
   /* Persistent */
@@ -693,11 +715,94 @@ function renderInterfaceList(data) {
 /**
  * 와이어프레임 엘리먼트 렌더
  */
+function renderAppearanceStyle(appearance) {
+  if (!appearance || typeof appearance !== 'object') return '';
+  const map = {
+    align: 'align-self', maxWidth: 'max-width', minWidth: 'min-width',
+    background: 'background', borderRadius: 'border-radius', padding: 'padding',
+    margin: 'margin', border: 'border', gap: 'gap', color: 'color',
+    fontSize: 'font-size', fontWeight: 'font-weight', textAlign: 'text-align',
+    display: 'display', flexDirection: 'flex-direction', justifyContent: 'justify-content',
+    alignItems: 'align-items', flexWrap: 'flex-wrap', opacity: 'opacity',
+    boxShadow: 'box-shadow', width: 'width', height: 'height',
+    position: 'position', top: 'top', right: 'right', bottom: 'bottom', left: 'left',
+    overflow: 'overflow', zIndex: 'z-index'
+  };
+  return Object.entries(appearance)
+    .filter(([k]) => map[k])
+    .map(([k, v]) => `${map[k]}:${v}`)
+    .join(';');
+}
+
+/**
+ * containerType !== 'page' 전용 렌더러.
+ * .wf-el CSS 클래스를 사용하지 않고 appearance 인라인 스타일만으로 렌더링.
+ */
+function renderCleanElement(el) {
+  const markerHtml = el.marker ? `<span style="position:absolute;top:2px;left:2px;width:18px;height:18px;background:#CC3333;color:#fff;border-radius:50%;text-align:center;line-height:18px;font-size:9px;font-weight:700;z-index:2;">${el.marker}</span>` : '';
+  const ap = renderAppearanceStyle(el.appearance);
+  const h = el.height ? `min-height:${el.height}px;` : '';
+  const markedBorder = el.marker ? 'border:1px dashed #CC3333;' : '';
+  const pos = el.marker ? 'position:relative;' : '';
+
+  const baseStyle = `${pos}${markedBorder}${h}${ap}`;
+
+  switch (el.type) {
+    case 'header': {
+      const defaultStyle = 'display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:#333;color:#fff;border-radius:12px 12px 0 0;font-size:13px;';
+      const kids = (el.children || []).map(c => renderCleanElement(c)).join('');
+      return `<div style="${defaultStyle}${baseStyle}">${markerHtml}${kids || el.label || 'Header'}</div>`;
+    }
+    case 'text': {
+      const defaultStyle = 'font-size:13px;line-height:1.5;';
+      const text = (el.label || '').replace(/\\n/g, '<br>');
+      return `<span style="${defaultStyle}${ap}">${text}</span>`;
+    }
+    case 'input': {
+      const defaultStyle = 'flex:1;background:#fff;border:1px solid #ddd;border-radius:20px;padding:8px 14px;font-size:12px;color:#999;';
+      return `<div style="${defaultStyle}${baseStyle}">${markerHtml}${el.label || el.placeholder || 'Input'}</div>`;
+    }
+    case 'button': {
+      const isPrimary = el.variant === 'primary';
+      const defaultStyle = isPrimary
+        ? 'display:inline-flex;align-items:center;justify-content:center;padding:8px 16px;border-radius:6px;font-size:12px;font-weight:600;background:#333;color:#fff;border:none;cursor:default;'
+        : 'display:inline-flex;align-items:center;justify-content:center;padding:8px 16px;border-radius:6px;font-size:12px;font-weight:500;background:#fff;color:#555;border:1px solid #ccc;cursor:default;';
+      return `<div style="${defaultStyle}${baseStyle}">${markerHtml}${el.label || 'Button'}</div>`;
+    }
+    case 'image': {
+      const isAvatar = el.variant === 'avatar' || el.variant === 'circle';
+      const radius = isAvatar ? 'border-radius:50%;' : 'border-radius:4px;';
+      const defaultStyle = `display:flex;align-items:center;justify-content:center;background:repeating-linear-gradient(45deg,#e0e0e0,#e0e0e0 4px,#f0f0f0 4px,#f0f0f0 12px);border:1px solid #ccc;${radius}font-size:11px;color:#999;`;
+      return `<div style="${defaultStyle}${baseStyle}">${markerHtml}${el.label || 'Image'}</div>`;
+    }
+    case 'card': {
+      const defaultStyle = 'background:#fff;border:1px solid #eee;border-radius:12px;overflow:hidden;';
+      const kids = (el.children || []).map(c => renderCleanElement(c)).join('');
+      return `<div style="${defaultStyle}${baseStyle}">${markerHtml}${kids}</div>`;
+    }
+    case 'divider':
+      return `<div style="border-top:1px solid #eee;margin:4px 0;"></div>`;
+    case 'table': {
+      const headers = (el.headers || []).map(h => `<th style="background:#f5f5f5;padding:4px 6px;border:1px solid #ddd;font-size:10px;">${h}</th>`).join('');
+      const rows = (el.rows || []).map(r => `<tr>${r.map(c => `<td style="padding:4px 6px;border:1px solid #ddd;font-size:10px;">${c}</td>`).join('')}</tr>`).join('');
+      return `<div style="${pos}${markedBorder}">${markerHtml}<table style="width:100%;border-collapse:collapse;"><thead><tr>${headers}</tr></thead><tbody>${rows}</tbody></table></div>`;
+    }
+    case 'group':
+    default: {
+      const defaultStyle = el.type === 'group' ? '' : 'padding:4px;';
+      const kids = (el.children || []).map(c => renderCleanElement(c)).join('');
+      const fallback = (!kids && el.label) ? `<span style="font-size:11px;color:#999;">${el.label}</span>` : '';
+      return `<div style="${defaultStyle}${baseStyle}">${markerHtml}${fallback}${kids}</div>`;
+    }
+  }
+}
+
 function renderWfElement(el) {
   const markerHtml = el.marker ? `<span class="wf-marker">${el.marker}</span>` : '';
   const markedCls = el.marker ? ' wf-el--marked' : '';
   const labelHtml = el.label ? `<span class="wf-label">${el.label}</span>` : '';
   const h = el.height ? `min-height:${el.height};` : '';
+  const appearanceStyle = renderAppearanceStyle(el.appearance);
 
   switch (el.type) {
     case 'header': {
@@ -787,7 +892,8 @@ function renderWfElement(el) {
         return `<div class="wf-el wf-el--text-count${markedCls}" style="${h}">${markerHtml}<span class="wf-count-text">${text}</span></div>`;
       }
       const content = el.content ? `<div class="wf-content">${el.content}</div>` : '';
-      return `<div class="wf-el wf-el--text${markedCls}" style="${h}">${markerHtml}${labelHtml}${content}</div>`;
+      const textStyle = [h, appearanceStyle].filter(Boolean).join(';');
+      return `<div class="wf-el wf-el--text${markedCls}" style="${textStyle}">${markerHtml}${labelHtml}${content}</div>`;
     }
     case 'input':
       return `<div class="wf-el wf-el--input${markedCls}" style="${h}">${markerHtml}${el.label || el.placeholder || 'Input'}</div>`;
@@ -867,8 +973,10 @@ function renderWfElement(el) {
     case 'popup': {
       const hasClose = el.close !== false;
       const hasNav = el.nav !== false && el.navDots !== false;
+      const isBottom = el.variant === 'bottom';
       const imageLabel = el.imageLabel || el.label || '팝업 이미지';
       const closeHtml = hasClose ? `<div class="wf-popup-close">✕</div>` : '';
+      const handleHtml = isBottom ? `<div class="wf-popup-handle"></div>` : '';
       const navHtml = hasNav ? `<div class="wf-popup-nav">
         <div class="wf-popup-nav-btn">◀</div>
         <div class="wf-popup-dots"><span class="active"></span><span></span><span></span></div>
@@ -877,14 +985,18 @@ function renderWfElement(el) {
       const rawActions = el.actions || ['오늘 하루 보지 않기', '닫기'];
       const actionsHtml = rawActions.map(a => {
         const lbl = typeof a === 'string' ? a : (a.label || 'Button');
-        const variant = typeof a === 'object' && a.variant ? ` wf-el--button-${a.variant}` : '';
-        return `<div class="wf-el wf-el--button${variant}">${lbl}</div>`;
-      }).join('');
-      return `<div class="wf-el wf-el--popup${markedCls}" style="${h}">
-        ${markerHtml}${closeHtml}
-        <div class="wf-popup-image">${imageLabel}</div>
-        ${navHtml}
-        <div class="wf-popup-actions">${actionsHtml}</div>
+        return `<span style="font-size:12px;color:#666;cursor:default;">${lbl}</span>`;
+      }).join('<span style="color:#ddd;margin:0 4px;">|</span>');
+      const wrapCls = isBottom ? 'wf-popup-wrap wf-popup-wrap--bottom' : 'wf-popup-wrap';
+      const popupCls = isBottom ? `wf-el--popup wf-el--popup--bottom${markedCls}` : `wf-el--popup${markedCls}`;
+      const actionsCls = isBottom ? 'wf-popup-actions wf-popup-actions--bottom' : 'wf-popup-actions';
+      return `<div class="${wrapCls}" style="position:relative;min-height:${el.height || 500}px;">
+        <div class="${popupCls}">
+          ${markerHtml}${closeHtml}${handleHtml}
+          <div class="wf-popup-image" style="min-height:${Math.max((el.height || 500) * 0.6, 150)}px;">${imageLabel}</div>
+          ${navHtml}
+          <div class="${actionsCls}">${actionsHtml}</div>
+        </div>
       </div>`;
     }
     case 'group': {
@@ -965,11 +1077,13 @@ function renderWfElement(el) {
         return `<div class="wf-el wf-el--group--btn-row${markedCls}" style="${h}">${markerHtml}${childrenHtml}</div>`;
       }
 
-      // 기존 방식 유지 (direction 명시 또는 혼합 타입)
-      const dirCls = el.direction === 'horizontal' ? ' wf-el--group--horizontal' : '';
+      // layout 또는 direction으로 가로 배치 판단
+      const isHorizontal = layout === 'horizontal' || el.direction === 'horizontal';
+      const dirCls = isHorizontal ? ' wf-el--group--horizontal' : '';
       const children = kids.map(c => renderWfElement(c)).join('');
       const groupFallback = (!children && el.label) ? `<span class="wf-label">${el.label}</span>` : '';
-      return `<div class="wf-el wf-el--group${dirCls}${markedCls}" style="${h}">${markerHtml}${groupFallback}${children}</div>`;
+      const groupStyle = [h, appearanceStyle].filter(Boolean).join(';');
+      return `<div class="wf-el wf-el--group${dirCls}${markedCls}" style="${groupStyle}">${markerHtml}${groupFallback}${children}</div>`;
     }
     default:
       return `<div class="wf-el${markedCls}" style="${h}">${markerHtml}${labelHtml}${el.content || el.type}</div>`;
@@ -1132,83 +1246,6 @@ function renderDescriptionTableV2(descriptions, pmComments) {
 }
 
 /**
- * Description 높이 추정 (px) — 자동 분할 판단용
- * 슬라이드 가용 높이: 1080 - 54(header) - 36(footer) - 40(padding) = 950px
- * Description 패널(40%)의 가용 높이: ~920px (padding 포함)
- */
-const DESC_MAX_HEIGHT_DESIGN = 880;   // design 슬라이드 (40% 패널)
-const DESC_MAX_HEIGHT_FULLWIDTH = 900; // 전폭 description 슬라이드
-
-function estimateItemHeight(d) {
-  if (d.type === 'section') return 32;
-  if (!d.marker && !d.label && !(d.items && d.items.length) && d.continuation) return 28;
-  let h = 38; // base row (marker cell + padding + border)
-  if (d.label) h += 22;
-  if (d.items && d.items.length > 0) h += d.items.length * 22;
-  else if (d.details && d.details.length > 0) h += d.details.length * 22;
-  if (d.before) h += 40;
-  if (d.after) h += 40;
-  return h;
-}
-
-function estimateDescHeight(descriptions) {
-  if (!descriptions || descriptions.length === 0) return 0;
-  let total = 40; // table header
-  for (const d of descriptions) {
-    total += estimateItemHeight(d);
-  }
-  return total;
-}
-
-/**
- * 와이어프레임 요소에서 visibleMarkers에 포함된 marker만 남기고 나머지는 marker 제거
- * 구조(레이아웃)는 유지하되 넘버링만 숨긴다
- */
-function filterWireframeMarkers(wireframe, visibleMarkers) {
-  if (!wireframe) return wireframe;
-  const markerSet = new Set(visibleMarkers);
-  return wireframe.map(el => {
-    const filtered = { ...el };
-    if (filtered.marker && !markerSet.has(filtered.marker)) {
-      delete filtered.marker;
-    }
-    if (filtered.children) {
-      filtered.children = filterWireframeMarkers(filtered.children, visibleMarkers);
-    }
-    return filtered;
-  });
-}
-
-/**
- * Description 항목을 높이 제한에 맞게 청크로 분할
- * 모든 슬라이드 동일 maxH 적용 (와이어프레임 유지 방식)
- */
-function splitDescriptions(descriptions, firstMax, contMax) {
-  const chunks = [];
-  let current = [];
-  let currentHeight = 40; // table header overhead
-  let isFirst = true;
-  const maxH = () => isFirst ? firstMax : contMax;
-
-  for (const d of descriptions) {
-    // 기존 수동 continuation 마커는 건너뜀 (자동 재생성)
-    if (!d.marker && !d.label && !(d.items && d.items.length) && d.continuation) continue;
-
-    const itemH = estimateItemHeight(d);
-    if (currentHeight + itemH > maxH() && current.length > 0) {
-      chunks.push(current);
-      current = [];
-      currentHeight = 40;
-      isFirst = false;
-    }
-    current.push(d);
-    currentHeight += itemH;
-  }
-  if (current.length > 0) chunks.push(current);
-  return chunks;
-}
-
-/**
  * Persistent 영역 — Header/GNB/Breadcrumb/LNB/Footer
  */
 function renderPersistentHeader(persistent) {
@@ -1305,6 +1342,37 @@ function renderDesignLayout(screen) {
 
   // descriptions가 없으면 wireframe-area 100% (가로형 전체 와이어프레임)
   const hasDesc = (screen.descriptions && screen.descriptions.length > 0) || (screen.pmComments && screen.pmComments.length > 0);
+
+  // containerType 분기: 비표준 UI (챗봇 패널, 모달, 플로팅 패널 등)
+  const ct = screen.containerType;
+  if (ct && ct !== 'page') {
+    const containerMap = {
+      'chatbot-panel': { containerCls: 'container-chatbot', frameCls: 'chatbot-panel-frame' },
+      'modal': { containerCls: 'container-modal', frameCls: 'modal-frame' },
+      'floating-panel': { containerCls: 'container-floating', frameCls: 'floating-frame' }
+    };
+    const cfg = containerMap[ct] || containerMap['floating-panel'];
+    const containerSize = screen.containerSize || {};
+    const frameStyle = [
+      containerSize.width ? `width:${containerSize.width}px` : '',
+      containerSize.height ? `max-height:${containerSize.height}px` : ''
+    ].filter(Boolean).join(';');
+
+    // 전용 렌더러로 재생성 (.wf-el CSS 미적용)
+    const cleanElements = (screen.wireframe || []).map(el => renderCleanElement(el)).join('');
+
+    const descPanel = hasDesc ? `<div class="description-panel" style="flex:1;">${descContent}${fnRefHtml}</div>` : '';
+
+    return `<div class="design-layout">
+  <div class="${cfg.containerCls}">
+    <div class="${cfg.frameCls}" style="${frameStyle}">
+      <div style="flex:1;overflow-y:auto;padding:0;display:flex;flex-direction:column;">${cleanElements}</div>
+    </div>
+  </div>
+  ${descPanel}
+</div>`;
+  }
+
   if (!hasDesc) {
     return `<div class="design-layout">
   <div class="wireframe-area" style="flex:1; border-right:none;">${wireframeHtml}</div>
@@ -1525,62 +1593,7 @@ function renderScreen(screen, data) {
 
     case 'design':
     default: {
-      // Description 높이 추정 → overflow 시 자동 분할
-      const estHeight = estimateDescHeight(screen.descriptions);
-      const needsSplit = estHeight > DESC_MAX_HEIGHT_DESIGN
-        && screen.descriptions && screen.descriptions.length > 1;
-
-      if (needsSplit) {
-        const chunks = splitDescriptions(
-          screen.descriptions, DESC_MAX_HEIGHT_DESIGN, DESC_MAX_HEIGHT_DESIGN
-        );
-        const totalPages = chunks.length;
-        console.log(`[SPLIT] ${screen.interfaceName || screen.pageId}: ${screen.descriptions.length}건 → ${totalPages}페이지 (추정 ${estHeight}px)`);
-
-        chunks.forEach((chunk, ci) => {
-          const isFirst = ci === 0;
-          const isLast = ci === totalPages - 1;
-          const pageLabel = ` (${ci + 1}/${totalPages})`;
-
-          // continuation 마커 삽입
-          const descWithMarkers = [...chunk];
-          if (!isFirst) {
-            descWithMarkers.unshift({ continuation: 'prev' });
-          }
-          if (!isLast) {
-            descWithMarkers.push({ continuation: 'next' });
-          }
-
-          const chunkHeader = renderSlideHeader(
-            { ...screen, interfaceName: (screen.interfaceName || '') + pageLabel },
-            data, null
-          );
-
-          // 모든 슬라이드: 와이어프레임(60%) + 해당 chunk description(40%)
-          // 와이어프레임 마커는 이 chunk에 있는 description marker만 표시
-          const chunkMarkers = chunk.filter(d => d.marker).map(d => d.marker);
-          const chunkScreen = {
-            ...screen,
-            wireframe: filterWireframeMarkers(screen.wireframe, chunkMarkers),
-            descriptions: descWithMarkers,
-            pmComments: isLast ? screen.pmComments : null
-          };
-          const chunkBody = `<div class="slide-body">${renderDesignLayout(chunkScreen)}</div>`;
-
-          slides.push(`
-<div class="slide" data-slide-type="design" style="position:relative;">
-  ${chunkHeader}
-  ${isFirst ? modifiedHtml : ''}
-  ${isFirst ? changeLogHtml : ''}
-  ${chunkBody}
-  ${footer}
-</div>`);
-        });
-        // 자동 분할 완료 — default push 건너뜀
-        break;
-      }
-
-      // overflow 없음 — 단일 슬라이드
+      // Design 슬라이드: 좌 60% 와이어프레임 / 우 40% Description
       bodyHtml = `<div class="slide-body">
         ${renderDesignLayout(screen)}
       </div>`;
@@ -1588,9 +1601,7 @@ function renderScreen(screen, data) {
     }
   }
 
-  // 자동 분할이 아닌 경우에만 default 슬라이드 push
-  if (bodyHtml !== undefined) {
-    slides.push(`
+  slides.push(`
 <div class="slide" data-slide-type="${screenType}" style="position:relative;">
   ${header}
   ${modifiedHtml}
@@ -1598,7 +1609,6 @@ function renderScreen(screen, data) {
   ${bodyHtml}
   ${footer}
 </div>`);
-  }
 
   // design 타입 + msgCases 존재 → 별도 MSG Case 슬라이드 자동 생성
   if (screenType === 'design' && screen.msgCases && screen.msgCases.length > 0) {

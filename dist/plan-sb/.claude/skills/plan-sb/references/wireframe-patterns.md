@@ -210,6 +210,92 @@
 ```
 - `layout: "tags"` → children 태그 칩으로 가로 나열, `#` prefix 자동 추가
 
+### 패턴 11 — 챗봇 패널 (containerType + appearance)
+
+**screen 레벨에서 `containerType: "chatbot-panel"` 설정 필수.**
+
+```json
+{
+  "screenType": "design",
+  "containerType": "chatbot-panel",
+  "containerSize": { "width": 380, "height": 600 },
+  "wireframe": [
+    {
+      "type": "header", "label": "챗봇", "marker": 1, "height": 48,
+      "children": [
+        { "type": "text", "label": "브랜드 챗봇" },
+        { "type": "button", "label": "✕", "variant": "outline" }
+      ]
+    },
+    {
+      "type": "group", "label": "봇 말풍선", "marker": 2,
+      "appearance": {
+        "align": "flex-start", "maxWidth": "75%",
+        "background": "#F2F3F5", "borderRadius": "4px 16px 16px 16px", "padding": "10px 14px"
+      },
+      "children": [
+        { "type": "text", "label": "안녕하세요! 무엇을 도와드릴까요?" }
+      ]
+    },
+    {
+      "type": "group", "label": "퀵리플라이 버튼", "marker": 3,
+      "appearance": { "display": "flex", "gap": "8px", "flexWrap": "wrap", "padding": "8px 0" },
+      "children": [
+        { "type": "button", "label": "프로그램 안내", "variant": "outline",
+          "appearance": { "borderRadius": "20px", "fontSize": "12px", "padding": "6px 14px" } },
+        { "type": "button", "label": "도입 문의", "variant": "outline",
+          "appearance": { "borderRadius": "20px", "fontSize": "12px", "padding": "6px 14px" } }
+      ]
+    },
+    {
+      "type": "group", "label": "사용자 말풍선", "marker": 4,
+      "appearance": {
+        "align": "flex-end", "maxWidth": "75%",
+        "background": "#3366CC", "borderRadius": "16px 4px 16px 16px", "padding": "10px 14px", "color": "#fff"
+      },
+      "children": [
+        { "type": "text", "label": "프로그램 안내해주세요" }
+      ]
+    },
+    { "type": "divider", "label": "" },
+    {
+      "type": "group", "label": "입력 영역", "marker": 5,
+      "appearance": { "display": "flex", "gap": "8px", "padding": "8px 12px", "border": "1px solid #ddd", "borderRadius": "24px" },
+      "children": [
+        { "type": "input", "label": "메시지 입력..." },
+        { "type": "button", "label": "전송", "variant": "primary",
+          "appearance": { "borderRadius": "50%", "width": "32px", "height": "32px", "padding": "0" } }
+      ]
+    }
+  ]
+}
+```
+
+**핵심**: 기존 `group` + `text` + `button` 타입에 `appearance`만 추가하여 챗봇 UI를 표현. 새 element type 추가 불필요.
+
+### 패턴 12 — 모달/다이얼로그 (containerType: modal)
+
+```json
+{
+  "screenType": "design",
+  "containerType": "modal",
+  "containerSize": { "width": 480 },
+  "wireframe": [
+    { "type": "header", "label": "확인", "marker": 1, "height": 48 },
+    { "type": "text", "label": "정말 삭제하시겠습니까?", "marker": 2 },
+    {
+      "type": "group", "label": "액션 버튼", "marker": 3,
+      "appearance": { "display": "flex", "gap": "12px", "justifyContent": "flex-end", "padding": "16px" },
+      "children": [
+        { "type": "button", "label": "취소", "variant": "outline" },
+        { "type": "button", "label": "삭제", "variant": "primary",
+          "appearance": { "background": "#dc3545", "border": "none" } }
+      ]
+    }
+  ]
+}
+```
+
 ---
 
 ## 5. wireframe[] 구성 원칙

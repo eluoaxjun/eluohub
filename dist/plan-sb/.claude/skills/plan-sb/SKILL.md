@@ -9,6 +9,7 @@ description: >
   테마 프리셋, v1/v2 스키마 자동 정규화, 다중 프레임 타입
   (Design, Description, MSG Case, Component Guide)을 지원합니다.
 argument-hint: "[JSON 데이터 파일경로 또는 프로젝트 요구사항]"
+effort: medium
 ---
 
 ## 응답 제약
@@ -47,14 +48,69 @@ argument-hint: "[JSON 데이터 파일경로 또는 프로젝트 요구사항]"
 
 > `sb-wf-design` 에이전트는 planning-orchestrator가 자동 호출합니다. SKILL.md 단독 실행 시에도 Step 1 완료 후 반드시 수행합니다.
 
+## 실행 모드
+
+| 모드 | 조건 | 동작 |
+|------|------|------|
+| **연계 모드** | `output/{프로젝트명}/*/FN_*.md` 존재 | FN 기반 screens 자동 구성, fnRef 매핑, 추적성 유지 |
+| **독립 모드** | FN 미존재, 프롬프트/이미지/URL 입력 | 프롬프트 기반 직접 구성, fnRef 생략, ID 역참조 없음 |
+
+**모드 판정 출력**: `[실행 모드] 연계 (FN {n}건) / 독립 (프롬프트 기반)`
+
 ## Step 0: 입력 감지
 
-현행 사이트 분석이 필요하면 visit.js를 사용합니다:
+### 현행 사이트 분석 (운영 모드 필수)
+
+운영 수정 요청 시 현행 사이트를 **반드시 먼저 분석**한다.
+
 ```bash
-node .claude/skills/plan-sb/scripts/visit.js {URL} [output-dir]
+node .claude/skills/plan-sb/scripts/visit.js {URL}
 ```
-- 결과: screenshot.png + structure.json (GNB·헤딩·CTA·섹션 수)
+- 결과: `input/screenshot.png` + `input/structure.json` → AI가 uiImagePath로 바로 참조 가능
 - Chromium 미설치 시 자동 설치
+- **반드시 프로젝트 루트에서 실행** (scripts 폴더에서 실행 금지)
+
+### output 폴더 구조
+
+```
+output/{serviceName}/{YYYYMMDD}/
+├── {outputPrefix}.html          ← 전달용
+├── {outputPrefix}.pdf           ← 전달용
+└── _ref/                        ← 참조 추적 (전달 불필요)
+    └── sources.json             ← 어떤 input을 참조했는지 자동 기록
+```
+
+`sources.json`은 generate.js가 자동 생성. input/ 폴더의 모든 파일과 각 screen의 uiImagePath 매핑을 기록.
+
+**분석 절차**:
+1. visit.js로 스크린샷 + 구조 추출
+2. screenshot.png를 Read(Vision)로 열어 **현행 레이아웃 파악** (섹션 구분, 배너 위치, GNB 구조, 카드 배치)
+3. structure.json에서 GNB 메뉴명, 헤딩 구조, CTA 위치 확인
+4. 수정 대상 영역을 **현행 기준으로 특정** → wireframe에 반영
+
+**출력 마커**: `[현행 분석] {URL} → GNB {n}개 / 섹션 {n}개 / 수정 대상: {영역}`
+
+### PDF/PPT 포맷 참고 (포맷 파일 제공 시)
+
+사용자가 기존 화면설계서 PDF/PPT를 포맷 참고용으로 제공하면 아래를 분석한다.
+
+**분석 대상**:
+1. **공통 장표 구조** — 표지/목차/변경이력/본문/끝 장표 순서 + 포함 여부
+2. **헤더/푸터 스타일** — 로고 위치, 프로젝트명 표기, 페이지 번호 형식, 배경색/폰트
+3. **메타 테이블 형식** — 작성자/검토자/승인자 배치, 일자 형식, 버전 표기
+4. **Description 영역** — 넘버링 방식(①②③ / 1.1.1 / 마커), 들여쓰기 수준, 강조 표기
+5. **구성 명칭** — 인터페이스명/화면ID 표기 방식, location 경로 형식
+6. **와이어프레임 스타일** — 선 굵기, 배경색, 마커 형태, 이미지 영역 표현
+
+**적용 규칙**:
+- 분석 결과를 `theme`, `project` 필드에 반영 (로고 경로, 색상, 회사명 등)
+- 장표 순서가 다르면 screens[] 순서를 포맷에 맞춤
+- Description 넘버링이 다르면 marker 형식 조정
+- **포맷 파일의 콘텐츠(텍스트/이미지)는 참고하지 않음** — 구조·스타일만 추출
+
+**출력 마커**: `[포맷 참고] {파일명} → 장표 {n}종 / 헤더: {스타일} / Description: {형식}`
+
+### 입력 감지
 
 스킬 실행 시 아래 순서로 입력을 감지한다.
 
@@ -80,13 +136,35 @@ node .claude/skills/plan-sb/scripts/visit.js {URL} [output-dir]
 
 **MUST NOT**: 레퍼런스 캡쳐의 텍스트(상품명, 가격, 카피)를 타겟 산출물에 그대로 사용 금지
 
-**기존 SB JSON 포맷 유지 모드**: `input/*.json`이 기존 SB 산출물인 경우 wireframe[], descriptions[], msgCases[]만 수정·보강.
+### 기존 SB JSON 재사용 분기
+
+`input/*.json`이 기존 SB 산출물인 경우 아래 분기를 따른다.
 
 | 판별 기준 | 처리 방식 |
 |-----------|----------|
 | `"$schema"` 필드 존재 | v2 → 직접 사용 |
 | `"assignment"` 필드 존재 | v1 → `lib/schema.js normalizeV1()` 자동 정규화 |
 | 미인식 포맷 | 필수 필드(`project`, `screens[]`)만 추출해 최소 스키마 생성 |
+
+**기존 JSON 수정 모드 (MUST)**:
+1. 기존 JSON 발견 시 **전체 재생성 금지** — wireframe[], descriptions[], msgCases[]만 수정·보강
+2. 사용자 지시가 "N번 스크린 수정"이면 해당 스크린만 수정, 나머지 screens[] 보존
+3. project, history, overview, theme 등 메타데이터는 사용자가 명시적으로 요청한 경우만 수정
+4. 수정 전 기존 JSON을 `input/{원본파일명}.backup.json`으로 백업
+
+### 삽입 위치 맥락 자동화
+
+사용자가 "이 부분에 추가", "배너 아래에" 등 위치를 지시할 때 자동으로 맥락을 파악한다.
+
+| 사용자 표현 | 삽입 위치 판단 | JSON 반영 |
+|------------|--------------|----------|
+| "맨 위에 추가" | header 바로 아래 | wireframe[1] (header 다음) |
+| "배너 아래에" | banner 타입 요소 다음 | banner 요소 인덱스 + 1 |
+| "푸터 위에" | 마지막 요소 앞 | wireframe[length-1] 앞 |
+| "N번 마커 영역에" | descriptions[N] 위치 | marker N에 해당하는 wireframe 요소 |
+| "이미지에서 보라색 배너 부분" | Vision 분석으로 pixel 위치 특정 | 해당 영역의 wireframe 요소 |
+
+**출력 마커**: `[삽입 위치] {위치 설명} → wireframe[{인덱스}] 뒤`
 
 ## Step 1.7: 와이어프레임 렌더링 방식 결정
 
@@ -111,14 +189,161 @@ node .claude/skills/plan-sb/scripts/visit.js {URL} [output-dir]
 2. group은 반드시 children 1개 이상 (빈 group 금지)
 3. descriptions marker 수와 wireframe marker 수 일치 필수
 4. 모든 요소에 label 필수 (빈 label 금지)
-5. height는 슬라이드 본문 990px(= 1080 - 54 header - 36 footer) 기준 비율 배분:
-   - 전체 요소 height 합계 ≈ 990px (±50px 허용). 합계 초과 시 overflow 발생
-   - header/gnb: 50~70px (5~7%)
-   - 히어로/배너: 250~350px (25~35%) — 500px 이상 금지
-   - 카드 그리드/리스트: 200~350px (20~35%)
-   - 필터/탭 바: 40~60px (4~6%)
-   - 푸터: 60~100px (6~10%)
-   - 캡쳐 이미지 기반 시: Vision 분석으로 각 섹션 비율 추정 → 990px에 비례 배분
+5. height 비율은 아래 **「와이어프레임 UI 비율 원칙」** 섹션의 테이블을 따른다. 합계 ≈ 990px (±50px), 초과 시 overflow.
+
+### 와이어프레임 UI 비율 원칙
+
+**wireframe은 좌측 60% 영역에서 독립적으로 "화면처럼 보여야" 한다.** Description(우측 40%)의 텍스트 양에 따라 와이어프레임 비율이 달라지면 안 된다.
+
+**비율 산정 기준**: 실제 화면의 viewport 비율을 990px 높이에 축소 적용
+
+| 실제 화면 영역 | 실제 비율 | 990px 환산 | height 범위 |
+|--------------|----------|-----------|------------|
+| Header + GNB | 8~10% | 80~100px | 60~100px |
+| 히어로/메인배너 | 30~40% | 300~400px | 250~350px |
+| 콘텐츠 영역 (카드/리스트) | 35~45% | 350~450px | 300~450px |
+| 필터/탭/검색 바 | 4~6% | 40~60px | 40~60px |
+| 페이지네이션/CTA | 5~7% | 50~70px | 40~60px |
+| 푸터 | 8~10% | 80~100px | 60~100px |
+
+**MUST**: wireframe의 height 비율은 **실제 화면의 시각적 비중**으로 결정한다. Description 항목이 많아도 wireframe의 height를 줄이거나 늘리지 않는다.
+
+**MUST NOT**:
+- Description 항목 수에 맞춰 wireframe 요소 수를 조정 (wireframe은 화면 구조, description은 설명)
+- height 없이 모든 요소를 auto로 두기 (주요 영역 최소 3개 이상 height 명시)
+- 한 요소에 height 500px 이상 (배너라도 350px 이하, 나머지 영역이 눌림)
+
+### 레이아웃 구성 규칙 (화면설계서다운 와이어프레임)
+
+wireframe[]은 **실제 화면 레이아웃을 시각적으로 표현**해야 한다. 텍스트 라벨을 세로로 나열하는 것은 와이어프레임이 아니다.
+
+**핵심 원칙: group으로 구조를 잡아라**
+
+| 하고 싶은 것 | 잘못된 구성 | 올바른 구성 |
+|-------------|-----------|-----------|
+| 가로 2열 배치 | text 2개 나열 | `group { layout:"horizontal", children: [A, B] }` |
+| 카드 그리드 | card 4개 나열 | `group { children: [card, card, card, card] }` (자동 그리드) |
+| 헤더 + 본문 + 푸터 | text 3개 나열 | `header` + `group(본문)` + `group(푸터)` |
+| 좌우 분할 | text 2개 나열 | `group { layout:"horizontal", children: [좌측group, 우측group] }` |
+
+**group.layout 속성값**:
+- `"default"` — 세로 쌓기 (기본)
+- `"horizontal"` — 가로 배치, children 균등 분할
+- `"card-grid"` — 카드 그리드 (children이 전부 card면 자동 적용)
+- `"btn-row"` — 버튼 가로 정렬 (children이 전부 button이면 자동 적용)
+- `"popup"` — 팝업 구조 (close/image/nav/footer role 기반)
+- `"tags"` — 태그 가로 나열
+
+### 팝업/모달/바텀시트 구성 패턴
+
+**센터 모달 팝업** — `type:"popup"` 사용:
+```json
+{
+  "type": "popup",
+  "label": "이벤트 팝업",
+  "marker": 1,
+  "height": 400,
+  "imageLabel": "이벤트 배너 이미지 (480×640px)",
+  "actions": ["오늘 하루 안 보기", "닫기"],
+  "close": true,
+  "nav": false
+}
+```
+렌더러가 자동으로: 어두운 배경 + 가운데 팝업 프레임 + 닫기(✕) 버튼 + 이미지 영역 + 하단 액션 바 생성.
+
+**커스텀 팝업** — `group { layout:"popup" }` + children role 사용:
+```json
+{
+  "type": "group",
+  "layout": "popup",
+  "marker": 1,
+  "height": 450,
+  "children": [
+    { "type": "button", "role": "close", "label": "✕", "marker": 2 },
+    { "type": "image", "role": "image", "label": "프로모션 배너", "marker": 3, "height": 300 },
+    { "type": "group", "role": "footer", "marker": 4, "children": [
+      { "type": "text", "label": "오늘 하루 안 보기" },
+      { "type": "text", "label": "|" },
+      { "type": "text", "label": "닫기" }
+    ]}
+  ]
+}
+```
+role 종류: `close`(절대위치 우상단), `image`(이미지 영역), `nav`(좌우 네비), `footer`(하단 액션)
+
+**바텀시트** — `containerType:"floating-panel"` 또는 group 조합:
+```json
+{
+  "screenType": "design",
+  "containerType": "floating-panel",
+  "containerSize": { "width": 375, "height": 600 },
+  "wireframe": [
+    { "type": "text", "label": "━━━ 드래그 핸들", "height": 30, "marker": 1 },
+    { "type": "image", "label": "배너 이미지", "height": 400, "marker": 2 },
+    { "type": "group", "layout": "horizontal", "height": 48, "marker": 3, "children": [
+      { "type": "text", "label": "오늘 하루 안 보기" },
+      { "type": "text", "label": "닫기" }
+    ]}
+  ]
+}
+```
+
+### 일반 페이지 레이아웃 구성 예시
+
+**상품 목록 페이지**:
+```json
+[
+  { "type": "header", "label": "로고 | GNB 메뉴", "height": 60, "marker": 1 },
+  { "type": "banner", "label": "프로모션 배너", "height": 200, "marker": 2 },
+  { "type": "group", "layout": "horizontal", "height": 45, "marker": 3, "children": [
+    { "type": "nav", "label": "카테고리 필터" },
+    { "type": "input", "label": "검색", "placeholder": "상품 검색" }
+  ]},
+  { "type": "group", "height": 400, "marker": 4, "children": [
+    { "type": "card", "label": "상품 카드", "height": 180 },
+    { "type": "card", "label": "상품 카드", "height": 180 },
+    { "type": "card", "label": "상품 카드", "height": 180 },
+    { "type": "card", "label": "상품 카드", "height": 180 }
+  ]},
+  { "type": "group", "layout": "horizontal", "height": 40, "marker": 5, "children": [
+    { "type": "button", "label": "이전" },
+    { "type": "text", "label": "1 2 3 4 5" },
+    { "type": "button", "label": "다음" }
+  ]}
+]
+```
+
+**MUST NOT — 레이아웃 안티패턴**:
+- 모든 요소를 같은 depth에 flat하게 나열 → group으로 논리 영역을 묶어야 함
+- text를 나열해서 UI를 표현 → button, input, card, nav 등 적절한 타입 사용
+- group 없이 children 속성을 가진 요소가 없음 → 최소 1~2개 group 필수
+- height를 지정하지 않고 전부 자동 → 주요 영역에 반드시 height 명시
+
+### 오버레이 좌표 지정 가이드 (uiImagePath + overlay 사용 시)
+
+캡쳐 이미지 위에 마커 오버레이를 배치할 때, **추정 금지 — pixel 측정 필수**.
+
+**좌표계 기준**: overlay의 top/left/width/height는 wireframe-area 컨테이너(슬라이드 좌측 60%, 990px 높이) 내부의 **% 단위**. 이미지가 컨테이너 내에 object-fit:contain으로 축소/배치되므로, 이미지 원본 pixel과 컨테이너 %는 다르다.
+
+**올바른 절차**:
+1. 캡쳐 이미지를 Read(Vision)로 열어 **대상 영역의 pixel 좌표**(x, y, width, height) 측정
+2. 이미지 전체 크기(예: 1920×3000) 대비 **비율 환산**: `top% = y / 이미지높이 × 100`
+3. 이미지가 컨테이너에 축소 배치되는 비율 감안: 컨테이너 가용 높이 990px, 이미지 세로가 컨테이너보다 길면 스크롤/축소됨
+4. **넉넉하게 잡고 줄이는 방식** 적용 — 부족→확대 반복은 비효율적
+5. 패딩, border-radius, 상하 여백 포함한 **전체 영역**을 감싸야 함 (텍스트만 X)
+
+**금지 패턴**:
+- "대충 55% 쯤" 감으로 좌표 지정
+- 3~5%씩 조금씩 조정하며 반복 시행착오
+- 텍스트 줄 높이만 감싸기 (패딩/여백 누락)
+- "오버레이가 보인다" = "맞다"로 판단 (정확히 감쌌는지 실측 필수)
+
+```json
+{
+  "marker": 1,
+  "overlay": { "top": "12%", "left": "5%", "width": "90%", "height": "18%" }
+}
+```
 
 ### 비정상 상태(MSG Case) 정의 기준
 
@@ -165,10 +390,55 @@ JSON 작성 전 반드시 읽을 것: `scripts/template.js` (renderWfElement 등
 | msgCases[] | O* | msgCase 타입 필수 |
 | components[] | O* | component 타입 필수 |
 | uiImagePath | - | UI 캡처 이미지 경로. 설정 시 wireframe 렌더링 비활성화 |
-| pmComments[] | - | PM 코멘트 배열 (marker + type + author + comment). 제안 필요 시에만 생성 |
 | hasDivider | - | `true` + `divider` 객체 **둘 다** 설정 시 Divider 프레임 자동 삽입 |
 | wireframe[] | - | 와이어프레임 요소 배열 (Option A 권장) |
 | wfHtml | - | 직접 작성 HTML (Option B, 복잡 레이아웃 한정). 존재 시 wireframe[] 보다 우선 |
+| pmComments[] | - | PM 코멘트 배열 (marker + type + author + comment). 제안 필요 시에만 생성 |
+| containerType | - | `page`(기본) / `chatbot-panel` / `modal` / `floating-panel`. 와이어프레임 렌더링 컨텍스트 변경 |
+| containerSize | - | `{ "width": 380, "height": 600 }`. containerType이 page가 아닐 때 패널 크기 지정 |
+
+## containerType (v2.1)
+
+비표준 UI 패러다임을 위한 렌더링 컨텍스트 전환. 기존 element type을 유지하면서 시각 표현만 변경.
+
+| containerType | 렌더링 | 기본 크기 |
+|---------------|--------|----------|
+| `page` (기본) | 기존 60/40 분할 | 전체 폭 |
+| `chatbot-panel` | 좁은 채팅 패널 (둥근 모서리, 그림자) | 380×600px |
+| `modal` | 중앙 오버레이 (어두운 배경) | 520×auto |
+| `floating-panel` | 우하단 플로팅 패널 | 360×auto |
+
+```json
+{
+  "screenType": "design",
+  "containerType": "chatbot-panel",
+  "containerSize": { "width": 380, "height": 600 },
+  "wireframe": [...]
+}
+```
+
+## appearance 속성 (v2.1)
+
+모든 wireframe element에 `appearance` 객체를 추가하여 CSS 속성 직접 지정 가능. **새 element type 추가 없이** 비표준 컴포넌트 표현.
+
+```json
+{
+  "type": "group",
+  "label": "봇 말풍선",
+  "appearance": {
+    "align": "flex-start",
+    "maxWidth": "70%",
+    "background": "#F2F3F5",
+    "borderRadius": "16px",
+    "padding": "12px"
+  },
+  "children": [
+    { "type": "text", "label": "안녕하세요!" }
+  ]
+}
+```
+
+**허용 속성**: align, maxWidth, minWidth, background, borderRadius, padding, margin, border, gap, color, fontSize, fontWeight, textAlign, display, flexDirection, justifyContent, alignItems, flexWrap, opacity, boxShadow, width, height, position, top, right, bottom, left, overflow, zIndex
 
 **v1 → v2 자동 정규화**: `assignment`, `interfaces`, `jiraNo`/`srNo` 필드 → `lib/schema.js normalizeV1()` 자동 처리
 
@@ -297,6 +567,12 @@ JSON 작성 전 반드시 읽을 것: `scripts/template.js` (renderWfElement 등
 판정: {PASS — n/n} 또는 {FAIL — n/n, 미충족: {항목}}
 ═══════════════════════════════════
 ```
+
+## Gotchas (실전 반복 실패 메모)
+
+- **레퍼런스 없이 코드 패치 금지**: 비짓강남에서 template.js 1700줄을 인라인 패치 5차례 → 폐기 수준. **코드 수정 전 레퍼런스/벤치마킹 먼저**.
+- **page 전용 엔진에 비표준 UI 강제 금지**: containerType(chatbot-panel) 같은 비표준 타입을 page 엔진에 억지로 끼우면 렌더링 깨짐. 엔진 한계 확인 후 대안 경로(직접 HTML 생성) 검토.
+- **렌더링 결과 브라우저 실측 필수**: verify 축소판과 실제 브라우저 출력 괴리. 반드시 브라우저에서 확인.
 
 ## 참조
 

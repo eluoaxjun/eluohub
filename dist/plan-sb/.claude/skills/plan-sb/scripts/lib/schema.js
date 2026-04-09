@@ -52,7 +52,7 @@ function normalizeV1(raw) {
     project: {
       id: p.jiraNo || 'UNNAMED',
       title: p.title || '',
-      serviceName: p.serviceName || '',
+      serviceName: sanitizeServiceName(p.serviceName || ''),
       version: p.version || '0.1',
       date: p.date || '',
       writer: p.writer || '',
@@ -112,7 +112,7 @@ function buildMinimalSchema(raw) {
     project: {
       id: p.id || p.jiraNo || p.title || 'UNNAMED',
       title: p.title || '',
-      serviceName: p.serviceName || '',
+      serviceName: sanitizeServiceName(p.serviceName || ''),
       version: p.version || '0.1',
       date: p.date || new Date().toISOString().slice(0, 10),
       writer: p.writer || '',
@@ -139,7 +139,7 @@ function normalizeScreen(s) {
   return {
     // P2: screenType으로 프레임 유형 분기 (design|description|component|msgCase)
     screenType: s.screenType || 'design',
-    viewportType: s.viewportType || 'PC',
+    viewportType: normalizeViewportType(s.viewportType),
     interfaceName: s.interfaceName || '',
     interfaceId: s.interfaceId || '(None)',
     location: s.location || '',
@@ -176,6 +176,9 @@ function normalizeScreen(s) {
     // P1-3: 수정일/버전
     modifiedDate: s.modifiedDate || '',
     version: s.version || '',
+    // v2.1: containerType + containerSize (비표준 UI 렌더링)
+    containerType: s.containerType || 'page',
+    containerSize: s.containerSize || null,
     // 슬라이드 변경이력 메모 (우측 절대위치 노트)
     changeLog: s.changeLog || [],
     pmComments: (s.pmComments || []).map(c => ({
@@ -187,4 +190,32 @@ function normalizeScreen(s) {
   };
 }
 
-module.exports = { normalizeSchema, SCHEMA_VERSION };
+/**
+ * viewportType 정규화: 대소문자·약어·한글 → 표준값
+ */
+function normalizeViewportType(v) {
+  if (!v) return 'PC';
+  const key = v.trim().toLowerCase();
+  const map = {
+    'pc': 'PC', 'desktop': 'PC', 'web': 'PC', '웹': 'PC',
+    'mobile': 'Mobile', 'mo': 'Mobile', 'm': 'Mobile', '모바일': 'Mobile',
+    'tablet': 'Tablet', 'tab': 'Tablet', 't': 'Tablet', '태블릿': 'Tablet'
+  };
+  return map[key] || v;
+}
+
+/**
+ * serviceName에서 도메인/URL 패턴 제거
+ */
+function sanitizeServiceName(name) {
+  if (!name) return '';
+  let s = name.replace(/^https?:\/\//i, '').replace(/\/.*$/, '');
+  s = s.replace(/^www\./i, '');
+  s = s.replace(/:\d+$/, '');
+  if (/\.[a-z]{2,}$/i.test(s) && s !== name) {
+    console.warn(`[WARN] serviceName에 도메인 감지: "${name}" → "${s}" (프로젝트명을 확인하세요)`);
+  }
+  return s;
+}
+
+module.exports = { normalizeSchema, SCHEMA_VERSION, normalizeViewportType, sanitizeServiceName };
