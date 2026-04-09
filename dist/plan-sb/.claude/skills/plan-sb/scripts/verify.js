@@ -129,9 +129,9 @@ async function main() {
     playwright = require('playwright');
   }
 
-  // 1280×720 뷰포트로 실행 (v2 고정 규격)
+  // 1920×1080 뷰포트로 실행 (v2 PDF 규격과 일치)
   const browser = await playwright.chromium.launch({ headless: true });
-  const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+  const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
 
   const fileUrl = 'file:///' + htmlPath.replace(/\\/g, '/');
   await page.goto(fileUrl, { waitUntil: 'networkidle' });
@@ -142,7 +142,7 @@ async function main() {
   // ─── 검증 수행 (브라우저 내 평가) ───────────────────────────────────────
 
   const verifyResults = await page.evaluate((linkedMode) => {
-    const SLIDE_HEIGHT = 720;
+    const SLIDE_HEIGHT = 1080;
     const results = {
       slideCount: 0,
       errors: [],
@@ -199,15 +199,32 @@ async function main() {
         }
       }
 
-      // ④ Description 패널 overflow
+      // ④ Description 패널 overflow + continuation 분할 확인
       const descPanel = slide.querySelector('.description-panel');
       if (descPanel) {
         const dpScroll = descPanel.scrollHeight;
         const dpClient = descPanel.clientHeight;
         if (dpScroll > dpClient + 2) {
-          results.warns.push(
-            `[WARN] 슬라이드 ${slideNum} (${slideId}) description-panel overflow: scrollHeight=${dpScroll}px > clientHeight=${dpClient}px`
-          );
+          const hasContinuation = descPanel.querySelector('.desc-continuation, .desc-cont-row');
+          if (hasContinuation) {
+            results.infos.push(
+              `[INFO] 슬라이드 ${slideNum} (${slideId}) description overflow 감지 — continuation 분할 적용됨`
+            );
+          } else {
+            results.warns.push(
+              `[WARN] 슬라이드 ${slideNum} (${slideId}) description-panel overflow: ${dpScroll}px > ${dpClient}px — continuation 분할 필요`
+            );
+          }
+        }
+        // description 행 수 7개 이상이면 분할 확인
+        const descRows = descPanel.querySelectorAll('tr:not(.desc-common-row):not(.desc-section-row):not(.desc-cont-row)');
+        if (descRows.length >= 7) {
+          const hasCont = descPanel.querySelector('.desc-continuation, .desc-cont-row');
+          if (!hasCont) {
+            results.warns.push(
+              `[WARN] 슬라이드 ${slideNum} (${slideId}) description ${descRows.length}개 — 7개 이상은 continuation 분할 권장`
+            );
+          }
         }
       }
 
@@ -243,7 +260,7 @@ async function main() {
 
   console.log('');
   console.log('='.repeat(60));
-  console.log('[검증 결과] plan-sb v2 — 1280×720 landscape');
+  console.log('[검증 결과] plan-sb v2 — 1920×1080 landscape');
   console.log('='.repeat(60));
   console.log(`입력: ${htmlPath}`);
   console.log(`총 슬라이드: ${verifyResults.slideCount}개`);
