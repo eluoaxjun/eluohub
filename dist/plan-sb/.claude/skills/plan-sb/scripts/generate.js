@@ -41,28 +41,31 @@ async function main() {
   const outputPrefix = data.project.outputPrefix || data.project.id || 'output';
   console.log(`[SCHEMA] ${raw.$schema ? 'v2' : 'v1'} → normalized (preset: ${theme.preset || 'default'})`);
 
-  // 1. input/ 폴더 이미지 우선 체크
+  // 1. output 경로 먼저 결정 (이미지 상대경로 계산에 필요)
+  const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const outputDir = process.argv[3]
+    ? path.resolve(process.argv[3])
+    : path.join(projectRoot, 'output', (data.project.serviceName || data.project.id || outputPrefix).replace(/[<>:"/\\|?*]/g, '_'), today);
+
+  // 2. input/ 폴더 이미지 우선 체크 — 상대경로 동적 계산
   const inputDir = path.join(projectRoot, 'input');
   if (data.screens) {
+    const relPath = path.relative(outputDir, inputDir).replace(/\\/g, '/');
     for (const screen of data.screens) {
       if (!screen.uiImagePath) continue;
       const filename = path.basename(screen.uiImagePath);
       const inputPath = path.join(inputDir, filename);
       if (fs.existsSync(inputPath)) {
-        screen.uiImagePath = `../../../input/${filename}`;
-        console.log(`[INPUT] ${filename} → input/ 폴더 사용`);
+        screen.uiImagePath = `${relPath}/${filename}`;
+        console.log(`[INPUT] ${filename} → input/ 폴더 사용 (${relPath})`);
       } else {
         console.log(`[CAPTURE] ${filename} → 기존 경로 유지`);
       }
     }
   }
 
-  // 2. HTML 생성
+  // 3. HTML 생성 (input 이미지 경로 재계산 후 실행)
   const html = generateHTML(data, theme);
-  const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-  const outputDir = process.argv[3]
-    ? path.resolve(process.argv[3])
-    : path.join(projectRoot, 'output', data.project.serviceName || data.project.id || outputPrefix, today);
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
   const htmlPath = path.join(outputDir, `${outputPrefix}.html`);

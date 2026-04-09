@@ -18,6 +18,10 @@ function normalizeSchema(raw, defaults = {}) {
 
   if (raw.$schema === SCHEMA_VERSION) {
     result = { ...raw, screens: (raw.screens || []).map(normalizeScreen) };
+    // v2 직접 통과 시에도 serviceName/viewportType 정규화 적용
+    if (result.project) {
+      result.project.serviceName = sanitizeServiceName(result.project.serviceName || '');
+    }
   } else if (raw.assignment) {
     result = normalizeV1(raw);
   } else {
