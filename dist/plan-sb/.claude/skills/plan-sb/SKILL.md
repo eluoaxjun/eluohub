@@ -612,14 +612,17 @@ JSON 작성 전 반드시 읽을 것: `scripts/template.js` (renderWfElement 등
 | author | - | 작성자 (기본값: "PM") |
 | comment | O | 코멘트 내용 |
 
-**생성 기준** — 제안할 것이 있을 때만 생성, 무조건 채우지 않는다:
+**생성 기준** — 모든 design 슬라이드에 최소 1건 이상 생성한다 (디폴트):
 
 | 조건 | type | 예시 |
 |------|------|------|
 | 레이아웃 대안이 있을 때 | `suggestion` | "카드 4열 → 3열 변경 시 모바일 대응 유리" |
 | 콘텐츠 확인이 필요할 때 | `question` | "배너 슬라이드 자동 롤링 속도 확인 필요" |
 | UX 리스크 감지 시 | `risk` | "GNB 메뉴 8개 초과 — 인지 부하 우려" |
-| 해당 없음 | — | pmComments 생략 (빈 배열 불필요) |
+| 변경 의도가 불명확할 때 | `question` | "현행 대비 변경 범위 확인 필요" |
+| 구현 난이도가 높을 때 | `risk` | "캐러셀 무한 루프 구현 시 접근성 이슈 예상" |
+
+> **필수**: design 슬라이드에 pmComments가 빈 배열이면 Self-Check WARN. 기획자로서 수정 방향에 대한 의견·질문·리스크를 반드시 1건 이상 기재한다.
 
 ## fnRef 필드 명세
 
@@ -688,6 +691,7 @@ JSON 작성 전 반드시 읽을 것: `scripts/template.js` (renderWfElement 등
 | 16 | 기획 확정 게이트 | Step 0.5 출력 마커(`[기획 확정]`) 존재 여부. 미존재 시 WARN |
 | 17 | 화면 표현 모드 일관성 | PC/MO가 동일 모드(A/B/C)인지 확인. 혼재 시 Fail |
 | 18 | 현행 이미지 활용 | Mode A/C에서 현행 캡쳐가 uiImagePath에 직접 사용되면 Fail. Mode B만 허용 |
+| 19 | pmComments 필수 | design 슬라이드에 pmComments 1건 이상. 빈 배열이면 WARN |
 | X1 | 프로젝트명 일관성 | context/project.md 존재 시 Cover 과제명 일치 |
 | X2 | FN↔Screen 수량 정합성 | context/fn.md 존재 시 |
 | X3 | IA 경로 일관성 | context/ia.md 존재 시 |
