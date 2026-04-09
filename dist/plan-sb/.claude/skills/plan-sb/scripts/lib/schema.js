@@ -173,8 +173,19 @@ function normalizeScreen(s) {
       // FN 참조: 연계 모드 시 FN 코드 배열, 독립 모드 시 빈 배열
       fnRef: d.fnRef || []
     })),
-    // P1-2: MSG/Dialog Case
-    msgCases: s.msgCases || null,
+    // P1-2: MSG/Dialog Case (각 항목 필드 정규화)
+    msgCases: s.msgCases && s.msgCases.length > 0
+      ? s.msgCases.map(c => ({
+          type: c.type || '',
+          subType: c.subType || '',
+          no: c.no || '',
+          situation: c.situation || '',
+          title: c.title !== undefined ? c.title : undefined,
+          message: c.message || '',
+          confirmAction: c.confirmAction || '',
+          cancelAction: c.cancelAction || ''
+        }))
+      : null,
     // P2-1: 컴포넌트 가이드
     components: s.components || null,
     // P1-3: 수정일/버전

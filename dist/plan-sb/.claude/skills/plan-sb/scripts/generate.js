@@ -38,7 +38,10 @@ async function main() {
   const data = normalizeSchema(raw, config.defaults);
   const theme = loadTheme(data);
 
-  const outputPrefix = data.project.outputPrefix || data.project.id || 'output';
+  const outputPrefix = data.project.outputPrefix
+    || data.project.id
+    || (data.project.title || '').replace(/[<>:"/\\|?*]/g, '_').trim()
+    || 'output';
   console.log(`[SCHEMA] ${raw.$schema ? 'v2' : 'v1'} → normalized (preset: ${theme.preset || 'default'})`);
 
   // 1. output 경로 먼저 결정 (이미지 상대경로 계산에 필요)

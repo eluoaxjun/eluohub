@@ -266,9 +266,8 @@ function css(theme) {
   .ui-capture { flex: 1; background: #f9f9f9; border-right: 1px solid #ddd; display: flex; align-items: center; justify-content: center; color: #999; font-size: 13px; overflow: hidden; }
   .ui-capture-inner { position: relative; display: inline-block; max-width: 100%; max-height: 100%; }
   .ui-capture-inner img { display: block; max-width: 100%; max-height: 1000px; }
-  .marker-overlay { position: absolute; border: 3px solid ${theme.accentColor}; background: rgba(204,51,51,0.15); pointer-events: none; z-index: 1; border-radius: 4px; }
-  .marker-number { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: ${theme.accentColor}; color: #fff; border-radius: 50%; text-align: center; line-height: 24px; font-size: 12px; font-weight: 700; z-index: 2; }
-  .marker-number { position: absolute; top: -10px; left: -10px; width: 20px; height: 20px; background: ${theme.accentColor}; color: #fff; border-radius: 50%; text-align: center; line-height: 20px; font-size: 10px; font-weight: 700; z-index: 2; }
+  .marker-overlay { position: absolute; border: 3px dashed ${theme.accentColor}; background: rgba(204,51,51,0.08); pointer-events: none; z-index: 1; border-radius: 6px; }
+  .marker-number { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: ${theme.accentColor}; color: #fff; border-radius: 50%; text-align: center; line-height: 24px; font-size: 12px; font-weight: 700; z-index: 2; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
 
   /* Persistent */
   .wf-persistent-header { background: #e0e0e0; border-bottom: 2px solid #bbb; padding: 8px 18px; min-height: 48px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
@@ -1536,8 +1535,47 @@ function renderComponentGuide(components) {
 }
 
 /**
+ * Description 높이 추정 (px 단위 휴리스틱)
+ * 슬라이드 높이 1080px - 헤더 40px - 푸터 30px - 패딩 20px = ~990px 가용
+ */
+function estimateDescHeight(desc) {
+  if (!desc) return 0;
+  if (desc.type === 'section') return 30;
+  if (!desc.marker && !desc.label && !(desc.items && desc.items.length) && desc.continuation) return 25;
+  let h = 35; // 기본 행 높이 (marker + label)
+  if (desc.items && desc.items.length) h += desc.items.length * 20;
+  else if (desc.details && desc.details.length) h += desc.details.length * 20;
+  if (desc.before || desc.after) h += 60;
+  if (desc.continuation) h += 25;
+  return h;
+}
+
+/**
+ * Descriptions를 슬라이드별로 분할
+ * maxHeight를 초과하면 자동으로 다음 그룹으로 넘김
+ */
+function splitDescriptions(descriptions, maxHeight) {
+  if (!descriptions || descriptions.length === 0) return [descriptions || []];
+  const groups = [];
+  let current = [];
+  let currentHeight = 30; // 테이블 헤더 높이
+  for (const d of descriptions) {
+    const h = estimateDescHeight(d);
+    if (currentHeight + h > maxHeight && current.length > 0) {
+      groups.push(current);
+      current = [];
+      currentHeight = 30;
+    }
+    current.push(d);
+    currentHeight += h;
+  }
+  if (current.length > 0) groups.push(current);
+  return groups;
+}
+
+/**
  * 화면 렌더 — screenType별 분기
- * design 타입: msgCases 자동 별도 슬라이드 분리
+ * design 타입: msgCases 자동 별도 슬라이드 분리 + Description 자동 분할
  */
 function renderScreen(screen, data) {
   const slides = [];
@@ -1594,13 +1632,27 @@ function renderScreen(screen, data) {
     case 'design':
     default: {
       // Design 슬라이드: 좌 60% 와이어프레임 / 우 40% Description
-      bodyHtml = `<div class="slide-body">
-        ${renderDesignLayout(screen)}
-      </div>`;
+      // Description 자동 분할: 높이 초과 시 continuation 슬라이드 생성
+      const DESC_MAX_HEIGHT = 900; // px (슬라이드 1080 - 헤더/푸터/패딩)
+      const descGroups = splitDescriptions(screen.descriptions, DESC_MAX_HEIGHT);
+
+      if (descGroups.length <= 1) {
+        bodyHtml = `<div class="slide-body">
+          ${renderDesignLayout(screen)}
+        </div>`;
+      } else {
+        // 첫 슬라이드: 와이어프레임 + 첫 그룹 + continuation 마커
+        const contMarker = { continuation: 'next', marker: 0, label: '', items: null, type: '', details: [], overlay: null, commonNote: '', before: '', after: '', changeType: '', fnRef: [] };
+        const firstScreen = { ...screen, descriptions: [...descGroups[0], contMarker] };
+        bodyHtml = `<div class="slide-body">
+          ${renderDesignLayout(firstScreen)}
+        </div>`;
+      }
       break;
     }
   }
 
+  // 메인 슬라이드 push (항상 첫 번째)
   slides.push(`
 <div class="slide" data-slide-type="${screenType}" style="position:relative;">
   ${header}
@@ -1609,6 +1661,33 @@ function renderScreen(screen, data) {
   ${bodyHtml}
   ${footer}
 </div>`);
+
+  // design 타입: Description 분할 후속 슬라이드 (메인 슬라이드 뒤에 삽입)
+  if (screenType === 'design' || !screenType) {
+    const DESC_MAX_HEIGHT = 900;
+    const descGroups = splitDescriptions(screen.descriptions, DESC_MAX_HEIGHT);
+    if (descGroups.length > 1) {
+      const prevMarker = { continuation: 'prev', marker: 0, label: '', items: null, type: '', details: [], overlay: null, commonNote: '', before: '', after: '', changeType: '', fnRef: [] };
+      const nextMarker = { continuation: 'next', marker: 0, label: '', items: null, type: '', details: [], overlay: null, commonNote: '', before: '', after: '', changeType: '', fnRef: [] };
+      for (let gi = 1; gi < descGroups.length; gi++) {
+        const isLast = gi === descGroups.length - 1;
+        const contDescs = [prevMarker, ...descGroups[gi], ...(isLast ? [] : [nextMarker])];
+        const contHeader = renderSlideHeader(
+          { ...screen, interfaceName: (screen.interfaceName || '') + ` (${gi + 1}/${descGroups.length})` },
+          data, null
+        );
+        slides.push(`
+<div class="slide" data-slide-type="description" style="position:relative;">
+  ${contHeader}
+  <div class="slide-body slide-content">
+    ${renderDescriptionTableV2(contDescs, gi === 1 ? screen.pmComments : [])}
+    ${renderFnRef(contDescs)}
+  </div>
+  ${footer}
+</div>`);
+      }
+    }
+  }
 
   // design 타입 + msgCases 존재 → 별도 MSG Case 슬라이드 자동 생성
   if (screenType === 'design' && screen.msgCases && screen.msgCases.length > 0) {
