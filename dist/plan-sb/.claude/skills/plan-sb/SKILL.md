@@ -99,13 +99,15 @@ output/{serviceName}/{YYYYMMDD}/
 사용자가 기존 화면설계서 PDF/PPT를 포맷 참고용으로 제공하면 아래를 분석한다.
 
 **PDF 읽기 방법** (우선순위 순):
-1. **Read(pdf, pages)** — `Read(file_path, pages: "1-5")` 로 페이지 단위 읽기. 성공하면 시각적 레이아웃 분석 가능
-2. **Read 실패 시 → Playwright 자동 캡처** — plan-sb에 Playwright가 이미 포함되어 있으므로 자동으로 PDF를 열어 페이지별 스크린샷 생성
+1. **pdf-capture.js 실행 (권장)** — pdf.js 기반으로 PDF 각 페이지를 고해상도 이미지로 변환. poppler 불필요.
    ```bash
-   node -e "const {chromium}=require('playwright');(async()=>{const b=await chromium.launch();const p=await b.newPage();await p.goto('file:///'+process.argv[1].replace(/\\\\/g,'/'));const pages=await p.locator('.page').count()||1;for(let i=0;i<pages;i++){await p.screenshot({path:'input/pdf-p'+(i+1)+'.png',fullPage:i===0});};await b.close()})()" "{PDF절대경로}"
+   node scripts/pdf-capture.js "{PDF절대경로}" input/
    ```
-   생성된 `input/pdf-p*.png` → Read(Vision)으로 시각 분석
-3. **pdftotext는 최후 수단** — 텍스트만 추출. 레이아웃/스타일 파악 불가. 화면설계서 포맷 분석에는 부적합
+   생성된 `input/pdf-page-*.png` → Read(Vision)으로 시각 분석. pdf-info.json에 페이지 수/파일 목록 기록.
+2. **Read(pdf, pages)** — `Read(file_path, pages: "1-5")` 로 직접 읽기. poppler 설치 시에만 동작.
+3. **Read 직접 실패 + pdf-capture.js 없는 환경** — 사용자에게 pdf-capture.js 설치 안내.
+
+> **금지**: `node -e` 인라인 원라이너로 PDF를 열지 않는다. 반드시 pdf-capture.js를 사용한다.
 
 **MUST NOT**: 사용자에게 PDF 스크린샷을 직접 찍어달라고 요청. 자동화 스킬이므로 도구가 처리해야 함.
 
