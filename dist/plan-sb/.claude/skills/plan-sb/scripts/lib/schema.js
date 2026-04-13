@@ -62,7 +62,7 @@ function normalizeV1(raw) {
       writer: p.writer || '',
       company: { name: p.companyName || '' },
       requestor: p.requestor || '',
-      outputPrefix: p.jiraNo || 'output',
+      outputPrefix: p.outputPrefix || p.jiraNo || 'output',
       // P1-1: 커버 메타 테이블
       reviewers: p.reviewers || [],
       approvers: p.approvers || [],
@@ -175,16 +175,21 @@ function normalizeScreen(s) {
     })),
     // P1-2: MSG/Dialog Case (각 항목 필드 정규화)
     msgCases: s.msgCases && s.msgCases.length > 0
-      ? s.msgCases.map(c => ({
-          type: c.type || '',
-          subType: c.subType || '',
-          no: c.no || '',
-          situation: c.situation || '',
-          title: c.title !== undefined ? c.title : undefined,
-          message: c.message || '',
-          confirmAction: c.confirmAction || '',
-          cancelAction: c.cancelAction || ''
-        }))
+      ? s.msgCases.map(c => {
+          if (c.state) console.warn(`[WARN] msgCases: "state" → "type" 자동 변환 (screen: ${s.interfaceName || ''})`);
+          if (c.label && !c.situation) console.warn(`[WARN] msgCases: "label" → "situation" 자동 변환 (screen: ${s.interfaceName || ''})`);
+          if (c.description && !c.message) console.warn(`[WARN] msgCases: "description" → "message" 자동 변환 (screen: ${s.interfaceName || ''})`);
+          return {
+            type: c.type || c.state || '',
+            subType: c.subType || '',
+            no: c.no || '',
+            situation: c.situation || c.label || '',
+            title: c.title !== undefined ? c.title : undefined,
+            message: c.message || c.description || '',
+            confirmAction: c.confirmAction || '',
+            cancelAction: c.cancelAction || ''
+          };
+        })
       : null,
     // P2-1: 컴포넌트 가이드
     components: s.components || null,

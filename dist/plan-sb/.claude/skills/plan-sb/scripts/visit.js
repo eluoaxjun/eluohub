@@ -53,10 +53,24 @@ async function main() {
   console.log(`[visit.js] 방문 중: ${url}`);
   await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
 
-  // 스크린샷
+  // 풀페이지 스크린샷 (기존 호환)
   const screenshotPath = path.join(outputDir, 'screenshot.png');
   await page.screenshot({ path: screenshotPath, fullPage: false });
-  console.log(`[visit.js] 스크린샷 저장: ${screenshotPath}`);
+  console.log(`[visit.js] 뷰포트 스크린샷: ${screenshotPath}`);
+
+  // 섹션별 스크롤 뷰포트 캡쳐
+  const pageHeight = await page.evaluate(() => document.body.scrollHeight);
+  const viewportHeight = 1080;
+  const scrollSteps = Math.ceil(pageHeight / viewportHeight);
+  const sectionShots = [];
+  for (let i = 0; i < scrollSteps && i < 10; i++) { // 최대 10장
+    await page.evaluate((y) => window.scrollTo(0, y), i * viewportHeight);
+    await page.waitForTimeout(300);
+    const shotPath = path.join(outputDir, `screenshot-section-${String(i + 1).padStart(2, '0')}.png`);
+    await page.screenshot({ path: shotPath, fullPage: false });
+    sectionShots.push(shotPath);
+  }
+  console.log(`[visit.js] 섹션별 캡쳐: ${sectionShots.length}장 (페이지 높이 ${pageHeight}px)`);
 
   // 페이지 구조 추출 (GNB·섹션·CTA)
   const structure = await page.evaluate(() => {

@@ -13,7 +13,17 @@ const DEFAULT_THEME = {
   neutralColor: '#666666',
   logo: { type: 'none' },
   fonts: { primary: "'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif" },
-  frame: { width: 1280, height: 720, borderWidth: 2 }
+  frame: { width: 1280, height: 720, borderWidth: 2 },
+  wireframe: {
+    headerBg: '#e8e8e8',
+    navBg: '#f0f0f0',
+    elementBg: '#fafafa',
+    groupBg: '#fcfcfc',
+    placeholderBg: '#e0e0e0',
+    borderLight: '#ddd',
+    borderMedium: '#ccc',
+    borderDark: '#bbb'
+  }
 };
 
 /**
@@ -45,7 +55,8 @@ function loadTheme(data) {
     ...dataTheme,
     logo: { ...DEFAULT_THEME.logo, ...(preset.logo || {}), ...(dataTheme.logo || {}) },
     fonts: { ...DEFAULT_THEME.fonts, ...(preset.fonts || {}), ...(dataTheme.fonts || {}) },
-    frame: { ...DEFAULT_THEME.frame, ...(preset.frame || {}), ...(dataTheme.frame || {}) }
+    frame: { ...DEFAULT_THEME.frame, ...(preset.frame || {}), ...(dataTheme.frame || {}) },
+    wireframe: { ...DEFAULT_THEME.wireframe, ...(preset.wireframe || {}), ...(dataTheme.wireframe || {}) }
   };
 
   return merged;

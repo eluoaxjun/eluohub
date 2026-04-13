@@ -38,6 +38,19 @@ async function main() {
   const data = normalizeSchema(raw, config.defaults);
   const theme = loadTheme(data);
 
+  // 프로젝트별 테마 자동 생성: default.json → themes/{프로젝트코드}.json
+  const projectCode = (data.project.id || data.project.serviceName || '').replace(/[<>:"/\\|?*]/g, '_').trim();
+  if (projectCode) {
+    const projectThemePath = path.join(__dirname, '..', 'themes', `${projectCode}.json`);
+    if (!fs.existsSync(projectThemePath)) {
+      const defaultThemePath = path.join(__dirname, '..', 'themes', 'default.json');
+      if (fs.existsSync(defaultThemePath)) {
+        fs.copyFileSync(defaultThemePath, projectThemePath);
+        console.log(`[THEME] ${projectCode}.json 자동 생성 (default.json 복사)`);
+      }
+    }
+  }
+
   const outputPrefix = data.project.outputPrefix
     || data.project.id
     || (data.project.title || '').replace(/[<>:"/\\|?*]/g, '_').trim()

@@ -8,381 +8,11 @@
  * - fnRef 렌더링: Description 패널 하단 [FN 참조] 섹션
  * - msgCases 자동 별도 슬라이드 분리 (인라인 혼재 금지)
  * - 메타 테이블 → 슬라이드 헤더 바로 통합
+ *
+ * CSS는 lib/styles.js로 분리 (v2.1)
  */
 
-function css(theme) {
-  return `
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: ${theme.fonts.primary}; background: #fff; }
-
-  /* 화면용: 세로 나열 (수직 스크롤) */
-  @media screen {
-    body { background: #4a4a4a; display: flex; flex-direction: column; align-items: center; gap: 40px; padding: 40px; overflow-y: auto; }
-  }
-
-  /* 인쇄/PDF용: 16:9 landscape */
-  @page {
-    size: 1920px 1080px landscape;
-    margin: 0;
-  }
-  @media print {
-    body { display: block; padding: 0; background: #fff; margin: 0; }
-    .slide { page-break-after: always; border: none !important; }
-    .slide:last-child { page-break-after: auto; }
-  }
-
-  /* 슬라이드 컨테이너: 1920×1080 고정 */
-  .slide {
-    width: 1920px;
-    height: 1080px;
-    overflow: hidden;
-    position: relative;
-    background: #fff;
-    border: ${theme.frame.borderWidth}px solid ${theme.primaryColor};
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-  }
-
-  /* 슬라이드 헤더: 54px */
-  .slide-header {
-    background: ${theme.primaryColor};
-    color: #fff;
-    padding: 0 24px;
-    height: 54px;
-    min-height: 54px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
-    font-size: 16px;
-  }
-  .slide-header .hd-left { display: flex; align-items: center; gap: 14px; }
-  .slide-header .hd-id { font-weight: 700; font-size: 18px; letter-spacing: 0.5px; }
-  .slide-header .hd-sep { opacity: 0.5; }
-  .slide-header .hd-name { opacity: 0.9; }
-  .slide-header .hd-right { opacity: 0.8; font-size: 14px; }
-
-  /* 슬라이드 본문: 남은 영역 전부 */
-  .slide-body {
-    flex: 1;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-  }
-
-  /* 슬라이드 푸터: 36px */
-  .slide-footer {
-    background: #f8f9fa;
-    border-top: 1px solid #e0e0e0;
-    padding: 0 24px;
-    height: 36px;
-    min-height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
-    color: #999;
-    flex-shrink: 0;
-  }
-
-  /* Tables */
-  table { width: 100%; border-collapse: collapse; font-size: 16px; }
-  th { background: #f5f5f5; font-weight: 600; padding: 10px 14px; border: 1px solid #ddd; text-align: center; }
-  td { padding: 10px 14px; border: 1px solid #ddd; vertical-align: top; }
-  .section-title { font-size: 22px; font-weight: 700; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #333; }
-
-  /* Cover */
-  .cover-body { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; gap: 12px; }
-  .cover-logo { font-size: 26px; font-weight: 700; color: #666; letter-spacing: 3px; margin-bottom: 24px; }
-  .cover-logo-img { max-height: 96px; margin-bottom: 24px; }
-  .cover-title { font-size: 40px; font-weight: 700; color: #1a1a2e; text-align: center; }
-  .cover-version { font-size: 18px; color: #888; }
-  .cover-meta { width: 60%; max-width: 780px; border-collapse: collapse; margin-top: 36px; font-size: 16px; }
-  .cover-meta th { background: #f0f0f0; font-weight: 600; padding: 8px 12px; border: 1px solid #ddd; text-align: center; width: 120px; }
-  .cover-meta td { padding: 8px 12px; border: 1px solid #ddd; text-align: center; }
-
-  /* Design 레이아웃: 좌 60% / 우 40% */
-  .design-layout { display: flex; flex: 1; overflow: hidden; min-height: 0; }
-  .wireframe-area { flex: 0 0 60%; overflow: hidden; border-right: 1px solid #ddd; position: relative; }
-
-  /* containerType: chatbot-panel — 우하단 플로팅 배치, 좁은 영역 */
-  .container-chatbot { flex: 0 0 42%; display: flex; align-items: flex-end; justify-content: flex-end; background: #e8e8e8; border-right: 1px solid #ddd; padding: 16px 20px; position: relative; }
-  .chatbot-panel-frame { width: 340px; max-height: 92%; background: #fff; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.18); display: flex; flex-direction: column; overflow: hidden; border: 1px solid #ddd; }
-
-  /* containerType: modal */
-  .container-modal { flex: 0 0 60%; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); border-right: 1px solid #ddd; padding: 30px; }
-  .modal-frame { width: 520px; max-height: 90%; background: #fff; border-radius: 8px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); display: flex; flex-direction: column; overflow: hidden; }
-  .modal-frame .wf-scroll { flex: 1; overflow-y: auto; padding: 16px 20px; }
-
-  /* containerType: floating-panel */
-  .container-floating { flex: 0 0 60%; display: flex; align-items: flex-end; justify-content: flex-end; background: #e8e8e8; border-right: 1px solid #ddd; padding: 20px; }
-  .floating-frame { width: 360px; max-height: 85%; background: #fff; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.12); display: flex; flex-direction: column; overflow: hidden; border: 1px solid #ccc; }
-  .floating-frame .wf-scroll { flex: 1; overflow-y: auto; padding: 12px; }
-  .description-panel { flex: 0 0 40%; overflow-y: auto; padding: 18px 20px; display: flex; flex-direction: column; }
-
-  /* Description */
-  .desc-table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.6; }
-  .desc-table th { background: #f5f5f5; font-weight: 600; padding: 7px 10px; border: 1px solid #ddd; text-align: center; font-size: 14px; }
-  .desc-table td { padding: 7px 10px; border: 1px solid #ddd; vertical-align: top; font-size: 14px; }
-  .desc-table .desc-num-cell { width: 56px; text-align: center; font-weight: 700; color: #333; }
-  .desc-table .desc-content-cell { color: #333; }
-  .desc-table .desc-common-row td { background: #fafafa; }
-  .desc-indent-1 { }
-  .desc-indent-2 { padding-left: 14px; }
-  .desc-indent-3 { padding-left: 28px; }
-  .desc-indent-4 { padding-left: 42px; }
-  .desc-var { color: #e67700; font-weight: 600; }
-  .desc-important { color: #c00000; font-weight: 600; }
-  .desc-continuation { font-size: 10px; color: #999; font-style: italic; text-align: center; padding: 5px 0; border-top: 1px dashed #ddd; }
-  .desc-change-tag { display: inline-block; font-size: 8px; font-weight: 700; padding: 1px 4px; border-radius: 2px; margin-left: 3px; vertical-align: middle; }
-  .desc-change-tag--modify { background: #fff3f3; color: #c00; border: 1px solid #c00; }
-  .desc-change-tag--add { background: #f0f7ff; color: #0070c0; border: 1px solid #0070c0; }
-  .desc-change-tag--delete { background: #f5f5f5; color: #666; border: 1px solid #999; text-decoration: line-through; }
-  .desc-label { font-size: 9px; font-weight: 700; color: #888; margin: 2px 0; }
-  .desc-before { background: #fff3f3; padding: 5px 7px; margin: 3px 0; border-left: 2px solid ${theme.accentColor}; font-size: 10px; }
-  .desc-after { background: #f0fff0; padding: 5px 7px; margin: 3px 0; border-left: 2px solid #2e8b57; font-size: 10px; }
-
-  /* fnRef 섹션 */
-  .fn-ref-section { margin-top: auto; padding-top: 8px; border-top: 1px dashed #ddd; }
-  .fn-ref-title { font-size: 10px; font-weight: 700; color: #888; margin-bottom: 4px; }
-  .fn-ref-list { font-size: 10px; color: ${theme.primaryColor}; font-family: monospace; line-height: 1.6; }
-
-  /* Wireframe 영역 */
-  .wf-container { height: 100%; display: flex; flex-direction: column; overflow: hidden; }
-  .wf-scroll { flex: 1; overflow-y: auto; padding: 12px 15px; }
-  .wf-el { border: 1px dashed #ccc; background: #fafafa; padding: 10px 14px; margin: 0 0 7px 0; font-size: 13px; color: #666; position: relative; display: flex; flex-direction: column; }
-  .wf-el:last-child { margin-bottom: 0; }
-  .wf-el--header { background: #e8e8e8; border: 1px solid #bbb; min-height: 48px; display: flex; flex-direction: row; align-items: center; justify-content: center; font-weight: 600; color: #555; font-size: 14px; }
-  .wf-el--nav { background: #f0f0f0; border: 1px solid #ccc; min-height: 40px; display: flex; flex-direction: row; align-items: center; gap: 16px; padding: 0 16px; }
-  .wf-el--nav span { font-size: 13px; color: #888; }
-  .wf-el--text { background: #fff; border: 1px dashed #ddd; padding: 8px 10px; }
-  .wf-el--text .wf-content { color: #333; font-size: 11px; margin-top: 3px; }
-  .wf-el--input { background: #fff; border: 1px solid #ccc; border-radius: 3px; min-height: 30px; display: flex; flex-direction: row; align-items: center; padding: 0 8px; color: #aaa; font-size: 11px; }
-  .wf-el--button { display: inline-flex; align-items: center; justify-content: center; min-height: 30px; padding: 0 16px; border-radius: 3px; font-size: 11px; font-weight: 600; border: 1px solid #999; background: #f5f5f5; color: #333; cursor: default; }
-  .wf-el--button-primary { background: #333; color: #fff; border-color: #333; }
-  .wf-el--button-outline { background: transparent; border: 1px solid #999; color: #666; }
-  .wf-el--card { background: #fff; border: 1px solid #ddd; border-radius: 5px; padding: 10px; }
-  .wf-el--image { background: repeating-linear-gradient(45deg, #e0e0e0, #e0e0e0 4px, #f0f0f0 4px, #f0f0f0 12px); border: 1px solid #ccc; display: flex; flex-direction: row; align-items: center; justify-content: center; color: #999; min-height: 80px; }
-  .wf-el--image::before { content: '\\1F5BC'; font-size: 16px; margin-right: 5px; }
-  .wf-el--list { background: #fff; border: 1px dashed #ddd; padding: 6px 10px 6px 24px; }
-  .wf-el--list li { font-size: 10px; color: #555; margin-bottom: 3px; list-style: disc; }
-  .wf-el--banner { background: linear-gradient(135deg, #e8e8e8, #f5f5f5); border: 1px solid #ccc; min-height: 80px; display: flex; flex-direction: row; align-items: center; justify-content: center; font-size: 15px; color: #888; font-weight: 600; }
-  .wf-el--divider { border: none; border-top: 1px solid #ddd; margin: 6px 0; padding: 0; min-height: 0; background: transparent; }
-  .wf-el--group { border: 1px dashed #bbb; background: #fcfcfc; padding: 6px; gap: 5px; }
-  .wf-el--group--horizontal { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
-  .wf-el--group--horizontal > .wf-el { flex: 1; min-width: 0; margin: 0 3px 3px 0; }
-
-  /* group layout: popup */
-  .wf-el--group--popup { position: relative; background: #fff; border: 2px solid #aaa !important; border-radius: 12px; padding: 0; gap: 0; box-shadow: 0 8px 32px rgba(0,0,0,0.2); overflow: hidden; }
-  .wf-grp-close { position: absolute; top: 8px; right: 10px; display: flex; align-items: center; gap: 3px; z-index: 3; }
-  .wf-grp-close-btn { width: 28px; height: 28px; background: rgba(0,0,0,0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #fff; font-weight: 700; flex-shrink: 0; cursor: default; }
-  .wf-grp-image { min-height: 200px; background: #e0e0e0; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #999; position: relative; flex: 1; }
-  .wf-grp-image::before { content: '\\1F5BC'; font-size: 24px; margin-right: 5px; }
-  .wf-grp-nav { display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; border-top: 1px solid #eee; position: relative; }
-  .wf-grp-footer { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 12px 16px; border-top: 1px solid #eee; background: #fafafa; position: relative; }
-  .wf-grp-footer > .wf-el { flex: none; }
-  .wf-marker-inline { display: inline-flex; width: 16px; height: 16px; background: ${theme.accentColor}; color: #fff; border-radius: 50%; font-size: 8px; font-weight: 700; align-items: center; justify-content: center; flex-shrink: 0; }
-
-  /* popup — 센터 모달: 어두운 배경 + 가운데 팝업 프레임 */
-  .wf-popup-wrap { display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.45); width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
-  .wf-el--popup { background: #fff; border: none; border-radius: 12px; padding: 0; overflow: hidden; position: relative; min-height: 200px; gap: 0; box-shadow: 0 8px 32px rgba(0,0,0,0.25); max-width: 320px; width: 80%; }
-  .wf-popup-close { position: absolute; top: 8px; right: 10px; width: 28px; height: 28px; background: rgba(0,0,0,0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #fff; z-index: 2; font-weight: 700; cursor: default; }
-  .wf-popup-image { background: #e0e0e0; min-height: 200px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #aaa; }
-  .wf-popup-image::before { content: '\\1F5BC'; font-size: 24px; margin-right: 6px; }
-  .wf-popup-nav { display: flex; align-items: center; justify-content: space-between; padding: 6px 12px; }
-  .wf-popup-nav-btn { width: 24px; height: 24px; border: 1px solid #ccc; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #666; background: #fff; }
-  .wf-popup-dots { display: flex; gap: 5px; align-items: center; }
-  .wf-popup-dots span { width: 7px; height: 7px; border-radius: 50%; background: #ccc; display: inline-block; }
-  .wf-popup-dots span.active { background: #555; }
-  .wf-popup-actions { display: flex; gap: 12px; padding: 12px 16px; border-top: 1px solid #eee; background: #fafafa; justify-content: center; border-radius: 0 0 12px 12px; }
-  .wf-popup-actions > * { flex: none; font-size: 11px; }
-
-  /* popup variant: 바텀시트 */
-  .wf-popup-wrap--bottom { align-items: flex-end; justify-content: center; }
-  .wf-el--popup--bottom { border-radius: 16px 16px 0 0; max-width: 375px; width: 90%; }
-  .wf-popup-handle { width: 40px; height: 4px; background: #ddd; border-radius: 2px; margin: 10px auto; }
-  .wf-popup-actions--bottom { border-radius: 0; }
-
-  /* card with thumbnail */
-  .wf-el--card { background: #fff; border: 1px solid #ddd; border-radius: 5px; padding: 0; overflow: hidden; }
-  .wf-card-thumb { background: #e8e8e8; min-height: 70px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #aaa; border-bottom: 1px solid #ddd; }
-  .wf-card-thumb::before { content: '\\1F5BC'; font-size: 16px; margin-right: 4px; }
-  .wf-card-body { padding: 8px 10px; }
-  .wf-el--table { background: #fff; }
-  .wf-el--table table { width: 100%; border-collapse: collapse; font-size: 9px; }
-  .wf-el--table th { background: #f0f0f0; padding: 3px 5px; border: 1px solid #ddd; font-size: 9px; }
-  .wf-el--table td { padding: 3px 5px; border: 1px solid #ddd; font-size: 9px; }
-  .wf-label { font-size: 12px; color: #999; font-weight: 600; text-transform: uppercase; margin-bottom: 3px; }
-  .wf-marker { position: absolute; top: 50%; left: -28px; transform: translateY(-50%); width: 24px; height: 24px; background: ${theme.accentColor}; color: #fff; border-radius: 50%; text-align: center; line-height: 24px; font-size: 12px; font-weight: 700; z-index: 2; }
-  .wf-el--marked { border: 2px dashed ${theme.accentColor} !important; background: rgba(204, 51, 51, 0.03); }
-  .wf-viewport { padding: 0 0 0 34px; }
-
-  /* ── Auto-generated wireframe tight layout ── */
-  .wf-auto > .wf-el { margin-bottom: 0; width: 100%; box-sizing: border-box; }
-  .wf-auto > .wf-el--divider { margin: 0; }
-  .wf-auto > .wf-el--group--card-grid { margin-bottom: 0; }
-  .wf-auto > .wf-el--text-title,
-  .wf-auto > .wf-el--text-subtitle,
-  .wf-auto > .wf-el--text-breadcrumb,
-  .wf-auto > .wf-el--text-count { margin-bottom: 0; }
-
-  /* ── Header 구조 레이아웃 ── */
-  .wf-el--header-structured { display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding: 0 20px; gap: 12px; background: #e8e8e8; border: 1px solid #bbb; min-height: 56px; }
-  .wf-header-left { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-  .wf-header-logo { font-size: 15px; font-weight: 700; color: #333; white-space: nowrap; }
-  .wf-header-center { display: flex; align-items: center; gap: 4px; flex: 1; justify-content: center; }
-  .wf-header-center .wf-nav-tab { font-size: 13px; color: #777; padding: 6px 14px; cursor: default; border-bottom: 2px solid transparent; white-space: nowrap; }
-  .wf-header-center .wf-nav-tab:first-child { color: #222; font-weight: 600; border-bottom-color: #333; }
-  .wf-header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-  .wf-header-search { background: #fff; border: 1px solid #ccc; border-radius: 14px; padding: 5px 14px; font-size: 11px; color: #aaa; min-width: 140px; }
-  .wf-header-icon { width: 28px; height: 28px; background: #d0d0d0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #666; }
-
-  /* ── GNB 탭 바 ── */
-  .wf-el--gnb-tabs { background: #f7f7f7; border-bottom: 2px solid #ddd; padding: 0 20px; display: flex; flex-direction: row; align-items: flex-end; gap: 0; min-height: 44px; overflow: hidden; }
-  .wf-gnb-tab { padding: 8px 18px; font-size: 13px; color: #999; cursor: default; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; }
-  .wf-gnb-tab:first-child { color: #222; font-weight: 700; border-bottom-color: #333; }
-
-  /* ── 버튼 필터 행 ── */
-  .wf-el--group--btn-row { display: flex; flex-direction: row; flex-wrap: wrap; gap: 8px; padding: 10px 16px; align-items: center; background: #fafafa; border: 1px solid #e0e0e0; }
-  .wf-el--group--btn-row .wf-el--button { margin: 0; flex: none; font-size: 12px; padding: 0 14px; height: 28px; border-radius: 14px; }
-  .wf-el--group--btn-row .wf-el--button:first-child { background: #333; color: #fff; border-color: #333; }
-
-  /* ── 카드 그리드 ── */
-  .wf-el--group--card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 14px; background: #fcfcfc; border: 1px dashed #ccc; align-items: start; }
-  .wf-el--group--card-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
-  .wf-el--group--card-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
-  .wf-el--group--card-grid .wf-el--card { margin: 0; }
-
-  /* ── 카드 개선 ── */
-  .wf-card-meta { display: flex; align-items: center; justify-content: space-between; padding: 4px 10px 8px; font-size: 10px; color: #aaa; }
-  .wf-card-title { font-size: 12px; font-weight: 600; color: #333; margin-bottom: 3px; }
-  .wf-card-desc { font-size: 10px; color: #888; line-height: 1.4; }
-  .wf-card-action { margin-top: 8px; }
-  .wf-card-action .wf-el--button { width: 100%; justify-content: center; font-size: 11px; height: 26px; background: #f0f0f0; border-color: #ccc; }
-
-  /* 이미지 UI 캡처 */
-  .ui-capture { flex: 1; background: #f9f9f9; border-right: 1px solid #ddd; display: flex; align-items: flex-start; justify-content: center; color: #999; font-size: 13px; overflow: hidden; padding: 8px; }
-  .ui-capture-inner { position: relative; display: inline-block; width: 100%; }
-  .ui-capture-inner img { display: block; width: 100%; height: auto; }
-  .marker-overlay { position: absolute; border: 3px dashed ${theme.accentColor}; background: rgba(204,51,51,0.08); pointer-events: none; z-index: 1; border-radius: 6px; }
-  .marker-number { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: ${theme.accentColor}; color: #fff; border-radius: 50%; text-align: center; line-height: 24px; font-size: 12px; font-weight: 700; z-index: 2; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-
-  /* Persistent */
-  .wf-persistent-header { background: #e0e0e0; border-bottom: 2px solid #bbb; padding: 8px 18px; min-height: 48px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-  .wf-persistent-header .site-logo { font-weight: 700; font-size: 15px; color: #333; }
-  .wf-persistent-gnb { display: flex; gap: 14px; }
-  .wf-persistent-gnb span { font-size: 10px; color: #666; }
-  .wf-persistent-breadcrumb { font-size: 9px; color: #999; padding: 4px 12px; background: #fafafa; border-bottom: 1px solid #eee; flex-shrink: 0; }
-  .wf-persistent-lnb { width: 130px; background: #f7f7f7; border-right: 1px solid #ddd; padding: 8px 0; font-size: 10px; flex-shrink: 0; }
-  .wf-persistent-lnb ul { list-style: none; padding: 0; margin: 0; }
-  .wf-persistent-lnb li { padding: 6px 12px; color: #666; }
-  .wf-persistent-lnb li.active { color: #333; font-weight: 700; background: #e8e8e8; }
-  .wf-persistent-footer { background: #e0e0e0; border-top: 2px solid #bbb; padding: 8px 12px; min-height: 36px; font-size: 9px; color: #888; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .wf-with-lnb { display: flex; flex: 1; overflow: hidden; min-height: 0; }
-  .wf-main-content { flex: 1; overflow-y: auto; }
-
-  /* Divider 슬라이드 */
-  .divider-section-no { font-size: 56px; font-weight: 900; color: rgba(255,255,255,0.15); margin-bottom: 8px; }
-  .divider-toc { list-style: none; padding: 0; margin-top: 20px; text-align: left; display: inline-block; }
-  .divider-toc li { font-size: 12px; color: #bbb; margin-bottom: 6px; display: flex; gap: 10px; align-items: baseline; }
-  .divider-toc .toc-id { color: #777; font-size: 10px; min-width: 80px; font-family: monospace; }
-  .divider-toc .toc-name { color: #ddd; }
-
-  /* MSG Case table */
-  .msg-case-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; }
-  .msg-case-table th { background: #f5f5f5; font-weight: 600; padding: 5px 7px; border: 1px solid #ddd; text-align: center; font-size: 11px; }
-  .msg-case-table td { padding: 5px 7px; border: 1px solid #ddd; vertical-align: top; font-size: 11px; }
-  .msg-type-error { color: #c00000; font-weight: 600; }
-  .msg-type-process { color: #0070c0; font-weight: 600; }
-
-  /* ── text 역할별 스타일 ── */
-  /* flex-direction:row 명시 — .wf-el 기본값 column 상속 방지 */
-  .wf-el--text-title { background: transparent; border: none; padding: 2px 0; flex-direction: row; align-items: center; }
-  .wf-text-title { font-size: 16px; font-weight: 700; color: #1a1a1a; line-height: 1.3; }
-  .wf-el--text-subtitle { background: transparent; border: none; padding: 2px 0; flex-direction: row; align-items: center; }
-  .wf-text-subtitle { font-size: 13px; font-weight: 600; color: #444; }
-  .wf-el--text-breadcrumb { background: transparent; border: none; padding: 2px 0; flex-direction: row; align-items: center; }
-  .wf-breadcrumb { font-size: 10px; color: #aaa; letter-spacing: 0.02em; }
-  .wf-el--text-count { background: transparent; border: none; padding: 2px 0; flex-direction: row; align-items: center; }
-  .wf-count-text { font-size: 12px; color: #666; font-weight: 500; }
-
-  /* ── 카드 뱃지 ── */
-  .wf-card-badge { display: inline-block; font-size: 9px; padding: 2px 7px; border-radius: 10px; background: #e8f0fe; color: #3b5998; font-weight: 600; margin-bottom: 4px; }
-
-  /* ── LNB 탭 (nav) — GNB와 분리 ── */
-  .wf-el--nav-lnb { background: #fff; border-bottom: 1px solid #eee; padding: 0 16px; display: flex; flex-direction: row; align-items: flex-end; gap: 0; min-height: 40px; overflow: hidden; }
-  .wf-lnb-tab { padding: 8px 14px; font-size: 12px; color: #aaa; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; cursor: default; }
-  .wf-lnb-tab:first-child { color: #555; font-weight: 600; border-bottom-color: #555; }
-  .msg-type-positive { color: #2e8b57; font-weight: 600; }
-  .msg-type-negative { color: #e67700; font-weight: 600; }
-
-  /* ── 이미지 갤러리 ── */
-  .wf-el--gallery { display: flex; flex-direction: row; gap: 5px; padding: 5px 0; background: transparent; border: none; overflow: hidden; }
-  .wf-el--gallery .wf-el--image { flex: 1; min-width: 0; margin: 0; border-radius: 3px; }
-
-  /* ── 지도 ── */
-  .wf-el--map { background: repeating-linear-gradient(0deg,#e4ede4,#e4ede4 20px,#dce8dc 20px,#dce8dc 21px), repeating-linear-gradient(90deg,#e4ede4,#e4ede4 20px,#dce8dc 20px,#dce8dc 21px); border: 1px solid #bbb; display: flex; flex-direction: row; align-items: center; justify-content: center; color: #555; min-height: 140px; gap: 6px; font-size: 12px; font-weight: 500; }
-  .wf-el--map::before { content: '📍'; font-size: 20px; }
-
-  /* ── 키워드 태그 그룹 ── */
-  .wf-el--group--tags { display: flex; flex-direction: row; flex-wrap: wrap; gap: 6px; padding: 5px 0; background: transparent; border: none; }
-  .wf-el--group--tags .wf-el { flex: none; margin: 0; }
-  .wf-el--tag { display: inline-flex; align-items: center; height: 24px; padding: 0 12px; border-radius: 12px; font-size: 10px; font-weight: 500; background: #f0f4ff; border: 1px solid #c0d0f0; color: #3a5a99; cursor: default; }
-
-  /* Component guide */
-  .comp-guide-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; }
-  .comp-guide-table th { background: #f5f5f5; font-weight: 600; padding: 5px 7px; border: 1px solid #ddd; text-align: center; font-size: 11px; }
-  .comp-guide-table td { padding: 5px 7px; border: 1px solid #ddd; vertical-align: top; font-size: 11px; }
-  .comp-state-label { display: inline-block; font-size: 9px; padding: 1px 5px; border-radius: 3px; font-weight: 600; margin-right: 3px; }
-  .comp-state-default { background: #e8f5e9; color: #2e7d32; }
-  .comp-state-focus { background: #e3f2fd; color: #1565c0; }
-  .comp-state-error { background: #ffebee; color: #c62828; }
-  .comp-state-disabled { background: #f5f5f5; color: #9e9e9e; }
-
-  /* Modified marker + Version stamp */
-  .modified-marker { position: absolute; top: 8px; right: 10px; background: #fff3f3; color: #c00; font-size: 8px; font-weight: 700; padding: 2px 6px; border: 1px solid #c00; border-radius: 2px; z-index: 3; }
-  .version-stamp { font-size: 9px; color: #999; }
-
-  /* PM Comments */
-  .pm-comment-section { margin-top: 10px; padding-top: 8px; border-top: 1px dashed #e0a030; }
-  .pm-comment-section h5 { font-size: 10px; font-weight: 700; color: #b07800; margin-bottom: 6px; }
-  .pm-comment { background: #fffbf0; border-left: 3px solid #e0a030; padding: 6px 8px; margin-bottom: 6px; font-size: 10px; line-height: 1.5; }
-  .pm-badge { display: inline-block; font-size: 8px; font-weight: 700; padding: 1px 4px; border-radius: 3px; margin-right: 4px; vertical-align: middle; }
-  .pm-badge--risk { background: #ffdddd; color: #c00; }
-  .pm-badge--question { background: #fff3cd; color: #856404; }
-  .pm-badge--suggestion { background: #d4edda; color: #155724; }
-  .pm-badge--reject { background: #e0e0e0; color: #333; }
-  .pm-author { font-size: 9px; color: #999; margin-left: 3px; }
-
-  /* 일반 콘텐츠 패딩 */
-  .slide-content { padding: 24px 30px; overflow-y: auto; flex: 1; }
-
-  /* Description: section 소제목 행 */
-  .desc-section-row td { background: #efefef; font-weight: 700; font-size: 13px; color: #333; border-top: 2px solid #ccc; text-align: left; padding: 5px 10px; letter-spacing: 0.3px; }
-
-  /* Description: ISSUE 행 */
-  .desc-issue-row td { background: #fff8f8; }
-  .desc-issue-label { color: #c00000 !important; font-weight: 700 !important; font-size: 11px !important; text-align: center; }
-
-  /* Description: standalone continuation 행 */
-  .desc-cont-row td { background: #f8f8ff; text-align: center; font-size: 11px; color: #666; font-style: italic; padding: 4px 10px; border-top: 1px dashed #bbb; }
-
-  /* 슬라이드 우측 변경이력 메모 */
-  .slide-changelog { position: absolute; right: 10px; top: 64px; width: 210px; background: #fffdf0; border: 1px solid #d4aa00; border-radius: 4px; padding: 8px 10px; font-size: 10px; z-index: 100; box-shadow: 2px 2px 6px rgba(0,0,0,0.12); }
-  .slide-changelog-title { font-weight: 700; color: #8a6800; margin-bottom: 6px; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .slide-changelog-item { margin-bottom: 5px; border-left: 2px solid #d4aa00; padding-left: 6px; }
-  .slide-changelog-ver { font-weight: 700; color: #555; margin-bottom: 1px; }
-  .slide-changelog-date { color: #999; font-size: 9px; margin-left: 3px; }
-  .slide-changelog-desc { color: #333; line-height: 1.5; }
-
-  /* 헤더 2행 (location 존재 시) */
-  .slide-header--2row { height: auto; min-height: 54px; flex-direction: column; padding: 0; align-items: stretch; }
-  .slide-header--2row .hd-row1 { display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 54px; width: 100%; box-sizing: border-box; }
-  .slide-header--2row .hd-row2 { display: flex; align-items: center; padding: 0 24px; height: 26px; min-height: 26px; width: 100%; background: rgba(0,0,0,0.18); font-size: 12px; opacity: 0.9; border-top: 1px solid rgba(255,255,255,0.15); box-sizing: border-box; }
-  `;
-}
+const { css } = require('./lib/styles');
 
 /**
  * 슬라이드 헤더 바 (좌: ID/Name, 우: Company/Writer/Date)
@@ -430,56 +60,108 @@ function renderSlideHeader(screen, data, title) {
 }
 
 /**
- * 슬라이드 푸터 바
+ * 화면 메타 테이블 (참조 PDF 포맷 — Design 슬라이드 헤더 아래)
+ * Assignment | 과제명 | Interface Type | (Mobile) Page | Interface ID | (None) | Writer | ELUO
+ * Location   | 경로   | Interface Name | 화면명         |             |        | Date   | 날짜
+ */
+function renderScreenMeta(screen, data) {
+  const p = data.project;
+  const iface = (data.overview && data.overview.interfaces || []).find(i =>
+    (i.channel || '').toLowerCase().includes(screen.viewportType === 'Mobile' ? 'mo' : 'pc') ||
+    (i.channel || '').toLowerCase() === 'pc/mo'
+  ) || (data.overview && data.overview.interfaces || [])[0] || {};
+
+  const assignment = p.title || '';
+  const ifType = `(${screen.viewportType}) ${iface.interfaceType || 'Page'}`;
+  const ifId = screen.interfaceId || iface.pageId || '(None)';
+  const writer = p.writer || '';
+  const location = screen.location || [iface.depth1, iface.depth2, iface.depth3].filter(d => d && d !== '-').join(' → ') || '';
+  const ifName = (screen.interfaceName || '').replace(/\s*\(\d+\/\d+\)/, '');
+  const date = p.date || '';
+
+  return `<table class="screen-meta">
+  <tr>
+    <th>Assignment</th><td>${assignment}</td>
+    <th>Interface Type</th><td>${ifType}</td>
+    <th>Interface ID</th><td>${ifId}</td>
+    <th>Writer</th><td>${writer}</td>
+  </tr>
+  <tr>
+    <th>Location</th><td>${location}</td>
+    <th>Interface Name</th><td>${ifName}</td>
+    <th colspan="2"></th>
+    <th>Date</th><td>${date}</td>
+  </tr>
+</table>`;
+}
+
+/**
+ * 상단 차콜 바 + 틸 accent (참조 PDF 포맷)
+ */
+function renderTopBar() {
+  return `<div class="slide-topbar"></div><div class="slide-accent"></div>`;
+}
+
+/**
+ * 슬라이드 푸터 (테마 기반 — 프로젝트별 자동 적용)
  */
 function renderSlideFooter(screen, data) {
   const p = data.project;
-  const versionHtml = screen && screen.version ? `<span class="version-stamp">v${screen.version}</span>` : '';
-  const companyName = p.company?.name || '';
-  return `<div class="slide-footer">
-  <span>${companyName}</span>
-  <span>${[p.writer, versionHtml].filter(Boolean).join(' ')}</span>
+  const theme = data._theme || {};
+  const footerLeft = theme.footerLeft || p.writer || '';
+  const footerRight = theme.footerRight || p.company?.name || p.serviceName || '';
+  const logoHtml = theme.logo?.type === 'text' ? theme.logo.html : '';
+  return `<div class="slide-footer-wrap">
+  <div class="slide-footer">
+    <span class="footer-left">${footerLeft}</span>
+    <span class="footer-right">${logoHtml ? logoHtml + '&nbsp;&nbsp;' : ''}${footerRight}</span>
+  </div>
+  <div class="slide-footer-bottom"></div>
 </div>`;
 }
 
 /**
- * 커버 슬라이드
+ * 커버 슬라이드 (테마 기반 — 프로젝트별 자동 적용)
  */
 function renderCover(data, theme) {
   const p = data.project;
   const logo = theme.logo || { type: 'none' };
+  const outputPrefix = p.outputPrefix || p.title || '';
+  const companyTag = p.company?.name ? `[${p.company.name}]` : '';
 
-  let logoHtml = '';
-  if (logo.type === 'text' && logo.html) {
-    logoHtml = `<div class="cover-logo">${logo.html}</div>`;
-  } else if (logo.type === 'image' && logo.imagePath) {
-    logoHtml = `<img class="cover-logo-img" src="${logo.imagePath}" alt="Logo">`;
-  } else if (p.company?.name) {
-    logoHtml = `<div class="cover-logo">${p.company.name}</div>`;
-  }
+  // 참조 라인: [회사명][과제번호]_[SR]_타이틀
+  const jiraPart = p.jiraNo ? `[${p.jiraNo}]` : '';
+  const srPart = p.srNo && p.srNo !== '-' ? `_[${p.srNo}]` : '';
+  const refLine = `${companyTag}${jiraPart}${srPart} ${p.title || ''}`;
 
-  const metaHtml = renderCoverMetaTable(p);
+  // 버전 라인
+  const dateCompact = (p.date || '').replace(/-/g, '');
+  const versionLine = `${jiraPart}${srPart}_Ver ${p.version || '1.0'}_${dateCompact}`;
 
-  // 커버 부제목 라인
-  let subLine = '';
-  if (p.jiraNo && p.srNo) {
-    subLine = `<div class="cover-version">[${p.jiraNo}] [${p.srNo}]</div>`;
+  // 로고 (테마 기반)
+  let logoHtml;
+  if (logo.type === 'image' && logo.imagePath) {
+    logoHtml = `<img src="${logo.imagePath}" alt="Logo" style="max-height:180px;">`;
+  } else if (logo.type === 'text' && logo.html) {
+    logoHtml = `<div class="cover-logo-large">${logo.html}</div>`;
+  } else {
+    logoHtml = `<div class="cover-logo-large">${p.company?.name || p.serviceName || ''}</div>`;
   }
 
   return `
 <div class="slide" data-slide-type="cover">
-  <div class="slide-header" style="background: ${theme.primaryColor};">
-    <div class="hd-left"><span class="hd-id">화면설계서</span></div>
-    <div class="hd-right">${p.company?.name || ''} | ${p.writer || ''}</div>
+  <div class="cover-tab">${outputPrefix}</div>
+  <div class="slide-topbar"></div>
+  <div class="slide-accent"></div>
+  <div class="cover-layout">
+    <div class="cover-logo-area">${logoHtml}</div>
+    <div class="cover-text-area">
+      <div class="cover-ref-line">${refLine}</div>
+      <hr class="cover-separator">
+      <div class="cover-service-name">${p.serviceName || p.title || ''}</div>
+      <div class="cover-version-line">${versionLine}</div>
+    </div>
   </div>
-  <div class="slide-body cover-body">
-    ${logoHtml}
-    <div class="cover-title">${p.serviceName || p.title || ''}</div>
-    <div class="cover-version">Ver ${p.version || '1.0'} &nbsp;|&nbsp; ${p.date || ''}</div>
-    ${subLine}
-    ${metaHtml}
-  </div>
-  <div class="slide-footer"><span>${p.company?.name || ''}</span><span>${p.date || ''}</span></div>
 </div>`;
 }
 
@@ -513,7 +195,7 @@ function renderCoverMetaTable(p) {
 }
 
 /**
- * History 슬라이드
+ * History 슬라이드 (참조 PDF 포맷)
  */
 function renderHistory(data) {
   const p = data.project;
@@ -531,21 +213,24 @@ function renderHistory(data) {
 
   return `
 <div class="slide" data-slide-type="history">
-  ${renderSlideHeader(null, data, 'History')}
-  <div class="slide-body slide-content">
-    <table>
-      <thead>
-        <tr>
-          <th style="width:70px">Version</th>
-          <th style="width:100px">Update Date</th>
-          <th>Update Detail</th>
-          <th style="width:50px">page</th>
-          <th style="width:60px">Writer</th>
-          <th>Remarkers</th>
-        </tr>
-      </thead>
-      <tbody>${rows}</tbody>
-    </table>
+  ${renderTopBar()}
+  <div class="slide-body" style="display:flex;flex-direction:column;overflow:hidden;">
+    <div class="history-title">History</div>
+    <div class="slide-content" style="flex:1;padding:0 30px;">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:80px">Version</th>
+            <th style="width:110px">Update Date</th>
+            <th>Update Detail</th>
+            <th style="width:50px">page</th>
+            <th style="width:70px">Writer</th>
+            <th>Remarkers</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
   </div>
   ${renderSlideFooter(null, data)}
 </div>`;
@@ -568,44 +253,45 @@ function renderOverview(data) {
 function renderAssignmentOverview(data) {
   const p = data.project;
   const ov = data.overview;
-  const bullets = (ov.divider?.bullets || []).map(b =>
-    `<li style="list-style:disc; margin-left:18px; margin-bottom:10px; font-size:14px; color:#ccc;">${b}</li>`).join('');
 
+  // 01. Assignment Properties 띠(divider) 슬라이드 — 가운데 정렬
+  const divBullets = (ov.divider?.bullets || []).map(b =>
+    `<li style="list-style:disc; margin-left:18px; margin-bottom:10px; font-size:16px; color:#ccc;">${b}</li>`).join('');
   const dividerSlide = `
-<div class="slide" data-slide-type="overview" style="background:#1a1a1a; color:#fff;">
-  <div class="slide-header" style="background:#111; color:#fff; border-bottom:1px solid #333;">
-    <div class="hd-left"><span class="hd-id" style="color:#fff;">${ov.divider?.sub || 'Overview'}</span></div>
-    <div class="hd-right" style="color:#888;">${p.company?.name || ''}</div>
+<div class="slide" data-slide-type="divider" style="background:linear-gradient(135deg, #1a1a1a 0%, #111 100%); color:#fff;">
+  <div class="slide-body" style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:80px 120px;">
+    <div style="font-size:14px; color:#aaa; margin-bottom:12px;">${ov.divider?.sub || 'Assignment Definition for Operational'}</div>
+    <div style="font-size:30px; font-weight:700; margin-bottom:24px;">${ov.divider?.main || '01. Assignment Properties'}</div>
+    <ul style="text-align:left; display:inline-block;">${divBullets}</ul>
   </div>
-  <div class="slide-body cover-body">
-    <div style="font-size:24px; font-weight:700; margin-bottom:20px;">${ov.divider?.main || ''}</div>
-    <ul style="text-align:left; display:inline-block;">${bullets}</ul>
-  </div>
-  <div class="slide-footer" style="background:#111; border-top:1px solid #333; color:#666;"><span>${p.company?.name || ''}</span><span>${p.writer || ''}</span></div>
 </div>`;
 
+  // Assignment Detail 슬라이드 (참조 PDF: 세로 accent 바 + 타이틀 + 테이블)
   const detailSlide = `
 <div class="slide" data-slide-type="overview">
-  ${renderSlideHeader(null, data, 'Operational Assignment Detail')}
-  <div class="slide-body slide-content">
-    <table>
-      <thead><tr>
-        <th style="width:110px">Jira No.</th>
-        <th style="width:120px">SR No.</th>
-        <th>Assignment title</th>
-        <th>Assignment Detail</th>
-        <th style="width:110px">Requestor</th>
-      </tr></thead>
-      <tbody>
-        <tr>
-          <td style="text-align:center">${p.jiraNo || p.id || ''}</td>
-          <td style="text-align:center">${p.srNo || '-'}</td>
-          <td>${p.title || ''}</td>
-          <td>${ov.content?.detail || ''}</td>
-          <td>${p.requestor || ''}</td>
-        </tr>
-      </tbody>
-    </table>
+  ${renderTopBar()}
+  <div class="slide-body" style="display:flex;flex-direction:column;overflow:hidden;">
+    <div class="section-title-bar">
+      <div class="accent-bar"></div>
+      <div class="title-text">Operational Assignment Detail</div>
+    </div>
+    <div style="flex:1;padding:0 30px;overflow:auto;">
+      <div style="border-top:2px solid #333;margin-bottom:16px;"></div>
+      <table>
+        <thead><tr>
+          <th>Assignment title</th>
+          <th>Assignment Detail</th>
+          <th style="width:120px">Requestor</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td style="font-weight:600;">${p.title || ''}</td>
+            <td>${ov.content?.detail || ''}</td>
+            <td>${p.requestor || ''}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
   ${renderSlideFooter(null, data)}
 </div>`;
@@ -690,22 +376,27 @@ function renderInterfaceList(data) {
 
   return `
 <div class="slide" data-slide-type="overview">
-  ${renderSlideHeader(null, data, 'Task Target InterFace List')}
-  <div class="slide-body slide-content">
-    <table>
-      <thead>
-        <tr>
-          <th rowspan="2" style="width:80px">Office</th>
-          <th rowspan="2" style="width:65px">Channel</th>
-          <th colspan="4">Target Interface</th>
-          <th rowspan="2" style="width:90px">Interface Type</th>
-          <th rowspan="2" style="width:65px">Work Type</th>
-          <th rowspan="2" style="width:65px">Page ID</th>
-        </tr>
-        <tr><th>1 Depth</th><th>2 Depth</th><th>3 Depth</th><th>4 Depth</th></tr>
-      </thead>
-      <tbody>${rows}</tbody>
-    </table>
+  ${renderTopBar()}
+  <div class="slide-body" style="display:flex;flex-direction:column;overflow:hidden;">
+    <div style="padding:24px 30px 16px;">
+      <div style="font-size:22px;font-weight:700;padding-bottom:10px;border-bottom:2px solid #333;">Task Target InterFace List</div>
+    </div>
+    <div style="flex:1;padding:0 30px;overflow:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th rowspan="2" style="width:80px">Office</th>
+            <th rowspan="2" style="width:65px">Channel</th>
+            <th colspan="4">Target Interface</th>
+            <th rowspan="2" style="width:90px">Interface Type</th>
+            <th rowspan="2" style="width:65px">Work Type</th>
+            <th rowspan="2" style="width:65px">Page ID</th>
+          </tr>
+          <tr><th>1 Depth</th><th>2 Depth</th><th>3 Depth</th><th>4 Depth</th></tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
   </div>
   ${renderSlideFooter(null, data)}
 </div>`;
@@ -1416,16 +1107,9 @@ function renderDivider(divider, data) {
   }
 
   return `
-<div class="slide" data-slide-type="divider" style="background:#1a1a1a; color:#fff;">
-  <div class="slide-header" style="background:#111; color:#fff; border-bottom:1px solid #333;">
-    <div class="hd-left"><span class="hd-id" style="color:#fff;">Section</span></div>
-    <div class="hd-right" style="color:#888;">${companyName}</div>
-  </div>
-  <div class="slide-body cover-body">
+<div class="slide" data-slide-type="divider" style="background:linear-gradient(135deg, #1a1a1a 0%, #111 100%); color:#fff;">
+  <div class="slide-body" style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:80px 120px;">
     ${sectionNoHtml}${subHtml}${mainHtml}${bulletsHtml}${tocHtml}
-  </div>
-  <div class="slide-footer" style="background:#111; border-top:1px solid #333; color:#666;">
-    <span>${companyName}</span><span>${p.writer || ''}</span>
   </div>
 </div>`;
 }
@@ -1631,21 +1315,24 @@ function renderScreen(screen, data) {
 
     case 'design':
     default: {
-      // Design 슬라이드: 좌 60% 와이어프레임 / 우 40% Description
+      // Design 슬라이드: 메타 테이블 + 좌 60% 와이어프레임 / 우 40% Description
+      const screenMetaHtml = renderScreenMeta(screen, data);
       // Description 자동 분할: 높이 초과 시 continuation 슬라이드 생성
-      const DESC_MAX_HEIGHT = 900; // px (슬라이드 1080 - 헤더/푸터/패딩)
+      const DESC_MAX_HEIGHT = 850; // px (메타 테이블 공간 확보로 900→850)
       const descGroups = splitDescriptions(screen.descriptions, DESC_MAX_HEIGHT);
 
       if (descGroups.length <= 1) {
-        bodyHtml = `<div class="slide-body">
-          ${renderDesignLayout(screen)}
+        bodyHtml = `<div class="slide-body" style="display:flex;flex-direction:column;min-height:0;">
+          ${screenMetaHtml}
+          <div style="flex:1;min-height:0;overflow:hidden;">${renderDesignLayout(screen)}</div>
         </div>`;
       } else {
         // 첫 슬라이드: 와이어프레임 + 첫 그룹 + continuation 마커
         const contMarker = { continuation: 'next', marker: 0, label: '', items: null, type: '', details: [], overlay: null, commonNote: '', before: '', after: '', changeType: '', fnRef: [] };
         const firstScreen = { ...screen, descriptions: [...descGroups[0], contMarker] };
-        bodyHtml = `<div class="slide-body">
-          ${renderDesignLayout(firstScreen)}
+        bodyHtml = `<div class="slide-body" style="display:flex;flex-direction:column;min-height:0;">
+          ${screenMetaHtml}
+          <div style="flex:1;min-height:0;overflow:hidden;">${renderDesignLayout(firstScreen)}</div>
         </div>`;
       }
       break;
@@ -1653,9 +1340,11 @@ function renderScreen(screen, data) {
   }
 
   // 메인 슬라이드 push (항상 첫 번째)
+  // 참조 PDF 포맷: 모든 슬라이드에 topbar (차콜+틸), Design은 메타 테이블이 헤더 역할
+  const topBar = renderTopBar();
   slides.push(`
 <div class="slide" data-slide-type="${screenType}" style="position:relative;">
-  ${header}
+  ${topBar}
   ${modifiedHtml}
   ${changeLogHtml}
   ${bodyHtml}
@@ -1709,17 +1398,19 @@ function renderScreen(screen, data) {
 }
 
 /**
- * End 슬라이드
+ * End 슬라이드 (참조 PDF 포맷: "End of Document" + 우측 차콜 패널)
  */
 function renderEndOfDocument(data) {
-  const p = data.project;
-  const companyName = p.company?.name || '';
   return `
 <div class="slide" data-slide-type="end">
-  ${renderSlideHeader(null, data, 'END')}
-  <div class="slide-body cover-body">
-    <div style="font-size:32px; font-weight:700; color:#999; margin-bottom:10px;">END</div>
-    <div style="font-size:13px; color:#bbb;">감사합니다</div>
+  ${renderTopBar()}
+  <div class="end-layout">
+    <div class="end-content">
+      <div class="end-content-text">End of Document</div>
+    </div>
+    <div class="end-panel">
+      <div class="panel-accent" style="width:4px;height:100%;position:absolute;left:0;top:0;background:${data._theme?.primaryColor || '#3366CC'};"></div>
+    </div>
   </div>
   ${renderSlideFooter(null, data)}
 </div>`;
@@ -1729,6 +1420,8 @@ function renderEndOfDocument(data) {
  * HTML 최종 생성
  */
 function generateHTML(data, theme) {
+  // 테마 정보를 data에 전달 (renderSlideFooter, renderEndOfDocument에서 사용)
+  data._theme = theme;
   // 전역/공통 컴포넌트 → 슬라이드 말미에 배치 (메인 화면 먼저)
   // UI-000, MSG-*, COMP-*, DESC-*, isGlobalComponent:true 모두 포함
   const globalPrefixes = ['MSG', 'COMP', 'DESC'];
