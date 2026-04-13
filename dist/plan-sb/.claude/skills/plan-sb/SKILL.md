@@ -112,19 +112,26 @@ output/{serviceName}/{YYYYMMDD}/
 
 **MUST NOT**: 사용자에게 PDF 스크린샷을 직접 찍어달라고 요청. 자동화 스킬이므로 도구가 처리해야 함.
 
-**분석 대상**:
-1. **공통 장표 구조** — 표지/목차/변경이력/본문/끝 장표 순서 + 포함 여부
-2. **헤더/푸터 스타일** — 로고 위치, 프로젝트명 표기, 페이지 번호 형식, 배경색/폰트
-3. **메타 테이블 형식** — 작성자/검토자/승인자 배치, 일자 형식, 버전 표기
-4. **Description 영역** — 넘버링 방식(①②③ / 1.1.1 / 마커), 들여쓰기 수준, 강조 표기
-5. **구성 명칭** — 인터페이스명/화면ID 표기 방식, location 경로 형식
-6. **와이어프레임 스타일** — 선 굵기, 배경색, 마커 형태, 이미지 영역 표현
+**분석 대상** (체크리스트 — 전 항목 1:1 대조 필수):
+- [ ] 표지 구성 (로고, 프로젝트명, 버전, 일자)
+- [ ] 변경이력 테이블 형식
+- [ ] 디바이더 스타일 (배경색, 타이틀 형식)
+- [ ] Assignment Detail 테이블 형식
+- [ ] Interface List 테이블 형식
+- [ ] Design 슬라이드 헤더 (컬러 바 유무, 메타 테이블 유무)
+- [ ] Description 영역 형식 (마커 스타일, before/after 배치)
+- [ ] 푸터 형식
+- [ ] End of Document 형식
 
 **적용 규칙**:
 - 분석 결과를 `theme`, `project` 필드에 반영 (로고 경로, 색상, 회사명 등)
 - 장표 순서가 다르면 screens[] 순서를 포맷에 맞춤
 - Description 넘버링이 다르면 marker 형식 조정
 - **포맷 파일의 콘텐츠(텍스트/이미지)는 참고하지 않음** — 구조·스타일만 추출
+- **체크리스트 전 항목을 현재 template.js와 대조** → 불일치 항목을 **한 번에 전부 수정** 후 생성
+- 생성 후 참조 PDF와 1:1 비교 확인
+
+**금지**: "포맷 분석 완료"라고 말하면서 실제로는 대충 본 것. 분석했으면 위 체크리스트를 출력해야 한다.
 
 **출력 마커**: `[포맷 참고] {파일명} → 장표 {n}종 / 헤더: {스타일} / Description: {형식}`
 
@@ -179,6 +186,7 @@ output/{serviceName}/{YYYYMMDD}/
 | **Mode C: 현행 이미지 참고 + HTML 목업** | 현행 구조를 참고하되 변경 후를 보여줘야 할 때 | 현행 캡쳐를 분석하여 레이아웃 구조 파악 → 변경 후 HTML 목업 생성 | 현행 이미지는 input/ 참고용, 산출물에는 변경 후 목업 |
 
 **중요 규칙**:
+- **Mode A가 기본값** — wireframe[] 박스 렌더링은 구조만 전달하고 실제 UI 형태를 보여주지 못한다. **HTML 목업을 직접 퍼블리싱 → 스크린샷이 기본 방식**이다. wireframe[]은 매우 단순한 구조(팝업, 바텀시트 등)에만 한정 사용
 - **현행 캡쳐 = 참고 자료(input/)** — 산출물의 uiImagePath에 현행 캡쳐를 그대로 넣지 않는다 (Mode B 제외)
 - Mode A/C에서 HTML 목업 생성 시: 마커 번호를 HTML 내에 CSS absolute로 직접 배치 → overlay 좌표 추정 불필요
 - Mode B에서만 uiImagePath에 현행 이미지 사용 + overlay 좌표 지정
@@ -279,6 +287,10 @@ node scripts/mockup-capture.js input/mockup-mo.html input/ --mobile-only --name=
 3. descriptions marker 수와 wireframe marker 수 일치 필수
 4. 모든 요소에 label 필수 (빈 label 금지)
 5. height 비율은 아래 **「와이어프레임 UI 비율 원칙」** 섹션의 테이블을 따른다. 합계 ≈ 990px (±50px), 초과 시 overflow.
+6. **label은 UI 구조만 표현** — 실제 콘텐츠(상품명, 가격, 통신사명 등)를 label에 넣지 않는다
+   - (O) card label: "요금제 카드" / button label: "가입하기"
+   - (X) card label: "토스 마이알뜰 CU15GB+ 월 18,000원 가입하기 비교담기"
+   - 실제 콘텐츠 상세는 **Description(수정 전/후)**에만 기재
 
 ### 와이어프레임 UI 비율 원칙
 
@@ -697,6 +709,8 @@ JSON 작성 전 반드시 읽을 것: `scripts/template.js` (renderWfElement 등
 | 17 | 화면 표현 모드 일관성 | PC/MO가 동일 모드(A/B/C)인지 확인. 혼재 시 Fail |
 | 18 | 현행 이미지 활용 | Mode A/C에서 현행 캡쳐가 uiImagePath에 직접 사용되면 Fail. Mode B만 허용 |
 | 19 | pmComments 필수 | design 슬라이드에 pmComments 1건 이상. 빈 배열이면 WARN |
+| 20 | 시각적 완결성 검증 | generate.js 후 Design 슬라이드를 Read(Vision)으로 열어 확인. wireframe/목업 없이 텍스트 description만 있으면 Fail. 오버레이 마커가 정확한 영역을 덮고 있는지 확인. "고객에게 보여줄 수 있는가" 판단 |
+| 21 | Description 기능 중심 | Description items[]가 UI 스펙(색상, px, margin 등)이 아닌 **기능 구현 내용**(동작, 조건 분기, 상태 변화)을 기술하는지 확인. UI 스펙은 목업이 전달, Description은 기능 명세 |
 | X1 | 프로젝트명 일관성 | context/project.md 존재 시 Cover 과제명 일치 |
 | X2 | FN↔Screen 수량 정합성 | context/fn.md 존재 시 |
 | X3 | IA 경로 일관성 | context/ia.md 존재 시 |
@@ -726,7 +740,10 @@ JSON 작성 전 반드시 읽을 것: `scripts/template.js` (renderWfElement 등
 | # | 변명 | 반박 | 대응 |
 |---|------|------|------|
 | R1 | "wireframe은 대충 그리면 된다" | 와이어프레임 부정확 → 디자인/퍼블 전체 재작업. 화면설계서는 구현의 기준선 | wireframe[] 구성 원칙 5가지 준수 + verify.js 검증 |
-| R2 | "Description은 간단히 적으면 된다" | 기능 명세 부족 → 개발자가 임의 구현. 특히 상태 변화/조건 분기 누락 | marker별 items[] 상세 기재. 조건/상태/예외 포함 |
+| R2 | "Description은 간단히 적으면 된다" | 기능 명세 부족 → 개발자가 임의 구현. 특히 상태 변화/조건 분기 누락 | marker별 items[] 상세 기재. **UI 스펙이 아닌 기능 구현 내용** 중심. 조건/상태/예외 포함 |
+| R5 | "사용자 의도는 이럴 것이다 (추측)" | 추측이 맞을 확률보다 틀릴 확률이 높다. 틀리면 전체 재작업 | 판단 불확실 시 즉시 질문. "모르면 물어본다" |
+| R6 | "포맷 분석 완료 — 대충 봤다" | 메타 테이블 누락, 헤더 불일치를 사용자가 하나씩 지적하는 상황 발생 | 참조 PDF 체크리스트 전 항목 1:1 대조 후 출력 필수 |
+| R7 | "default 테마로 충분하다" | 프로젝트 전용 테마가 없으면 default로 먼저 진행하되, 완성 후 수정 제안 | 테마 세팅에 시간 쓰지 말고 산출물 먼저 |
 | R3 | "MSG Case는 나중에 정의한다" | 비정상 상태(Empty/Error/Loading) 미정의 = 사용자 경험 구멍 | 검색/폼/외부 데이터 화면 → MSG Case 필수 |
 | R4 | "기존 JSON을 전체 재생성하는 게 빠르다" | 전체 재생성 = 이전 수정 내용 유실. 기존 JSON 수정 모드 적용 필수 | 해당 screen만 수정, 나머지 보존 |
 
@@ -740,12 +757,17 @@ JSON 작성 전 반드시 읽을 것: `scripts/template.js` (renderWfElement 등
 | RF4 | Option B(wfHtml) 남용 | deprecated 방향. flex-direction 상속 버그 위험 | Option A(wireframe[]) 우선 |
 | RF5 | Description 테이블 높이 > 900px 예상인데 continuation 없음 | Description 잘림. PDF에서 명세 누락 | 슬라이드 분할 + continuation 필수 |
 | RF6 | PDF/PPT 포맷 제공했는데 테마 미생성 | 입력 감지에서 포맷 파일 스킵. 스타일 미반영 | 입력 감지 → 포맷 분석 → 테마 생성 |
+| RF7 | Self-Check 형식적 PASS (시각 미확인) | verify.js PASS만으로 끝내고 실제 슬라이드를 열어보지 않음 | generate.js 후 Design 슬라이드를 Read(Vision)으로 열어 "고객에게 보여줄 수 있는가" 판단 |
+| RF8 | 영상/이미지 톤을 사이트 테마로 착각 | 히어로 영상이 어두우면 "다크 테마"로 단정. 실제는 라이트 | 영상/이미지 톤 ≠ 사이트 배경 테마. 불확실하면 사용자에게 확인 |
 
 ## Gotchas (실전 반복 실패 메모)
 
 - **레퍼런스 없이 코드 패치 금지**: 비짓강남에서 template.js 1700줄을 인라인 패치 5차례 → 폐기 수준. **코드 수정 전 레퍼런스/벤치마킹 먼저**.
 - **page 전용 엔진에 비표준 UI 강제 금지**: containerType(chatbot-panel) 같은 비표준 타입을 page 엔진에 억지로 끼우면 렌더링 깨짐. 엔진 한계 확인 후 대안 경로(직접 HTML 생성) 검토.
 - **렌더링 결과 브라우저 실측 필수**: verify 축소판과 실제 브라우저 출력 괴리. 반드시 브라우저에서 확인.
+- **ref PDF 레이아웃 추측 금지**: PDF 슬라이싱이 부정확하면 2슬라이드가 합쳐져 보일 수 있다. 불확실하면 코드 수정 전에 사용자에게 확인. "일치합니다"라고 단정 전에 실제 시각 결과물을 열어서 확인.
+- **기획 방향 먼저, 도구 나중**: JSON/overlay/렌더링 반복 수정 전에 변경 범위·항목·UI 컨셉을 먼저 확정. 기획 없이 도구를 돌리면 범위 초과·UI 불일치·구조 오류가 연쇄 발생.
+- **임의 기능 추가 금지**: 요청에 없는 기능(비교담기 등)을 임의로 추가하지 않는다.
 
 ## 참조
 
