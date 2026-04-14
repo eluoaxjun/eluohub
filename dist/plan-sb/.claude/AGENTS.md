@@ -13,6 +13,11 @@
 - 호출: 스킬 실행 완료 후 자동 또는 수동
 - 파일: `agents/planning-reviewer.md`
 
+### sb-wf-design (Inherit)
+- 역할: wireframe[] UX 강화 (generate.js 실행 전 필수)
+- 호출: plan-sb Step 1 완료 후 자동
+- 파일: `agents/sb-wf-design.md`
+
 ## 스킬
 
 ### plan-sb (화면설계서)

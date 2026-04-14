@@ -136,7 +136,7 @@ status: 완료
 
 | 항목 | 규칙 |
 |------|------|
-| 저장 경로 | `output/{프로젝트명}/` (날짜 폴더 없음 — HTML/PDF 고정 파일) |
+| 저장 경로 | `output/{프로젝트명}/{YYYYMMDD}/` (generate.js가 날짜 폴더 자동 생성) |
 | 파일명 | JSON `outputPrefix` 필드 값 사용 |
 | context | `output/{프로젝트명}/context/sb.md` (overwrite) |
 | FN 스캔 | `output/{프로젝트명}/*/FN_*.md` (날짜 하위폴더 포함 필수) |

@@ -15,9 +15,9 @@
 - [ ] End of Document 슬라이드 존재
 
 ## 16:9 슬라이드 규격 (v2)
-- [ ] 모든 슬라이드 1280×720px 고정 (overflow:hidden)
-- [ ] PDF landscape 출력 (`size: 1280px 720px landscape`)
-- [ ] 슬라이드 구조: slide-header(36px) + slide-body + slide-footer(24px)
+- [ ] 모든 슬라이드 1920×1080px 고정 (overflow:hidden)
+- [ ] PDF landscape 출력 (`size: 1920px 1080px landscape`)
+- [ ] 슬라이드 구조: slide-header(54px) + slide-body + slide-footer(36px)
 - [ ] Design 슬라이드 레이아웃: 좌 60% wireframe-area + 우 40% description-panel
 
 ## Screen 슬라이드 품질
@@ -44,7 +44,7 @@
 ## PDF 출력
 - [ ] HTML 파일 정상 생성
 - [ ] PDF 파일 정상 생성 (Playwright 미설치 시 자동 설치)
-- [ ] PDF landscape 1280×720px 확인
+- [ ] PDF landscape 1920×1080px 확인
 - [ ] 배경 인쇄 포함 (printBackground: true)
 - [ ] 슬라이드 간 페이지 구분 정상 (page-break-after: always)
 
