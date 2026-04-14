@@ -711,6 +711,10 @@ JSON 작성 전 반드시 읽을 것: `scripts/template.js` (renderWfElement 등
 | 19 | pmComments 필수 | design 슬라이드에 pmComments 1건 이상. 빈 배열이면 WARN |
 | 20 | 시각적 완결성 검증 | generate.js 후 Design 슬라이드를 Read(Vision)으로 열어 확인. wireframe/목업 없이 텍스트 description만 있으면 Fail. 오버레이 마커가 정확한 영역을 덮고 있는지 확인. "고객에게 보여줄 수 있는가" 판단 |
 | 21 | Description 기능 중심 | Description items[]가 UI 스펙(색상, px, margin 등)이 아닌 **기능 구현 내용**(동작, 조건 분기, 상태 변화)을 기술하는지 확인. UI 스펙은 목업이 전달, Description은 기능 명세 |
+| 22 | Mode B overlay 필수 | uiImagePath 사용(Mode B) 시 descriptions[].overlay 좌표가 1건 이상 존재해야 함. overlay 없으면 마커가 이미지에 표시되지 않아 "어디가 변경인지" 전달 불가. WARN |
+| 23 | overlay 헤더 겹침 방지 | overlay.top이 5% 미만이면 메타 테이블/헤더와 겹칠 가능성. top < 5%인 마커는 위치 재조정 WARN |
+| 24 | 이미지 비율 적합성 | uiImagePath 이미지가 와이어프레임 영역(60%, 약 1152×990px)에 비해 지나치게 작거나 세로가 짧으면 하단 빈 공간 발생. PC 이미지는 최소 높이 600px 이상 권장. 빈 공간 350px 이상이면 WARN |
+| 25 | Description 카운트 정확성 | verify.js description 카운트에 pmComments를 포함하지 않는지 확인. 실제 description 수와 WARN 기준(7개) 비교 시 pmComments 제외 |
 | X1 | 프로젝트명 일관성 | context/project.md 존재 시 Cover 과제명 일치 |
 | X2 | FN↔Screen 수량 정합성 | context/fn.md 존재 시 |
 | X3 | IA 경로 일관성 | context/ia.md 존재 시 |
@@ -768,6 +772,8 @@ JSON 작성 전 반드시 읽을 것: `scripts/template.js` (renderWfElement 등
 - **ref PDF 레이아웃 추측 금지**: PDF 슬라이싱이 부정확하면 2슬라이드가 합쳐져 보일 수 있다. 불확실하면 코드 수정 전에 사용자에게 확인. "일치합니다"라고 단정 전에 실제 시각 결과물을 열어서 확인.
 - **기획 방향 먼저, 도구 나중**: JSON/overlay/렌더링 반복 수정 전에 변경 범위·항목·UI 컨셉을 먼저 확정. 기획 없이 도구를 돌리면 범위 초과·UI 불일치·구조 오류가 연쇄 발생.
 - **임의 기능 추가 금지**: 요청에 없는 기능(비교담기 등)을 임의로 추가하지 않는다.
+- **Mode B(현행 이미지)에서 overlay 빠뜨리지 않기**: uiImagePath만 넣고 overlay 좌표를 안 넣으면 마커 없는 이미지만 나온다. "어디가 바뀌는지" 표시가 안 되면 화면설계서가 아니라 스크린샷.
+- **이미지 하단 빈 공간**: 캡쳐 이미지가 와이어프레임 영역보다 짧으면 회색 빈 공간이 생긴다. 캡쳐 시 해당 영역만 크롭하거나, full-page 캡쳐 시 dim 배경까지 포함됐는지 확인.
 
 ## 참조
 

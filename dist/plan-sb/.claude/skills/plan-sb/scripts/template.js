@@ -96,13 +96,6 @@ function renderScreenMeta(screen, data) {
 }
 
 /**
- * 상단 차콜 바 + 틸 accent (참조 PDF 포맷)
- */
-function renderTopBar() {
-  return `<div class="slide-topbar"></div><div class="slide-accent"></div>`;
-}
-
-/**
  * 슬라이드 푸터 (테마 기반 — 프로젝트별 자동 적용)
  */
 function renderSlideFooter(screen, data) {
@@ -150,18 +143,15 @@ function renderCover(data, theme) {
 
   return `
 <div class="slide" data-slide-type="cover">
-  <div class="cover-tab">${outputPrefix}</div>
-  <div class="slide-topbar"></div>
-  <div class="slide-accent"></div>
+  ${renderSlideHeader(null, data, '화면설계서')}
   <div class="cover-layout">
     <div class="cover-logo-area">${logoHtml}</div>
     <div class="cover-text-area">
-      <div class="cover-ref-line">${refLine}</div>
-      <hr class="cover-separator">
       <div class="cover-service-name">${p.serviceName || p.title || ''}</div>
-      <div class="cover-version-line">${versionLine}</div>
+      <div class="cover-version-line">Ver ${p.version || '1.0'}  |  ${p.date || ''}</div>
     </div>
   </div>
+  ${renderSlideFooter(null, data)}
 </div>`;
 }
 
@@ -213,7 +203,7 @@ function renderHistory(data) {
 
   return `
 <div class="slide" data-slide-type="history">
-  ${renderTopBar()}
+  ${renderSlideHeader(null, data, 'History')}
   <div class="slide-body" style="display:flex;flex-direction:column;overflow:hidden;">
     <div class="history-title">History</div>
     <div class="slide-content" style="flex:1;padding:0 30px;">
@@ -269,12 +259,8 @@ function renderAssignmentOverview(data) {
   // Assignment Detail 슬라이드 (참조 PDF: 세로 accent 바 + 타이틀 + 테이블)
   const detailSlide = `
 <div class="slide" data-slide-type="overview">
-  ${renderTopBar()}
+  ${renderSlideHeader(null, data, 'Operational Assignment Detail')}
   <div class="slide-body" style="display:flex;flex-direction:column;overflow:hidden;">
-    <div class="section-title-bar">
-      <div class="accent-bar"></div>
-      <div class="title-text">Operational Assignment Detail</div>
-    </div>
     <div style="flex:1;padding:0 30px;overflow:auto;">
       <div style="border-top:2px solid #333;margin-bottom:16px;"></div>
       <table>
@@ -376,11 +362,8 @@ function renderInterfaceList(data) {
 
   return `
 <div class="slide" data-slide-type="overview">
-  ${renderTopBar()}
+  ${renderSlideHeader(null, data, 'Task Target InterFace List')}
   <div class="slide-body" style="display:flex;flex-direction:column;overflow:hidden;">
-    <div style="padding:24px 30px 16px;">
-      <div style="font-size:22px;font-weight:700;padding-bottom:10px;border-bottom:2px solid #333;">Task Target InterFace List</div>
-    </div>
     <div style="flex:1;padding:0 30px;overflow:auto;">
       <table>
         <thead>
@@ -1340,11 +1323,9 @@ function renderScreen(screen, data) {
   }
 
   // 메인 슬라이드 push (항상 첫 번째)
-  // 참조 PDF 포맷: 모든 슬라이드에 topbar (차콜+틸), Design은 메타 테이블이 헤더 역할
-  const topBar = renderTopBar();
+  // Design 슬라이드: 메타 테이블이 헤더 역할, 그 외는 slideHeader 사용
   slides.push(`
 <div class="slide" data-slide-type="${screenType}" style="position:relative;">
-  ${topBar}
   ${modifiedHtml}
   ${changeLogHtml}
   ${bodyHtml}
@@ -1403,13 +1384,11 @@ function renderScreen(screen, data) {
 function renderEndOfDocument(data) {
   return `
 <div class="slide" data-slide-type="end">
-  ${renderTopBar()}
+  ${renderSlideHeader(null, data, 'END')}
   <div class="end-layout">
     <div class="end-content">
-      <div class="end-content-text">End of Document</div>
-    </div>
-    <div class="end-panel">
-      <div class="panel-accent" style="width:4px;height:100%;position:absolute;left:0;top:0;background:${data._theme?.primaryColor || '#3366CC'};"></div>
+      <div class="end-content-text">END</div>
+      <div style="font-size:16px; color:#aaa; margin-top:12px;">감사합니다</div>
     </div>
   </div>
   ${renderSlideFooter(null, data)}

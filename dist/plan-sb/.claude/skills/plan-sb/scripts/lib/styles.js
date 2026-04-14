@@ -130,7 +130,7 @@ function css(theme) {
 
   /* Cover */
   .cover-body { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; gap: 12px; }
-  .cover-tab { position: absolute; top: 0; left: 0; background: #555; color: #fff; font-size: 11px; padding: 4px 12px; z-index: 2; }
+  .cover-tab { display: none; }
   .cover-layout { display: flex; align-items: center; flex: 1; padding: 0 120px; gap: 60px; }
   .cover-logo-area { flex-shrink: 0; }
   .cover-logo-large { font-size: 140px; font-weight: 700; color: ${theme.primaryColor}; line-height: 1; font-family: Arial, Helvetica, sans-serif; }
@@ -337,10 +337,8 @@ function css(theme) {
 
   /* End 슬라이드 */
   .end-layout { display: flex; flex: 1; overflow: hidden; }
-  .end-content { flex: 1; display: flex; align-items: center; justify-content: center; }
-  .end-content-text { font-size: 24px; color: #555; font-weight: 400; }
-  .end-panel { width: 200px; background: #333; display: flex; flex-direction: column; flex-shrink: 0; position: relative; }
-  .end-panel::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 4px; background: ${theme.primaryColor}; }
+  .end-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .end-content-text { font-size: 28px; color: #999; font-weight: 300; letter-spacing: 2px; }
 
   /* Divider 슬라이드 */
   .divider-section-no { font-size: 56px; font-weight: 900; color: rgba(255,255,255,0.15); margin-bottom: 8px; }
