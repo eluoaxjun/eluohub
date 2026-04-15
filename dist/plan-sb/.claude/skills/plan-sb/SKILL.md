@@ -53,7 +53,7 @@ argument-hint: "[JSON 데이터 파일경로 또는 프로젝트 요구사항]"
 
 | 모드 | 조건 | 동작 |
 |------|------|------|
-| **연계 모드** | `output/{프로젝트명}/*/FN_*.md` 존재 | FN 기반 screens 자동 구성, fnRef 매핑, 추적성 유지 |
+| **연계 모드** | `output/{serviceName}/*/FN_*.md` 존재 | FN 기반 screens 자동 구성, fnRef 매핑, 추적성 유지 |
 | **독립 모드** | FN 미존재, 프롬프트/이미지/URL 입력 | 프롬프트 기반 직접 구성, fnRef 생략, ID 역참조 없음 |
 
 **연계 모드 권장**: 파이프라인(QST→REQ→FN→SB)을 거친 연계 실행이 독립 실행보다 **더 정확하고 완결성 높은 산출물**을 생성합니다.
@@ -149,7 +149,7 @@ node scripts/pdf-capture.js "{PDF절대경로}" input/
 | 검색 대상 | 경로 패턴 | 발견 시 | 미발견 시 |
 |-----------|----------|---------|----------|
 | JSON 데이터 | `data/*.json`, `input/*.json` | 자동 모드 | 대화형 수집 모드 |
-| FN 산출물 | `output/{프로젝트명}/*/FN_*.md` | screens 자동 구성 | — |
+| FN 산출물 | `output/{serviceName}/*/FN_*.md` | screens 자동 구성 | — |
 | 이미지 | `input/*.{png,jpg,jpeg,gif,webp}` | uiImagePath 자동 매핑 + 선택적 Vision 분석 | wireframe 표시 |
 | **PDF/PPT 포맷** | `input/*.{pdf,ppt,pptx}` | 포맷 분석 → 테마 JSON 자동 생성 (§ PDF/PPT 포맷 참고 절차) | default.json 테마 사용 |
 
@@ -636,7 +636,7 @@ JSON 작성 전 반드시 읽을 것: `scripts/template.js` (renderWfElement 등
 ## 출력 명세
 
 - HTML: `{outputPrefix}.html` (미설정 시: `{프로젝트명}_SB_{YYYYMMDD}_{버전}.html`)
-- 저장: `output/{프로젝트명}/{YYYYMMDD}/`
+- 저장: `output/{serviceName}/{YYYYMMDD}/`
 - 커맨드: `node .claude/skills/plan-sb/scripts/generate.js <data-file.json>`
 
 ## 16:9 슬라이드 명세 (v2)
@@ -701,7 +701,7 @@ JSON 작성 전 반드시 읽을 것: `scripts/template.js` (renderWfElement 등
 
 ## 금지 패턴
 
-- `*_FN_*.md` 패턴으로 FN 스캔 금지 → `output/{프로젝트명}/*/FN_*.md` 사용
+- `*_FN_*.md` 패턴으로 FN 스캔 금지 → `output/{serviceName}/*/FN_*.md` 사용
 - FN 처리 로직·알고리즘·AC 수치 기준을 Description에 복사 금지
 - `[미확인]`, `[미정]` 항목 잔존 금지
 - design 슬라이드 내 msgCases 인라인 혼재 금지

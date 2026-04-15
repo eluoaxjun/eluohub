@@ -1,7 +1,7 @@
 # 화면설계서 (SB) 체크리스트 v2
 
 ## JSON 데이터 완전성
-- [ ] project 필수 필드 존재: `id`, `title`, `serviceName`, `version`, `date`, `writer`, `company.name`, `requestor`
+- [ ] project 필수 필드 존재: `id`, `title`, `serviceName`, `version`, `date`, `writer` (권장: `company.name`, `requestor`)
 - [ ] `$schema: "screen-design-schema-v2"` 또는 v1 자동 정규화 조건 충족 (`assignment` 필드 존재)
 - [ ] `history[]` 최소 1건 존재
 - [ ] `screens[]` 최소 1건 존재
