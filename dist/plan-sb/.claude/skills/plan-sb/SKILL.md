@@ -43,7 +43,7 @@ argument-hint: "[JSON 데이터 파일경로 또는 프로젝트 요구사항]"
 | **Step 0.5** | **plan-sb** | **기획 확정 게이트 — 변경 범위·화면 표현 방식을 사용자 확인 후 진행** |
 | Step 1 | plan-sb | JSON 구성 (자동/대화형) |
 | **Step 1.5** | **sb-wf-design** | **wireframe[] UX 강화 (generate.js 실행 전 필수)** |
-| **Step 1.7** | **plan-sb** | **와이어프레임 렌더링 방식 결정 (Option A 권장 / Option B 한정)** |
+| **Step 1.7** | **plan-sb** | **화면 표현 방식 결정 — Mode A(HTML 목업) 기본 / wireframe[] 단독은 한정** |
 | Step 2 | plan-sb | generate.js → HTML/PDF 생성 |
 | Step 3 | plan-sb | Self-Check + PM DA |
 
@@ -263,20 +263,30 @@ node scripts/mockup-capture.js input/mockup-mo.html input/ --mobile-only --name=
 
 **출력 마커**: `[삽입 위치] {위치 설명} → wireframe[{인덱스}] 뒤`
 
-## Step 1.7: 와이어프레임 렌더링 방식 결정
+## Step 1.7: 화면 표현 방식 결정
 
-**Option A (권장) — wireframe[] 배열 자동 렌더링**
+화면 표현 모드(Mode A/B/C)에 따라 좌측 60% 패널의 렌더링 방식을 결정한다.
 
-신규 스크린은 무조건 Option A 사용. generate.js가 `wireframe[]`를 읽어 `renderWfElement()`로 자동 렌더링.
+**Mode A (기본) — HTML 목업 퍼블리싱**
 
-- 장점: flex-direction 상속 버그 없음, verify.js 자동 검증 가능
-- 방법: `wireframe[]` 배열을 완성하면 별도 HTML 작성 불필요
+변경 후 UI를 실제처럼 보여줘야 할 때. AI가 HTML을 직접 퍼블리싱 → mockup-capture.js로 스크린샷 → uiImagePath에 설정.
 
-**Option B (한정) — wfHtml 직접 작성**
+- wireframe[]은 **구조 제안 + Description 마커 매핑용**으로만 사용. 최종 렌더링은 HTML 목업이 담당
+- wireframe[] 박스 렌더링은 고객에게 보여줄 수 없는 품질. **기본값이 아님**
 
-18개 레이아웃 패턴 외의 복잡한 커스텀 배치만 사용. ⚠️ deprecated 방향. flex-direction 상속 버그 주의.
+**Mode B — 현행 이미지 + 마커 오버레이**
 
-> **패턴 1~10, CSS 클래스 목록, Option B HTML 예시**: `references/wireframe-patterns.md` 참조
+현행 캡쳐 위에 변경 지점만 표시할 때. uiImagePath에 현행 이미지 + overlay 좌표.
+
+**wireframe[] 단독 렌더링 — 한정 사용**
+
+아래 조건에서**만** wireframe[]을 최종 렌더링으로 사용:
+- 매우 단순한 구조 (팝업, 바텀시트, 모달 등 요소 5개 이하)
+- 초기 프로토타이핑 단계 (고객 전달 목적이 아닐 때)
+
+이 경우에도 group/card/button 타입 조합을 정교하게 구성하고, label은 구조만 표현한다.
+
+> **패턴 1~10, CSS 클래스 목록**: `references/wireframe-patterns.md` 참조
 
 **wireframe[] 허용 타입** (진실의 원천: `scripts/lib/element-types.js`):
 `header` / `gnb` / `nav` / `text` / `input` / `button` / `card` / `image` / `gallery` / `map` / `list` / `banner` / `divider` / `table` / `popup` / `group` / `tag`
