@@ -77,7 +77,7 @@ JSON 데이터 준비 완료 후 generate.js를 실행합니다:
 node .claude/skills/plan-sb/scripts/generate.js <data-file.json>
 ```
 
-- 성공 시: `output/{프로젝트명}/{outputPrefix}.html` + `.pdf` 동시 생성 확인
+- 성공 시: `output/{serviceName}/{YYYYMMDD}/{outputPrefix}.html` + `.pdf` 동시 생성 확인
 - 실패 시: 오류 메시지를 사용자에게 전달하고 중단
 
 ### Step 3: Self-Check
@@ -109,8 +109,8 @@ status: 완료
 - Screen: N개 (design:N / description:N / msgCase:N / component:N)
 - 테마: {preset}
 ## 다음 단계 참조용 요약
-- HTML: output/{프로젝트명}/{outputPrefix}.html
-- PDF: output/{프로젝트명}/{outputPrefix}.pdf
+- HTML: output/{serviceName}/{YYYYMMDD}/{outputPrefix}.html
+- PDF: output/{serviceName}/{YYYYMMDD}/{outputPrefix}.pdf
 ```
 
 **절대 금지**: `_context.md` append 방식 사용 금지

@@ -99,18 +99,25 @@ output/{serviceName}/{YYYYMMDD}/
 
 사용자가 기존 화면설계서 PDF/PPT를 포맷 참고용으로 제공하면 아래를 분석한다.
 
-**PDF 읽기 방법** (우선순위 순):
-1. **pdf-capture.js 실행 (권장)** — pdf.js 기반으로 PDF 각 페이지를 고해상도 이미지로 변환. poppler 불필요.
-   ```bash
-   node scripts/pdf-capture.js "{PDF절대경로}" input/
-   ```
-   생성된 `input/pdf-page-*.png` → Read(Vision)으로 시각 분석. pdf-info.json에 페이지 수/파일 목록 기록.
-2. **Read(pdf, pages)** — `Read(file_path, pages: "1-5")` 로 직접 읽기. poppler 설치 시에만 동작.
-3. **Read 직접 실패 + pdf-capture.js 없는 환경** — 사용자에게 pdf-capture.js 설치 안내.
+**PDF 읽기 방법** (2단계 검증):
 
-> **금지**: `node -e` 인라인 원라이너로 PDF를 열지 않는다. 반드시 pdf-capture.js를 사용한다.
+**Step A: 구조 파악** — Read(pdf, pages)로 텍스트 추출
+```
+Read(file_path, pages: "1-5")   ← 최대 20페이지/요청
+```
+- 슬라이드 수, 테이블 헤더, 마커 번호, 필드명 등 **구조 정보** 추출
+- 체크리스트 항목 중 텍스트로 확인 가능한 것을 먼저 대조
 
-**MUST NOT**: 사용자에게 PDF 스크린샷을 직접 찍어달라고 요청. 자동화 스킬이므로 도구가 처리해야 함.
+**Step B: 시각 검증** — 구조만으로 불확실한 부분을 Vision으로 확인
+```bash
+node scripts/pdf-capture.js "{PDF절대경로}" input/
+```
+- 색상 바, 마커 스타일, 레이아웃 배치, 폰트 크기 등 **시각 요소**는 이미지로 확인
+- Step A에서 확인된 페이지만 선택적으로 Vision 분석 (전 페이지 불필요)
+
+**정확성 판정 기준**: Step A 텍스트와 Step B 시각이 **모두 체크리스트와 일치**해야 "분석 완료". 텍스트만 읽고 "분석 완료"는 허용 안 됨 — 시각 요소(색상, 배치)를 최소 1페이지 이상 Vision으로 교차 확인해야 함.
+
+> **금지**: `node -e` 인라인 원라이너로 PDF를 열지 않는다.
 
 **분석 대상** (체크리스트 — 전 항목 1:1 대조 필수):
 - [ ] 표지 구성 (로고, 프로젝트명, 버전, 일자)
@@ -269,10 +276,21 @@ node scripts/mockup-capture.js input/mockup-mo.html input/ --mobile-only --name=
 
 **Mode A (기본) — HTML 목업 퍼블리싱**
 
-변경 후 UI를 실제처럼 보여줘야 할 때. AI가 HTML을 직접 퍼블리싱 → mockup-capture.js로 스크린샷 → uiImagePath에 설정.
+변경 후 UI를 실제처럼 보여줘야 할 때. 구체 절차:
 
-- wireframe[]은 **구조 제안 + Description 마커 매핑용**으로만 사용. 최종 렌더링은 HTML 목업이 담당
+1. **HTML 작성**: `input/mockup-pc.html` (PC), `input/mockup-mo.html` (MO)에 변경 후 UI를 직접 퍼블리싱
+   - 마커+점선 CSS 포함 (§ HTML 목업 마커+점선 스타일 참조)
+   - 현행 사이트 구조를 참고하되 변경 부분만 구현. 전체 페이지 불필요 — 해당 영역만
+2. **스크린샷 캡쳐**: mockup-capture.js로 PNG 생성
+   ```bash
+   node scripts/mockup-capture.js input/mockup-pc.html input/ --name={화면코드}
+   node scripts/mockup-capture.js input/mockup-mo.html input/ --mobile-only --name={화면코드} --full-page
+   ```
+3. **JSON 반영**: 생성된 `input/{화면코드}-pc.png`를 해당 screen의 `uiImagePath`에 설정
+4. **wireframe[]**: 구조 제안 + Description 마커 매핑용으로만 유지. 최종 렌더링은 HTML 목업 이미지가 담당
+
 - wireframe[] 박스 렌더링은 고객에게 보여줄 수 없는 품질. **기본값이 아님**
+- mockup-capture.js 없는 환경: HTML을 직접 브라우저에서 열어 스크린샷 후 input/에 저장해도 됨
 
 **Mode B — 현행 이미지 + 마커 오버레이**
 
