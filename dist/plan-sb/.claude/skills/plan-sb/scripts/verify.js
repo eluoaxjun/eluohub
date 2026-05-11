@@ -393,6 +393,66 @@ async function main() {
           );
         }
       }
+
+      // ⑧ overlay 좌표 정합성 검증 (Phase 3.2 — 2026-05-11 추가)
+      // 위치 정합성: overlay가 wireframe-area 내부에 있고, 크기·겹침이 정당한가
+      if (['design', 'msgCase'].includes(slideType)) {
+        const overlays = slide.querySelectorAll('.marker-overlay');
+        const wfAreaEl = slide.querySelector('.wireframe-area');
+        if (wfAreaEl && overlays.length > 0) {
+          const wfR = wfAreaEl.getBoundingClientRect();
+          const wfArea = wfR.width * wfR.height;
+          const ovList = Array.from(overlays).map(ov => ({ el: ov, rect: ov.getBoundingClientRect() }));
+
+          ovList.forEach((o, oi) => {
+            const r = o.rect;
+            const TOL = 1; // 1px 허용 오차
+
+            // 8-1: 경계 오버플로우 (wireframe-area 밖)
+            const overflowL = r.left < wfR.left - TOL;
+            const overflowT = r.top < wfR.top - TOL;
+            const overflowR = r.right > wfR.right + TOL;
+            const overflowB = r.bottom > wfR.bottom + TOL;
+            if (overflowL || overflowT || overflowR || overflowB) {
+              const dirs = [overflowL && 'left', overflowT && 'top', overflowR && 'right', overflowB && 'bottom'].filter(Boolean).join('/');
+              results.errors.push(
+                `[ERROR] 슬라이드 ${slideNum} (${slideId}) overlay #${oi + 1} 경계 오버플로우 (${dirs}) — wireframe-area 밖으로 벗어남`
+              );
+            }
+
+            // 8-2: 너무 작음 (좌표 미세 추정 의심) — 20px 미만
+            if (r.width < 20 || r.height < 20) {
+              results.warns.push(
+                `[WARN] 슬라이드 ${slideNum} (${slideId}) overlay #${oi + 1} 너무 작음 (${r.width.toFixed(0)}×${r.height.toFixed(0)}px) — 좌표 추정 의심, overlay-helper.js 측정 권장`
+              );
+            }
+
+            // 8-3: 너무 큼 (wireframe-area 85% 초과) — 좌표 과도 확대 의심
+            const ovArea = r.width * r.height;
+            if (wfArea > 0 && ovArea > wfArea * 0.85) {
+              results.warns.push(
+                `[WARN] 슬라이드 ${slideNum} (${slideId}) overlay #${oi + 1} 너무 큼 (wireframe-area ${((ovArea / wfArea) * 100).toFixed(0)}%) — 좌표 과도 확대 의심`
+              );
+            }
+
+            // 8-4: 인접 overlay와 50%+ 겹침 (중복 추정 의심)
+            for (let oj = oi + 1; oj < ovList.length; oj++) {
+              const r2 = ovList[oj].rect;
+              const ix = Math.min(r.right, r2.right) - Math.max(r.left, r2.left);
+              const iy = Math.min(r.bottom, r2.bottom) - Math.max(r.top, r2.top);
+              if (ix > 0 && iy > 0) {
+                const inter = ix * iy;
+                const smallerArea = Math.min(ovArea, r2.width * r2.height);
+                if (smallerArea > 0 && inter / smallerArea > 0.5) {
+                  results.warns.push(
+                    `[WARN] 슬라이드 ${slideNum} (${slideId}) overlay #${oi + 1}↔#${oj + 1} 50%+ 겹침 — 좌표 중복 추정 의심`
+                  );
+                }
+              }
+            }
+          });
+        }
+      }
     });
 
     return results;
