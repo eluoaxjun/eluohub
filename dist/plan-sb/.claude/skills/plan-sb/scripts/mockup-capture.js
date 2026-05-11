@@ -1,127 +1,129 @@
 #!/usr/bin/env node
 /**
- * HTML 목업 → 스크린샷 변환 (Playwright 기반)
- * Usage: node mockup-capture.js <html-file> [output-dir] [--viewport=1920x1080] [--mobile]
+ * mockup-capture.js — HTML 목업 → PNG 스크린샷 (Mode A 기본 도구)
  *
- * AI가 생성한 HTML 목업 파일을 Playwright로 열고 스크린샷을 촬영한다.
- * 마커 번호가 HTML 내에 CSS absolute로 이미 배치되어 있으므로
- * overlay 좌표 추정이 필요 없다.
+ * Usage:
+ *   node mockup-capture.js <input-html> <output-dir> [options]
  *
- * 사용 시나리오 (plan-sb Mode A/C):
- *   1. AI가 변경 후 UI를 HTML로 작성 (마커 포함)
- *   2. 이 스크립트로 PC/MO 스크린샷 생성
- *   3. 스크린샷을 input/에 저장
- *   4. JSON의 uiImagePath에 경로 지정
- *   5. generate.js로 최종 PDF 생성
+ * Options:
+ *   --name=NAME         출력 파일명 prefix (기본: input HTML basename)
+ *   --mobile-only       MO 캡쳐 (375×812 viewport)
+ *   --pc-only           PC 캡쳐 (1920×1080 viewport, 기본)
+ *   --full-page         전체 페이지 캡쳐 (모바일 권장)
+ *   --width=N           PC viewport width (기본 1920)
+ *   --height=N          PC viewport height (기본 1080)
  *
- * 결과: {output-dir}/mockup-pc.png, mockup-mo.png
+ * 출력:
+ *   PC:  {output-dir}/{name}-pc.png
+ *   MO:  {output-dir}/{name}-mo.png
+ *
+ * SKILL.md L226, L287, L293에서 호출. plan-sb Mode A 기본 캡쳐 도구.
  */
 
 const fs = require('fs');
 const path = require('path');
 
-// 인자 파싱
-const args = process.argv.slice(2);
-const flags = args.filter(a => a.startsWith('--'));
-const positional = args.filter(a => !a.startsWith('--'));
-
-const htmlFile = positional[0];
-const outputDir = positional[1] || path.join(process.cwd(), 'input');
-
-if (!htmlFile) {
-  console.error('Usage: node mockup-capture.js <html-file> [output-dir] [options]');
-  console.error('');
-  console.error('Options:');
-  console.error('  --viewport=WxH   PC 뷰포트 (기본: 1920x1080)');
-  console.error('  --mobile         MO 스크린샷도 생성 (375x812)');
-  console.error('  --mobile-only    MO만 생성');
-  console.error('  --full-page      전체 페이지 캡쳐 (스크롤 포함)');
-  console.error('  --name=PREFIX    출력 파일명 프리픽스 (기본: mockup)');
-  process.exit(1);
+function loadPlaywright() {
+  const candidates = [
+    path.resolve(__dirname, 'node_modules/playwright'),
+    path.resolve(__dirname, '../../../../node_modules/playwright'),
+    'playwright'
+  ];
+  for (const mod of candidates) {
+    try { return require(mod); } catch {}
+  }
+  throw new Error('playwright not found — try: npm install playwright --no-save');
 }
 
-const htmlPath = path.resolve(htmlFile);
-if (!fs.existsSync(htmlPath)) {
-  console.error(`File not found: ${htmlPath}`);
-  process.exit(1);
+function parseArgs(argv) {
+  const args = { positional: [], opts: {} };
+  for (const a of argv.slice(2)) {
+    if (a.startsWith('--')) {
+      const [k, v] = a.slice(2).split('=');
+      args.opts[k] = v === undefined ? true : v;
+    } else {
+      args.positional.push(a);
+    }
+  }
+  return args;
 }
 
-// 옵션 파싱
-const viewportFlag = flags.find(f => f.startsWith('--viewport='));
-const pcViewport = viewportFlag
-  ? { width: parseInt(viewportFlag.split('=')[1].split('x')[0]), height: parseInt(viewportFlag.split('=')[1].split('x')[1]) }
-  : { width: 1920, height: 1080 };
-
-const mobileViewport = { width: 375, height: 812 };
-const doMobile = flags.includes('--mobile') || flags.includes('--mobile-only');
-const mobileOnly = flags.includes('--mobile-only');
-const fullPage = flags.includes('--full-page');
-const nameFlag = flags.find(f => f.startsWith('--name='));
-const namePrefix = nameFlag ? nameFlag.split('=')[1] : 'mockup';
+async function capture(htmlPath, outPath, { width, height, fullPage, isMobile }) {
+  const playwright = loadPlaywright();
+  const browser = await playwright.chromium.launch({ headless: true });
+  try {
+    const ctx = await browser.newContext(
+      isMobile
+        ? {
+            viewport: { width, height },
+            deviceScaleFactor: 2,
+            isMobile: true,
+            hasTouch: true,
+            userAgent:
+              'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1'
+          }
+        : { viewport: { width, height } }
+    );
+    const page = await ctx.newPage();
+    const fileUrl = 'file:///' + path.resolve(htmlPath).replace(/\\/g, '/');
+    await page.goto(fileUrl, { waitUntil: 'networkidle', timeout: 30000 });
+    await page.waitForTimeout(500);
+    await page.screenshot({ path: outPath, fullPage });
+    console.log(`[OK] ${outPath}`);
+  } finally {
+    await browser.close();
+  }
+}
 
 async function main() {
-  let chromium;
-  try {
-    ({ chromium } = require('playwright'));
-  } catch {
-    console.error('[mockup-capture] playwright 패키지를 찾을 수 없습니다.');
-    console.error('설치: npm install playwright && npx playwright install chromium');
+  const { positional, opts } = parseArgs(process.argv);
+  if (positional.length < 2) {
+    console.error('Usage: node mockup-capture.js <input-html> <output-dir> [--name=NAME] [--mobile-only] [--pc-only] [--full-page] [--width=N] [--height=N]');
     process.exit(1);
   }
 
-  if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
+  const [htmlPath, outDir] = positional;
+  if (!fs.existsSync(htmlPath)) {
+    console.error(`HTML not found: ${htmlPath}`);
+    process.exit(1);
+  }
+  if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
-  const browser = await chromium.launch({ headless: true });
-  const fileUrl = 'file:///' + htmlPath.replace(/\\/g, '/');
-  const captured = [];
+  const baseName = opts.name || path.basename(htmlPath, path.extname(htmlPath));
+  const fullPage = !!opts['full-page'];
+  const mobileOnly = !!opts['mobile-only'];
+  const pcOnly = !!opts['pc-only'];
 
-  // PC 스크린샷
+  // PC 캡쳐 (기본 또는 명시)
   if (!mobileOnly) {
-    const page = await browser.newPage();
-    await page.setViewportSize(pcViewport);
-    await page.goto(fileUrl, { waitUntil: 'networkidle', timeout: 30000 });
-    await page.waitForTimeout(500);
-
-    const pcPath = path.join(outputDir, `${namePrefix}-pc.png`);
-    await page.screenshot({ path: pcPath, fullPage });
-    captured.push({ type: 'PC', file: `${namePrefix}-pc.png`, viewport: pcViewport });
-    console.log(`[OK] PC: ${pcPath} (${pcViewport.width}x${pcViewport.height}${fullPage ? ', full-page' : ''})`);
-    await page.close();
+    const pcWidth = parseInt(opts.width, 10) || 1920;
+    const pcHeight = parseInt(opts.height, 10) || 1080;
+    const pcOut = path.join(outDir, `${baseName}-pc.png`);
+    await capture(htmlPath, pcOut, {
+      width: pcWidth,
+      height: pcHeight,
+      fullPage,
+      isMobile: false
+    });
   }
 
-  // MO 스크린샷
-  if (doMobile) {
-    const page = await browser.newPage();
-    await page.setViewportSize(mobileViewport);
-    await page.goto(fileUrl, { waitUntil: 'networkidle', timeout: 30000 });
-    await page.waitForTimeout(500);
-
-    const moPath = path.join(outputDir, `${namePrefix}-mo.png`);
-    await page.screenshot({ path: moPath, fullPage });
-    captured.push({ type: 'MO', file: `${namePrefix}-mo.png`, viewport: mobileViewport });
-    console.log(`[OK] MO: ${moPath} (${mobileViewport.width}x${mobileViewport.height}${fullPage ? ', full-page' : ''})`);
-    await page.close();
-  }
-
-  await browser.close();
-
-  // 캡쳐 정보 저장
-  const infoPath = path.join(outputDir, `${namePrefix}-info.json`);
-  fs.writeFileSync(infoPath, JSON.stringify({
-    source: path.basename(htmlPath),
-    captured: new Date().toISOString().slice(0, 10),
-    screenshots: captured,
-    note: 'mockup-capture.js로 생성. JSON의 uiImagePath에 파일명을 지정하여 사용.'
-  }, null, 2), 'utf-8');
-
-  console.log(`\n=== 목업 캡쳐 완료 (${captured.length}건) ===`);
-  console.log('→ JSON의 uiImagePath에 파일명을 지정하세요:');
-  for (const c of captured) {
-    console.log(`  ${c.type}: "uiImagePath": "input/${c.file}"`);
+  // MO 캡쳐 (mobile-only 또는 둘 다)
+  if (mobileOnly || (!pcOnly && !mobileOnly && htmlPath.toLowerCase().includes('-mo'))) {
+    const moWidth = parseInt(opts.width, 10) || 375;
+    const moHeight = parseInt(opts.height, 10) || 812;
+    const moOut = path.join(outDir, `${baseName}-mo.png`);
+    // 모바일 풀페이지: --full-page 옵션 명시 시에만. 미지정 시 viewport 높이까지만 캡쳐
+    // (이전 `fullPage || true` 버그로 항상 true 강제되어 빈 영역 길어지던 문제 수정)
+    await capture(htmlPath, moOut, {
+      width: moWidth,
+      height: moHeight,
+      fullPage: !!fullPage,
+      isMobile: true
+    });
   }
 }
 
 main().catch(err => {
-  console.error('[mockup-capture] 오류:', err.message);
+  console.error('[ERROR]', err.message);
   process.exit(1);
 });

@@ -36,9 +36,10 @@ async function main() {
   }
   const raw = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
   const data = normalizeSchema(raw, config.defaults);
-  const theme = loadTheme(data);
 
-  // 프로젝트별 테마 자동 생성: default.json → themes/{프로젝트코드}.json
+  // 프로젝트별 테마 자동 생성·자동 적용
+  // 1) projectCode 도출 → themes/{projectCode}.json 없으면 default 복사로 생성
+  // 2) data.theme.preset 미명시면 projectCode를 자동 preset으로 주입 → 동일 프로젝트 재실행 시 같은 테마 자동 적용
   const projectCode = (data.project.id || data.project.serviceName || '').replace(/[<>:"/\\|?*]/g, '_').trim();
   if (projectCode) {
     const projectThemePath = path.join(__dirname, '..', 'themes', `${projectCode}.json`);
@@ -49,7 +50,13 @@ async function main() {
         console.log(`[THEME] ${projectCode}.json 자동 생성 (default.json 복사)`);
       }
     }
+    // ★ 자동 연결: preset 명시 없으면 projectCode를 preset으로 주입
+    if (!data.theme || !data.theme.preset) {
+      data.theme = { ...(data.theme || {}), preset: projectCode };
+      console.log(`[THEME] preset 자동 적용: ${projectCode}`);
+    }
   }
+  const theme = loadTheme(data);
 
   const outputPrefix = data.project.outputPrefix
     || data.project.id

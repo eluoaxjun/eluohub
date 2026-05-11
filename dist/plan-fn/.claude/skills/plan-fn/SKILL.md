@@ -1,12 +1,10 @@
 ---
 name: plan-fn
 description: >
-  기능정의서(FN) 생성 스킬. REQ 기반으로 상세 기능을 정의합니다.
-  복잡도별 분기(4-탭/처리+에러/서술), 검증 3단계(정상/예외/에러), 의존관계 맵을 포함합니다.
+  기능정의서(FN) 생성. REQ → 4-탭/처리+에러/서술 분기 + 검증 3단계(정상/예외/에러) + 의존관계 맵.
   "기능정의", "기능 명세", "FN", "기능 설계", "기능 상세", "기능을 정의",
   "기능 분해", "기능정의서", "기능 목록 작성", "기능 스펙",
-  "어떤 기능이 필요한지", "기능별 상세" 등
-  기능을 상세하게 정의하거나 명세하는 맥락에서 자동 호출.
+  "어떤 기능이 필요한지", "기능별 상세" 맥락에서 자동 호출.
 argument-hint: "[REQ 파일경로 또는 기능 요구사항 텍스트]"
 ---
 
@@ -564,10 +562,44 @@ FR 분해 결과 FN이 15개 이상이면 3계층 구조 전환을 **권고**합
     "first_fn": "FN-001",
     "last_fn": "FN-000"
   },
+  "decisions": [
+    {
+      "id": "DEC-001",
+      "topic": "complexity_classification",
+      "chosen": "medium",
+      "alternatives_considered": ["low", "high"],
+      "reasoning": "FN-005 결제 처리 — 외부 PG 연동 + 환불 흐름 2개 → 보통(처리+에러 탭) 적합. low는 검증 부족, high는 4-탭 과도",
+      "source": "orchestrator_default",
+      "reversibility": "medium"
+    }
+  ],
   "dependencies": [],
   "next_skill": "plan-ia"
 } -->
 ```
+
+### decisions[] 필수 적용 (2026-05-11 신설)
+
+본 스킬은 **Decision Log 필수 적용 스킬**. 다음 비자명한 결정을 모두 `decisions[]`에 기록:
+
+| 결정 영역 | topic 값 | 비고 |
+|---|---|---|
+| 복잡도 분류 | `complexity_classification` | low/medium/high 선택 + 사유 (anti-rationalization 70% 임계 회피 근거) |
+| 처리 방식 분기 | `branch_type` | 4-탭 / 처리+에러 / 서술 중 선택 |
+| 검증 시나리오 | `validation_scenarios` | 정상/예외/에러 3단계 중 어느 것을 우선 검증 |
+| 의존관계 | `dependency_chain` | FN-X → FN-Y 의존성 인지 + 처리 순서 결정 |
+| 우선순위/MVP | `mvp_scope` | "구현 우선순위/MVP 범위" Gotcha — 어떤 FN을 MVP에 포함할지 |
+
+**작성 규칙**:
+- 비자명 결정 최소 2건/FN (복잡도 + MVP scope) 권장
+- `reasoning`은 REQ AC 또는 비즈니스 규칙 근거 명시
+- `reversibility`: 복잡도 변경 = `medium` (탭 구조 영향), MVP scope = `hard` (publish 연쇄 영향)
+
+**Self-Check 추가**:
+- [ ] 복잡도 '낮음' 70% 초과 시 anti-rationalization 70% 임계 경고 + decisions[] 사유 명시 의무
+- [ ] 각 decision의 alternatives_considered 최소 1건
+
+상세 스키마: `lib/rules/handoff-schema.md` §"decisions[] — 결정 로그 필드"
 
 ## Gotchas (실전 반복 실패 메모)
 

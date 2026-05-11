@@ -107,7 +107,7 @@ function renderSlideFooter(screen, data) {
   return `<div class="slide-footer-wrap">
   <div class="slide-footer">
     <span class="footer-left">${footerLeft}</span>
-    <span class="footer-right">${logoHtml ? logoHtml + '&nbsp;&nbsp;' : ''}${footerRight}</span>
+    <span class="footer-right">${logoHtml ? logoHtml + '&nbsp;&nbsp;' : ''}${footerRight ? `<span class="footer-writer">${footerRight}</span>` : ''}<span class="slide-num" data-num=""></span></span>
   </div>
   <div class="slide-footer-bottom"></div>
 </div>`;
@@ -581,10 +581,10 @@ function renderWfElement(el) {
       const btnKids = kids.filter(c => c.type === 'button');
       const restKids = kids.filter(c => c.type !== 'image' && c.type !== 'button');
 
-      // 썸네일 영역
+      // 썸네일 영역 — 이미지 children이 있을 때만 렌더. 텍스트/KPI 카드에 빈 플레이스홀더 삽입 금지.
       const thumbHtml = imgKids.length > 0
         ? `<div class="wf-card-thumb">${imgKids[0].label || 'Thumbnail'}</div>`
-        : `<div class="wf-card-thumb" style="min-height:60px;"></div>`;
+        : '';
 
       // 본문 (badge + 타이틀 + 설명) — text children 키워드 기반 스마트 분기
       const BADGE_KW  = /카테고리|태그|유형|분류|지역|지구|타입|badge|category|tag|type/i;
@@ -858,18 +858,34 @@ function renderDescriptionTableV2(descriptions, pmComments) {
       content += `<div style="font-weight:700; margin-bottom:3px;">${d.label}</div>`;
     }
     if (d.items && d.items.length > 0) {
+      let subIndex = 1;
       for (const item of d.items) {
         const level = item.level || 1;
         const indentClass = `desc-indent-${Math.min(level, 4)}`;
         const numPrefix = item.num ? `${item.num}) ` : '';
+
+        // 텍스트 선두의 수기 서브 넘버링(①②③... / 1. 1) / (1)) 자동 제거 → 자동 넘버링으로 대체
+        let itemText = (item.text || '').replace(/^\s*(?:[①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳]|\(\d+\)|\d+[\.\)])\s*/, '');
+
+        // 자동 서브 넘버링 — level 1 items + marker 존재 시 "1-1", "1-2" 형식
+        let autoNumHtml = '';
+        if (level === 1 && !item.num && d.marker) {
+          autoNumHtml = `<span class="desc-sub-num">${d.marker}-${subIndex}.</span> `;
+          subIndex++;
+        }
+
         let textEl;
         if (item.highlight === 'important') {
-          textEl = `<span class="desc-important">■ ${item.text}</span>`;
+          textEl = `<span class="desc-important">■ ${itemText}</span>`;
         } else if (item.highlight === 'variable') {
-          textEl = `<span class="desc-var">■ ${item.text}</span>`;
+          textEl = `<span class="desc-var">■ ${itemText}</span>`;
         } else {
-          const prefix = level === 1 ? '- ' : level === 3 ? '> ' : level === 4 ? '└ ' : '';
-          textEl = `${prefix}${numPrefix}${item.text}`;
+          const prefix = level === 1
+            ? (autoNumHtml ? '' : '- ')
+            : level === 3 ? '> '
+            : level === 4 ? '└ '
+            : '';
+          textEl = `${prefix}${autoNumHtml}${numPrefix}${itemText}`;
         }
         content += `<div class="${indentClass}">${textEl}</div>`;
       }
@@ -1002,11 +1018,24 @@ function renderDesignLayout(screen) {
 
     let uiContent;
     if (screen.uiImagePath) {
-      uiContent = `<div class="ui-capture-inner"><img src="${screen.uiImagePath}" alt="${screen.viewportType} UI">${markers}</div>`;
+      // 모바일: 와이어프레임 영역(좌 60% ≈ 1152×910px)에 폰 프레임을 가능한 크게 — 폭 460px / 높이 980px (영역의 ~40%·~95%)
+      // PC/Tablet: 기존 100% contain
+      const isMobile = screen.viewportType === 'Mobile';
+      const wrapperStyle = isMobile
+        ? 'width:460px;max-width:460px;max-height:100%;border-radius:28px;box-shadow:0 4px 16px rgba(0,0,0,0.15);overflow:hidden;background:#fff;position:relative;flex:0 0 auto;align-self:flex-start;'
+        : '';
+      const imgStyle = isMobile
+        ? 'width:100%;height:auto;display:block;max-height:980px;object-fit:contain;object-position:top;'
+        : '';
+      uiContent = `<div class="ui-capture-inner" style="${wrapperStyle}"><img src="${screen.uiImagePath}" alt="${screen.viewportType} UI" style="${imgStyle}">${markers}</div>`;
     } else {
       uiContent = `[${screen.viewportType} UI 캡처 이미지 영역]`;
     }
-    wireframeHtml = `<div class="ui-capture">${uiContent}</div>`;
+    // 모바일 컨테이너는 flex로 wrapper를 중앙 상단 정렬 → 테두리가 이미지에 정확히 맞춰짐
+    const captureStyle = (screen.uiImagePath && screen.viewportType === 'Mobile')
+      ? 'display:flex;align-items:flex-start;justify-content:center;height:100%;padding:8px 0;'
+      : '';
+    wireframeHtml = `<div class="ui-capture" data-viewport="${screen.viewportType}" style="${captureStyle}">${uiContent}</div>`;
   }
 
   // Description 패널 (fnRef 포함)
@@ -1069,10 +1098,22 @@ function renderDivider(divider, data) {
   const p = data?.project || {};
   const companyName = p.company?.name || '';
 
+  // 배경: divider.background > divider.color > 기본 다크 그라디언트
+  // divider.color 단색이면 테두리 없는 솔리드 배경으로 사용
+  const bgCss = d.background
+    ? d.background
+    : d.color
+      ? `linear-gradient(135deg, ${d.color} 0%, ${shadeColor(d.color, -15)} 100%)`
+      : 'linear-gradient(135deg, #1a1a1a 0%, #111 100%)';
+
   const sectionNoHtml = d.sectionNo
     ? `<div class="divider-section-no">${String(d.sectionNo).padStart(2, '0')}</div>` : '';
-  const subHtml = d.sub ? `<div style="font-size:13px; color:#aaa; margin-bottom:10px;">${d.sub}</div>` : '';
-  const mainHtml = d.main ? `<div style="font-size:26px; font-weight:700; margin-bottom:20px;">${d.main}</div>` : '';
+  const subHtml = d.sub ? `<div style="font-size:14px; color:rgba(255,255,255,0.75); margin-bottom:12px; letter-spacing:0.08em; text-transform:uppercase;">${d.sub}</div>` : '';
+
+  // main 또는 title — 둘 중 존재하는 것을 크게 표시 (title 필드 지원 추가)
+  const mainText = d.main || d.title || '';
+  const mainHtml = mainText
+    ? `<div style="font-size:44px; font-weight:700; margin-bottom:20px; line-height:1.25; max-width:1200px; text-align:center;">${mainText}</div>` : '';
 
   let tocHtml = '';
   if (d.toc && d.toc.length > 0) {
@@ -1084,17 +1125,28 @@ function renderDivider(divider, data) {
 
   let bulletsHtml = '';
   if (d.bullets && d.bullets.length > 0) {
-    bulletsHtml = `<ul style="font-size:14px; color:#ccc; text-align:left; display:inline-block;">
+    bulletsHtml = `<ul style="font-size:15px; color:rgba(255,255,255,0.85); text-align:left; display:inline-block;">
       ${d.bullets.map(b => `<li style="list-style:disc; margin-left:18px; margin-bottom:10px;">${b}</li>`).join('')}
     </ul>`;
   }
 
   return `
-<div class="slide" data-slide-type="divider" style="background:linear-gradient(135deg, #1a1a1a 0%, #111 100%); color:#fff;">
+<div class="slide" data-slide-type="divider" style="background:${bgCss}; color:#fff;">
   <div class="slide-body" style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:80px 120px;">
     ${sectionNoHtml}${subHtml}${mainHtml}${bulletsHtml}${tocHtml}
   </div>
 </div>`;
+}
+
+// 색상 밝기 조절 — 그라디언트 구성용
+function shadeColor(hex, percent) {
+  const h = hex.replace('#', '');
+  if (!/^[0-9a-fA-F]{6}$/.test(h)) return hex;
+  const num = parseInt(h, 16);
+  const r = Math.max(0, Math.min(255, (num >> 16) + Math.round(255 * percent / 100)));
+  const g = Math.max(0, Math.min(255, ((num >> 8) & 0xff) + Math.round(255 * percent / 100)));
+  const b = Math.max(0, Math.min(255, (num & 0xff) + Math.round(255 * percent / 100)));
+  return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
 }
 
 /**
@@ -1122,11 +1174,11 @@ function renderMsgCaseTable(msgCases) {
         <td>${c.cancelAction || ''}</td>
       </tr>`;
     }).join('');
-    return `<table class="msg-case-table">
+    return `<table class="msg-case-table" style="word-break:keep-all;table-layout:fixed;">
       <thead><tr>
-        <th style="width:55px">Type</th><th style="width:45px"></th><th style="width:36px">No</th>
-        <th>Situation Case</th><th style="width:55px">Title</th><th>Message</th>
-        <th style="width:70px">확인 Action</th><th style="width:70px">취소 Action</th>
+        <th style="width:60px">Type</th><th style="width:45px">SubType</th><th style="width:50px">No</th>
+        <th style="width:18%">Situation Case</th><th style="width:140px">Title</th><th>Message</th>
+        <th style="width:80px">확인 Action</th><th style="width:80px">취소 Action</th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
@@ -1202,19 +1254,38 @@ function renderComponentGuide(components) {
 }
 
 /**
- * Description 높이 추정 (px 단위 휴리스틱)
+ * Description 높이 추정 (px 단위 — 콘텐츠 길이 반영 정밀 휴리스틱)
+ * 우측 description 컬럼 폭 ≈ 730px → 한국어 기준 한 줄 약 28자(13px font)
  * 슬라이드 높이 1080px - 헤더 40px - 푸터 30px - 패딩 20px = ~990px 가용
  */
 function estimateDescHeight(desc) {
   if (!desc) return 0;
-  if (desc.type === 'section') return 30;
-  if (!desc.marker && !desc.label && !(desc.items && desc.items.length) && desc.continuation) return 25;
-  let h = 35; // 기본 행 높이 (marker + label)
-  if (desc.items && desc.items.length) h += desc.items.length * 20;
-  else if (desc.details && desc.details.length) h += desc.details.length * 20;
-  if (desc.before || desc.after) h += 60;
-  if (desc.continuation) h += 25;
-  return h;
+  if (desc.type === 'section') return 36;
+  if (!desc.marker && !desc.label && !(desc.items && desc.items.length) && desc.continuation) return 30;
+  // 보수적 추정 — 잘림 절대 방지
+  // CHARS_PER_LINE 28 → 22 (더 적은 글자/줄 가정 → 더 많은 줄 → 더 일찍 분할)
+  // LINE_H 18 → 22 (한국어 line-height 여유)
+  const CHARS_PER_LINE = 22;
+  const LINE_H = 22;
+  const wrap = (text, base = 1) => {
+    const len = String(text || '').length;
+    if (!len) return base * LINE_H;
+    return Math.max(base, Math.ceil(len / CHARS_PER_LINE)) * LINE_H;
+  };
+  let h = 16; // 행 패딩 (12 → 16)
+  h += wrap(desc.label, 1);
+  if (desc.items && desc.items.length) {
+    for (const it of desc.items) h += wrap(it, 1) + 6;
+  } else if (desc.details && desc.details.length) {
+    for (const d of desc.details) h += wrap(typeof d === 'string' ? d : (d.text || ''), 1) + 6;
+  }
+  if (desc.before || desc.after) {
+    h += wrap(desc.before, 1) + wrap(desc.after, 1) + 40;  // 30 → 40 박스 padding 여유
+  }
+  if (desc.pmComment) h += wrap(desc.pmComment, 1) + 12;
+  if (desc.continuation) h += 30;
+  // 최종 안전 margin 15%
+  return Math.ceil(h * 1.15);
 }
 
 /**
@@ -1272,36 +1343,70 @@ function renderScreen(screen, data) {
   const header = renderSlideHeader(screen, data, null);
   const footer = renderSlideFooter(screen, data);
 
+  // 공통 헤더 박스 헬퍼 (비-design 슬라이드용)
+  const _escH = (s) => String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  function renderSlideHeaderBox(s, opts = {}) {
+    const idChip = s.interfaceId ? `<span style="font-weight:400;color:#666;font-size:12px;">[${_escH(s.interfaceId)}]</span>` : '';
+    const extras = [];
+    if (s.location) extras.push(`<div style="color:#666;font-size:12px;margin-top:4px;">위치: ${_escH(s.location)}</div>`);
+    if (opts.groupDesc) extras.push(`<div style="color:#444;margin-top:6px;">${_escH(opts.groupDesc)}</div>`);
+    if (opts.groupFlow) extras.push(`<div style="color:#1e40af;margin-top:6px;font-size:12px;background:#fff;padding:6px 10px;border-radius:3px;border:1px solid #dbeafe;"><b>흐름:</b> ${_escH(opts.groupFlow)}</div>`);
+    if (opts.metaLine) extras.push(`<div style="color:#666;font-size:12px;margin-top:6px;">${opts.metaLine}</div>`);
+    return `<div class="slide-context-box" style="margin-bottom:12px;padding:14px 18px;background:#f4f7fb;border-left:4px solid #2563eb;border-radius:4px;font-size:13px;line-height:1.6;">
+      <div style="font-weight:700;color:#1e40af;margin-bottom:4px;font-size:14px;">${_escH(s.interfaceName || opts.fallbackTitle || '')} ${idChip}${opts.countSuffix || ''}</div>
+      <div style="color:#333;">${_escH(s.pageName || '')}</div>
+      ${extras.join('')}
+    </div>`;
+  }
+
   let bodyHtml;
   switch (screenType) {
-    case 'description':
-      // Description 전용 슬라이드 (와이어프레임 없음)
+    case 'description': {
+      // Description 전용 슬라이드 (와이어프레임 없음) + 상단 타이틀 박스
+      const titleBox = renderSlideHeaderBox(screen, { fallbackTitle: 'Description' });
       bodyHtml = `<div class="slide-body slide-content">
+        ${titleBox}
         ${renderDescriptionTableV2(screen.descriptions, screen.pmComments)}
         ${renderFnRef(screen.descriptions)}
       </div>`;
       break;
+    }
 
-    case 'component':
-      // 컴포넌트 가이드 슬라이드
+    case 'component': {
+      // 컴포넌트 가이드 슬라이드 + 상단 타이틀 박스
+      const titleBox = renderSlideHeaderBox(screen, { fallbackTitle: 'Component Guide' });
       bodyHtml = `<div class="slide-body slide-content">
+        ${titleBox}
         ${renderComponentGuide(screen.components)}
       </div>`;
       break;
+    }
 
-    case 'msgCase':
-      // MSG Case 전용 슬라이드
+    case 'msgCase': {
+      // MSG Case 전용 슬라이드 + 상단 그룹 컨텍스트 박스
+      const caseCount = (screen.msgCases || []).length;
+      const groupTypes = [...new Set((screen.msgCases || []).map(c => c.type).filter(Boolean))].join(' · ');
+      const groupNos = (screen.msgCases || []).map(c => c.no).filter(Boolean).join(', ');
+      const ctxBox = renderSlideHeaderBox(screen, {
+        fallbackTitle: 'MSG Case',
+        countSuffix: ` <span style="font-weight:400;color:#666;font-size:12px;">(${caseCount}건)</span>`,
+        groupDesc: screen.groupDescription,
+        groupFlow: screen.groupFlow,
+        metaLine: `Type: ${_escH(groupTypes || '-')} | Code: ${_escH(groupNos || '-')}`,
+      });
       bodyHtml = `<div class="slide-body slide-content">
+        ${ctxBox}
         ${renderMsgCaseTable(screen.msgCases)}
       </div>`;
       break;
+    }
 
     case 'design':
     default: {
       // Design 슬라이드: 메타 테이블 + 좌 60% 와이어프레임 / 우 40% Description
       const screenMetaHtml = renderScreenMeta(screen, data);
       // Description 자동 분할: 높이 초과 시 continuation 슬라이드 생성
-      const DESC_MAX_HEIGHT = 850; // px (메타 테이블 공간 확보로 900→850)
+      const DESC_MAX_HEIGHT = 760; // px (보수화: 850→760, 안전 margin 150px)
       const descGroups = splitDescriptions(screen.descriptions, DESC_MAX_HEIGHT);
 
       if (descGroups.length <= 1) {
@@ -1442,6 +1547,15 @@ ${renderEndOfDocument(data)}
   }
   document.addEventListener('DOMContentLoaded', autoScale);
   window.addEventListener('resize', autoScale);
+  // 슬라이드 좌측 하단 자동 넘버링
+  document.addEventListener('DOMContentLoaded', function() {
+    var slides = document.querySelectorAll('.slide');
+    var total = slides.length;
+    slides.forEach(function(s, i) {
+      var num = s.querySelector('.slide-num');
+      if (num) num.textContent = (i + 1) + ' / ' + total;
+    });
+  });
 })();
 </script>
 </body>

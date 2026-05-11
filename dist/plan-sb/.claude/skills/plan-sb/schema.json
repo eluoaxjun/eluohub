@@ -82,6 +82,8 @@
           "interfaceId": { "type": "string" },
           "location": { "type": "string" },
           "pageName": { "type": "string" },
+          "groupDescription": { "type": "string", "description": "msgCase 그룹 설명 (선택)" },
+          "groupFlow": { "type": "string", "description": "msgCase 그룹 흐름 (선택)" },
           "uiImagePath": { "type": "string" },
           "hasDivider": { "type": "boolean" },
           "divider": { "type": "object" },

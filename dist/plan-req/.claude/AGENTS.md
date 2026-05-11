@@ -1,5 +1,10 @@
 # plan-req 에이전트 시스템
 
+
+
+> **변경 이력 v1.9 (2026-04-24 ~ 2026-04-27)**
+> - SKILL.md 갱신, dist orchestrator skills 단독화, 메타 파일 동기화
+
 ## 에이전트
 
 ### planning-orchestrator (Sonnet)

@@ -77,6 +77,26 @@ async function main() {
 
   if (!fs.existsSync(verifyDir)) fs.mkdirSync(verifyDir, { recursive: true });
 
+  // 모드-산출물 정합성 검증 (Self-Check #27, #28 / 2026-04-27 추가)
+  const projectRoot = path.dirname(path.dirname(path.dirname(htmlPath)));
+  const inputDir = path.join(projectRoot, 'input');
+  const contextPath = path.join(path.dirname(path.dirname(htmlPath)), 'context', 'sb.md');
+  const modeIssues = [];
+  if (fs.existsSync(inputDir)) {
+    const files = fs.readdirSync(inputDir);
+    const hasScreenshot = files.some(f => /screenshot.*\.png$/i.test(f) || /-pc\.png$/i.test(f) && !f.startsWith('mockup'));
+    const hasMockup = files.some(f => /mockup.*\.(png|html)$/i.test(f) || /curation.*\.png$/i.test(f));
+    let declaredMode = null;
+    if (fs.existsSync(contextPath)) {
+      const ctx = fs.readFileSync(contextPath, 'utf8');
+      const m = ctx.match(/Mode\s*([ABC])/);
+      if (m) declaredMode = m[1];
+    }
+    if (declaredMode === 'B' && !hasScreenshot) modeIssues.push(`[ERROR] Mode B 선언했으나 input/screenshot.png 또는 현행 캡쳐 없음 — visit.js 미실행 의심`);
+    if (declaredMode === 'C' && !hasScreenshot) modeIssues.push(`[ERROR] Mode C 선언했으나 현행 캡쳐 없음 — Mode A로 선언하거나 visit.js 실행 후 재진행`);
+    if (declaredMode === 'A' && hasScreenshot && !hasMockup) modeIssues.push(`[WARN] Mode A 선언했으나 mockup 자료 없이 screenshot만 있음 — Mode B로 변경 검토`);
+  }
+
   // 연계 모드 판별: context/fn.md 존재 여부
   let isLinkedMode = false;
   if (flags.contextDir) {
@@ -169,12 +189,21 @@ async function main() {
       const scrollH = checkEl.scrollHeight;
       const clientH = checkEl.clientHeight;
       if (scrollH > clientH + 2) {
-        results.warns.push(
-          `[WARN] 슬라이드 ${slideNum} (${slideId}) overflow: scrollHeight=${scrollH}px > clientHeight=${clientH}px (+${scrollH - clientH}px)`
-        );
+        const overflowPx = scrollH - clientH;
+        // 30px 이상 잘림 = 명백한 시각 결함 → ERROR
+        if (overflowPx > 30) {
+          results.errors.push(
+            `[ERROR] 슬라이드 ${slideNum} (${slideId}) 슬라이드 본문 잘림: scrollHeight=${scrollH}px > clientHeight=${clientH}px (+${overflowPx}px) — 콘텐츠 줄이거나 분할 필요`
+          );
+        } else {
+          results.warns.push(
+            `[WARN] 슬라이드 ${slideNum} (${slideId}) overflow: +${overflowPx}px`
+          );
+        }
       }
 
       // ② 콘텐츠 밀도: 슬라이드 전체 면적 대비 콘텐츠 요소 면적
+      // 슬라이드 타입·콘텐츠 종류별 차등 임계 (케이스 적은 정상 슬라이드 false-positive 방지)
       const contentEls = slide.querySelectorAll('p, li, td, th, .desc-row, .wireframe-area img, .wireframe-placeholder');
       let contentArea = 0;
       contentEls.forEach(el => {
@@ -183,9 +212,19 @@ async function main() {
       });
       const slideArea = 1280 * SLIDE_HEIGHT;
       const density = contentArea / slideArea;
-      if (density < 0.30 && !['cover', 'end', 'divider', 'overview', 'history'].includes(slideType)) {
+      // 임계값 결정: msgCase는 케이스 수에 따라 완화 (1~4건이면 15%, 5건+ 25%, design은 30%)
+      const rowCount = slide.querySelectorAll('tbody tr').length;
+      let densityThreshold;
+      if (slideType === 'msgCase') {
+        densityThreshold = rowCount < 5 ? 0.15 : 0.25;
+      } else if (slideType === 'description' || slideType === 'component') {
+        densityThreshold = 0.20;
+      } else {
+        densityThreshold = 0.30;
+      }
+      if (density < densityThreshold && !['cover', 'end', 'divider', 'overview', 'history'].includes(slideType)) {
         results.warns.push(
-          `[WARN] 슬라이드 ${slideNum} (${slideId}) 콘텐츠 밀도 부족: ${(density * 100).toFixed(1)}% < 30% (공백 과다)`
+          `[WARN] 슬라이드 ${slideNum} (${slideId}) 콘텐츠 밀도 부족: ${(density * 100).toFixed(1)}% < ${(densityThreshold * 100).toFixed(0)}% (${slideType}, ${rowCount}행)`
         );
       }
 
@@ -199,20 +238,26 @@ async function main() {
         }
       }
 
-      // ④ Description 패널 overflow + continuation 분할 확인
+      // ④ Description 패널 overflow — 잘림 절대 방지 (ERROR 격상)
       const descPanel = slide.querySelector('.description-panel');
       if (descPanel) {
         const dpScroll = descPanel.scrollHeight;
         const dpClient = descPanel.clientHeight;
-        if (dpScroll > dpClient + 2) {
+        const overflow = dpScroll - dpClient;
+        if (overflow > 2) {
           const hasContinuation = descPanel.querySelector('.desc-continuation, .desc-cont-row');
           if (hasContinuation) {
             results.infos.push(
               `[INFO] 슬라이드 ${slideNum} (${slideId}) description overflow 감지 — continuation 분할 적용됨`
             );
+          } else if (overflow > 30) {
+            // 30px 이상 잘림 = 사용자가 인지할 정도 → ERROR (전달 불가)
+            results.errors.push(
+              `[ERROR] 슬라이드 ${slideNum} (${slideId}) description-panel 잘림: scrollHeight=${dpScroll}px > clientHeight=${dpClient}px (+${overflow}px) — DESC_MAX_HEIGHT 보강 필요`
+            );
           } else {
             results.warns.push(
-              `[WARN] 슬라이드 ${slideNum} (${slideId}) description-panel overflow: ${dpScroll}px > ${dpClient}px — continuation 분할 필요`
+              `[WARN] 슬라이드 ${slideNum} (${slideId}) description-panel overflow: +${overflow}px — continuation 분할 필요`
             );
           }
         }
@@ -226,6 +271,53 @@ async function main() {
             );
           }
         }
+        // 슬라이드 넘버링 잘림·빈 값 감지 — 고객 전달 직접 영향 → ERROR
+        const slideNumEl = slide.querySelector('.slide-num');
+        if (slideNumEl) {
+          const r = slideNumEl.getBoundingClientRect();
+          const slideRect = slide.getBoundingClientRect();
+          const text = (slideNumEl.textContent || '').trim();
+          if (!text) {
+            results.errors.push(
+              `[ERROR] 슬라이드 ${slideNum} (${slideId}) 넘버링 빈 값 — DOMContentLoaded JS 실패 또는 .slide-num 누락`
+            );
+          } else if (r.right > slideRect.right - 4 || r.bottom > slideRect.bottom - 4 || r.top < slideRect.top || r.left < slideRect.left) {
+            results.errors.push(
+              `[ERROR] 슬라이드 ${slideNum} (${slideId}) 넘버링 위치 슬라이드 경계 초과 — CSS overflow 또는 위치 오류`
+            );
+          }
+        } else {
+          // .slide-num 자체가 없으면 (cover/divider/end 제외) ERROR
+          if (!['cover', 'end', 'divider'].includes(slideType)) {
+            results.errors.push(
+              `[ERROR] 슬라이드 ${slideNum} (${slideId}) .slide-num 요소 누락 — renderSlideFooter 미적용 또는 footer 누락`
+            );
+          }
+        }
+        // 모바일 폰 프레임 시각 검증
+        const mobileWrapper = slide.querySelector('.ui-capture[data-viewport="Mobile"] .ui-capture-inner');
+        if (mobileWrapper) {
+          const mw = mobileWrapper.getBoundingClientRect();
+          if (mw.width < 380 && mw.height < 700) {
+            // 폭+높이 둘 다 미달 = 명백한 시각 결함 → ERROR
+            results.errors.push(
+              `[ERROR] 슬라이드 ${slideNum} (${slideId}) 모바일 폰 프레임 너무 작음: ${Math.round(mw.width)}×${Math.round(mw.height)} (권장 460×980) — 고객 식별 불가`
+            );
+          } else if (mw.width < 380 || mw.height < 700) {
+            results.warns.push(
+              `[WARN] 슬라이드 ${slideNum} (${slideId}) 모바일 폰 프레임 작음: ${Math.round(mw.width)}×${Math.round(mw.height)} — 460×980 권장`
+            );
+          }
+          const mobileImg = mobileWrapper.querySelector('img');
+          if (mobileImg) {
+            const ir = mobileImg.getBoundingClientRect();
+            if (ir.bottom > mw.bottom + 4) {
+              results.errors.push(
+                `[ERROR] 슬라이드 ${slideNum} (${slideId}) 모바일 UI 이미지 폰 프레임 밖으로 잘림: ${Math.round(ir.bottom - mw.bottom)}px 초과`
+              );
+            }
+          }
+        }
       }
 
       // ⑤ fnRef 참조 누락: 연계 모드인데 description이 있는 design 슬라이드에 fnRef 없음
@@ -235,6 +327,69 @@ async function main() {
         if (descRows.length > 0 && !fnRefSection) {
           results.warns.push(
             `[WARN] 슬라이드 ${slideNum} (${slideId}) 연계 모드인데 fnRef 섹션 없음 — description fnRef 필드 확인 필요`
+          );
+        }
+      }
+
+      // ⑥ Placeholder 텍스트 감지 (Self-Check #20 시각 완결성, Phase 3.1)
+      // "[Mobile UI 캡처 이미지 영역]", "[PC UI 캡처 이미지 영역]", "[이미지]", "[미확인]", "[미정]" 등
+      if (slideType === 'design') {
+        const wireframeArea = slide.querySelector('.wireframe-area');
+        if (wireframeArea) {
+          const text = wireframeArea.textContent || '';
+          const placeholderPatterns = [
+            /\[(?:Mobile|PC|MO)\s*UI\s*캡(쳐|처)\s*이미지\s*영역\]/i,
+            /\[이미지\]/,
+            /\[미확인[^\]]*\]/,
+            /\[미정[^\]]*\]/,
+            /\[TODO[^\]]*\]/i,
+            /\[타겟\s*콘텐츠\s*필요/i
+          ];
+          for (const re of placeholderPatterns) {
+            if (re.test(text)) {
+              // placeholder 텍스트는 미완성 산출물 = 고객 전달 불가 → ERROR
+              results.errors.push(
+                `[ERROR] 슬라이드 ${slideNum} (${slideId}) placeholder 텍스트 감지 — uiImagePath 미주입 또는 [미확인]/[TODO] 항목 존재 (고객 전달 불가)`
+              );
+              break;
+            }
+          }
+        }
+      }
+
+      // ⑦ 시각 완결성 5축 채점 (Phase 3.1)
+      if (['design', 'msgCase', 'component'].includes(slideType)) {
+        const score = { wireframeFilled: 0, descriptionFilled: 0, markerMatch: 0, placeholderFree: 0, contentDensity: 0 };
+        // 7-1: wireframe 영역 채워짐
+        const wf = slide.querySelector('.wireframe-area');
+        if (wf) {
+          const wfChildren = wf.querySelectorAll('*').length;
+          score.wireframeFilled = wfChildren > 5 ? 1 : 0;
+        } else {
+          score.wireframeFilled = 1; // wireframe 없는 슬라이드 (msgCase 등)
+        }
+        // 7-2: Description 채워짐
+        const dp = slide.querySelector('.description-panel');
+        const tableRows = slide.querySelectorAll('table tr').length;
+        score.descriptionFilled = (dp && dp.textContent.trim().length > 50) || tableRows > 2 ? 1 : 0;
+        // 7-3: 마커 일치 (descriptions vs wireframe markers)
+        const wfMarkers = slide.querySelectorAll('.wireframe-area .marker, .wireframe-area [data-marker]').length;
+        const descMarkers = slide.querySelectorAll('.description-panel .desc-marker, .description-panel [data-marker]').length;
+        score.markerMatch = wfMarkers === descMarkers ? 1 : 0;
+        // 7-4: placeholder 없음 (위 ⑥ 결과 활용)
+        const wText = (wf?.textContent || '') + (dp?.textContent || '');
+        score.placeholderFree = !/\[(?:Mobile|PC|MO|이미지|미확인|미정|TODO)/i.test(wText) ? 1 : 0;
+        // 7-5: 콘텐츠 밀도 (슬라이드 타입별 차등 임계 — 위에서 계산된 densityThreshold 재사용)
+        score.contentDensity = density >= densityThreshold ? 1 : 0;
+
+        const total = score.wireframeFilled + score.descriptionFilled + score.markerMatch + score.placeholderFree + score.contentDensity;
+        if (total < 3) {
+          results.errors.push(
+            `[ERROR] 슬라이드 ${slideNum} (${slideId}) 시각 완결성 ${total}/5 — 고객 전달 불가 (wf:${score.wireframeFilled} desc:${score.descriptionFilled} marker:${score.markerMatch} ph-free:${score.placeholderFree} density:${score.contentDensity})`
+          );
+        } else if (total < 5) {
+          results.warns.push(
+            `[WARN] 슬라이드 ${slideNum} (${slideId}) 시각 완결성 ${total}/5 — 보강 권장`
           );
         }
       }
@@ -272,6 +427,11 @@ async function main() {
   }
 
   preWarns.forEach(w => console.log(w));
+  modeIssues.forEach(m => {
+    console.log(m);
+    if (m.startsWith('[ERROR]')) verifyResults.errors.push(m);
+    else verifyResults.warns.push(m);
+  });
   verifyResults.errors.forEach(e => console.log(e));
   verifyResults.warns.forEach(w => console.log(w));
 

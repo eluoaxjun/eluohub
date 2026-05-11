@@ -173,7 +173,8 @@ function css(theme) {
   .desc-table .desc-num-cell { width: 56px; text-align: center; font-weight: 700; color: #333; }
   .desc-table .desc-content-cell { color: #333; }
   .desc-table .desc-common-row td { background: ${elementBg}; }
-  .desc-indent-1 { }
+  .desc-indent-1 { padding-left: 2px; }
+  .desc-sub-num { display: inline-block; min-width: 32px; font-weight: 700; color: #555; margin-right: 4px; }
   .desc-indent-2 { padding-left: 14px; }
   .desc-indent-3 { padding-left: 28px; }
   .desc-indent-4 { padding-left: 42px; }

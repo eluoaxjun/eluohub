@@ -20,38 +20,123 @@ if (!url) {
   process.exit(1);
 }
 
+const SCRIPT_DIR = __dirname;
+const SKILL_ROOT = path.resolve(SCRIPT_DIR, '..');
+
+function tryRequirePlaywright() {
+  // 우선순위: 스킬 폴더 node_modules → 글로벌
+  const localPath = path.join(SKILL_ROOT, 'node_modules', 'playwright');
+  if (fs.existsSync(localPath)) {
+    try { return require(localPath); } catch {}
+  }
+  try { return require('playwright'); } catch {}
+  return null;
+}
+
+function installPlaywrightPkg() {
+  console.log('[visit.js] playwright npm 패키지 자동 설치 중... (스킬 폴더 내)');
+  try {
+    execSync('npm install playwright --no-audit --no-fund --prefix .', {
+      stdio: 'inherit', cwd: SKILL_ROOT,
+    });
+    console.log('[visit.js] playwright 패키지 설치 완료.');
+    return true;
+  } catch (e) {
+    console.error('[visit.js] [INSTALL_FAIL] playwright npm 설치 실패 — 사내망/방화벽 가능성.');
+    console.error('  대응: (1) IT팀에 npm registry 접근 요청  (2) 현행 사이트 캡쳐를 input/screenshot.png 로 직접 제공');
+    return false;
+  }
+}
+
+function installChromium() {
+  console.log('[visit.js] Chromium 자동 설치 중...');
+  try {
+    execSync('npx playwright install chromium', {
+      stdio: 'inherit', cwd: SKILL_ROOT,
+    });
+    console.log('[visit.js] Chromium 설치 완료.');
+    return true;
+  } catch (e) {
+    console.error('[visit.js] [INSTALL_FAIL] Chromium 설치 실패 — 사내망/방화벽 가능성.');
+    console.error('  대응: (1) IT팀에 storage.googleapis.com 도메인 허용 요청  (2) PC에 Chrome 설치되어 있으면 자동 사용 가능  (3) 현행 사이트 캡쳐를 input/screenshot.png 로 직접 제공');
+    return false;
+  }
+}
+
 async function ensureBrowser(chromium) {
   try {
     const browser = await chromium.launch({ headless: true });
     await browser.close();
+    return true;
   } catch {
-    console.log('[visit.js] Chromium 미설치. 자동 설치 중...');
-    execSync('npx playwright install chromium', { stdio: 'inherit' });
-    console.log('[visit.js] Chromium 설치 완료.');
+    return installChromium();
   }
 }
 
 async function main() {
-  let chromium;
-  try {
-    ({ chromium } = require('playwright'));
-  } catch {
-    console.error('[visit.js] playwright 패키지를 찾을 수 없습니다.');
-    process.exit(1);
+  let pw = tryRequirePlaywright();
+  if (!pw) {
+    if (!installPlaywrightPkg()) {
+      console.error('[visit.js] [SETUP_FAIL] playwright 패키지 설치 불가 — 현행 분석 진행 차단');
+      process.exit(2); // exit code 2 = 설치 실패 (AI/오케스트레이터가 감지)
+    }
+    pw = tryRequirePlaywright();
+    if (!pw) {
+      console.error('[visit.js] [SETUP_FAIL] playwright 설치 후에도 require 실패 — 환경 점검 필요');
+      process.exit(2);
+    }
   }
+  const { chromium } = pw;
 
-  await ensureBrowser(chromium);
+  if (!(await ensureBrowser(chromium))) {
+    console.error('[visit.js] [SETUP_FAIL] Chromium 미설치 + 자동 설치 실패 — 현행 분석 진행 차단');
+    process.exit(2);
+  }
 
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
-  const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({ ignoreHTTPSErrors: true });
-  const page = await context.newPage();
+  // 실행 단계 timeout 강화 — 사용자 대기시간 최소화 + 실패 시 즉시 해결책
+  const LAUNCH_TIMEOUT_MS = 10000;   // chromium 기동 10초
+  const NAVIGATE_TIMEOUT_MS = 15000; // 페이지 로드 15초 (기존 30초 → 절반)
 
-  await page.setViewportSize({ width: 1920, height: 1080 });
+  let browser, context, page;
+  try {
+    browser = await Promise.race([
+      chromium.launch({ headless: true }),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('LAUNCH_TIMEOUT')), LAUNCH_TIMEOUT_MS)),
+    ]);
+    context = await browser.newContext({ ignoreHTTPSErrors: true });
+    page = await context.newPage();
+    await page.setViewportSize({ width: 1920, height: 1080 });
+  } catch (e) {
+    console.error(`[visit.js] [LAUNCH_FAIL] Chromium 기동 실패: ${e.message}`);
+    console.error('  해결책 (즉시):');
+    console.error('  1) 다른 chromium 프로세스 종료 후 재시도 (작업관리자에서 chromium.exe 종료)');
+    console.error('  2) chromium 강제 재설치: cd .claude/skills/plan-sb && npx playwright install chromium --force');
+    if (browser) try { await browser.close(); } catch {}
+    process.exit(3); // exit 3 = 실행 실패 (설치 실패와 구분)
+  }
 
-  console.log(`[visit.js] 방문 중: ${url}`);
-  await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+  console.log(`[visit.js] 방문 중: ${url} (${NAVIGATE_TIMEOUT_MS / 1000}s 타임아웃)`);
+  try {
+    await page.goto(url, { waitUntil: 'networkidle', timeout: NAVIGATE_TIMEOUT_MS });
+  } catch (e) {
+    const msg = e.message || '';
+    console.error(`[visit.js] [NAVIGATE_FAIL] ${url} 접속 실패: ${msg.split('\n')[0]}`);
+    console.error('  해결책 (즉시 — 아래 중 1개 선택):');
+    if (/timeout|TimeoutError/i.test(msg)) {
+      console.error('  1) URL이 매우 느린 경우 — 사용자에게 input/screenshot.png 직접 제공 요청');
+      console.error('  2) 사내망 차단 — IT팀에 해당 도메인 허용 요청');
+    } else if (/net::ERR|getaddrinfo|ENOTFOUND/i.test(msg)) {
+      console.error('  1) URL 오타 확인 (https:// 포함, 도메인 정확)');
+      console.error('  2) DNS 문제 — ping 으로 접근성 확인');
+    } else {
+      console.error('  1) 사용자에게 input/screenshot.png 직접 제공 요청 (Mode B 수동)');
+      console.error('  2) Mode A로 전환 — "Mode A로" 입력');
+    }
+    try { await browser.close(); } catch {}
+    process.exit(3);
+  }
 
   // 풀페이지 스크린샷 (기존 호환)
   const screenshotPath = path.join(outputDir, 'screenshot.png');

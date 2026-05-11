@@ -1,5 +1,10 @@
 # plan-sb 에이전트 시스템
 
+> **변경 이력**
+> - 2026-04-24 (v1.9): SKILL.md 갱신 — Mode A/B/C 화면 표현 모드, Step 0.5 기획 확정 게이트, Step 1.5 sb-wf-design 자동 호출, Description 오버플로우 자동 분할, pmComments 4유형, mockup-capture.js 호출 명세
+> - 2026-04-27: mockup-capture.js 신규 동봉 (scripts/) — Mode A 기본 캡쳐 도구. Playwright 기반 PC(1920×1080) + MO(375×812) 동시 캡쳐
+> - 2026-04-15: dist 패키지 분리 운영, 단독 실행 안내
+
 ## 에이전트
 
 ### planning-orchestrator (Sonnet)

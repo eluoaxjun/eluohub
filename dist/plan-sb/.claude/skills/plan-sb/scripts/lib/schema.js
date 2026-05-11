@@ -148,6 +148,9 @@ function normalizeScreen(s) {
     interfaceId: s.interfaceId || '(None)',
     location: s.location || '',
     pageName: s.pageName || '',
+    // msgCase 그룹 컨텍스트 (선택)
+    groupDescription: s.groupDescription || '',
+    groupFlow: s.groupFlow || '',
     uiImagePath: s.uiImagePath || '',
     hasDivider: !!s.hasDivider,
     divider: s.divider || null,

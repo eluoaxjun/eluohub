@@ -4,11 +4,11 @@ description: >
   프로젝트 작업 요청 시 자동 호출되는 PM 라우터.
   "수정해줘", "추가해줘", "만들어줘", "리뉴얼", "운영", "구축",
   "홈페이지", "사이트", "페이지", "기능", "콘텐츠", "배너",
-  "프로젝트 진행", "작업 시작" 등 프로젝트 작업 맥락에서 자동 호출.
+  "프로젝트 진행", "작업 시작", "기획", "디자인", "퍼블리싱", "QA"
+  맥락에서 자동 호출.
   운영/구축/전환 모드를 판별하고, 프로젝트 초기 세팅을 수행하며,
   적절한 오케스트레이터로 라우팅한다.
 user-invocable: false
-allowed-tools: Read, Grep, Glob, Write, Edit, WebFetch, WebSearch, Bash
 ---
 
 # PM Router (자동 라우팅 에이전트)
@@ -63,10 +63,10 @@ Phase 1 **이전에** 반드시 실행합니다. CWD가 유지운영 허브(`d:/
 ### 1-2. 기존 산출물 스캔
 ```
 1. output/ 디렉토리 존재 여부
-2. output/{프로젝트명}/*/ → REQ, FN 파일 존재 + 마지막 ID (FR-###, FN-###)
-3. output/{프로젝트명}/*/ → STYLE, UI 파일 존재 + 마지막 ID (UI-###)
-4. output/{프로젝트명}/ → HTML, PDF 파일 존재 (SB 산출물)
-5. output/{프로젝트명}/*/ → TC 파일 존재 + 마지막 ID (TC-###)
+2. output/planning/ → REQ, FN 파일 존재 + 마지막 ID (FR-###, FN-###)
+3. output/design/ → STYLE, UI 파일 존재 + 마지막 ID (UI-###)
+4. output/publish/ → HTML, CSS, JS 파일 존재
+5. output/qa/ → TC 파일 존재 + 마지막 ID (TC-###)
 ```
 
 ### 1-3. 참조 프로젝트 탐색 (운영 시)
@@ -111,6 +111,10 @@ PROJECT.md 또는 .claude/CLAUDE.md가 없으면 자동 생성합니다.
 ├── PROJECT.md
 ├── input/
 ├── output/
+│   ├── planning/
+│   ├── design/
+│   ├── publish/
+│   └── qa/
 └── .claude/
     └── CLAUDE.md
 ```
@@ -146,8 +150,10 @@ PROJECT.md 또는 .claude/CLAUDE.md가 없으면 자동 생성합니다.
 {사용 가능한 스킬 목록}
 
 ## 산출물 경로
-- 기획/디자인/퍼블리싱/QA: output/{프로젝트명}/{YYYYMMDD}/
-- SB: output/{프로젝트명}/ (HTML/PDF)
+- 기획: output/planning/
+- 디자인: output/design/
+- 퍼블리싱: output/publish/
+- QA: output/qa/
 
 ## 참조 경로
 {운영 시 기존 프로젝트 output/ 경로}
@@ -156,6 +162,34 @@ PROJECT.md 또는 .claude/CLAUDE.md가 없으면 자동 생성합니다.
 ---
 
 ## Phase 4: 파이프라인 라우팅
+
+### 구축 모드
+```
+planning-orchestrator (QST → REQ → FN → IA → WBS → Dashboard)
+    ↓ 핸드오프
+design-orchestrator (Benchmark → HTML A/B/C)
+    ↓ 핸드오프
+publish-orchestrator (Markup → Style → Interaction)
+    ↓ 핸드오프
+qa-orchestrator (Functional → Accessibility → Performance)
+```
+
+### 운영 모드
+```
+planning-orchestrator (산출물범위: 운영 — REQ → FN만)
+    ↓ 핸드오프
+publish-orchestrator (기존 코드 수정)
+    ↓ 핸드오프
+qa-orchestrator (변경분 + 회귀)
+```
+
+운영 복잡도별 스킵:
+
+| 복잡도 | 파이프라인 |
+|--------|-----------|
+| 경미 (텍스트/이미지 교체) | publish-orchestrator만 |
+| 보통 (기능 수정 2~5건) | planning → publish → qa |
+| 복합 (6+ 페이지, 구조 변경) | → 구축 전환 권고 |
 
 ### 단일 스킬 직접 호출 감지
 사용자가 특정 산출물만 요청한 경우 (예: "고객에게 물어볼 것 정리해줘", "기능정의서 만들어줘"):
@@ -169,18 +203,23 @@ PROJECT.md 또는 .claude/CLAUDE.md가 없으면 자동 생성합니다.
 | 기능정의, 기능 명세, 기능 설계 | plan-fn |
 | 정보구조, 사이트맵, 메뉴 구조 | plan-ia |
 | 일정, WBS, 공수 산정, 작업분해 | plan-wbs |
-| 화면설계, 와이어프레임, SB | plan-sb |
+| 대시보드, 현황, 진행 상황 | plan-dashboard |
+
+> 각 plan-* 스킬의 description에 자연어 trigger가 내장되어 있으므로, 대부분 스킬이 직접 매칭됩니다. pm-router는 **모호한 경우의 폴백**으로 동작합니다.
 
 ---
 
-## Phase 5: 라우팅 완료 보고
+## Phase 5: 오케스트레이터 호출
 
 판별 결과를 사용자에게 **1줄로 보고**한 뒤 진행합니다.
 
 ```
-[PM Router] 모드: {운영/구축} | 프로젝트: {이름} | 기존 산출물: {n건} | ID 시작: {ID-###}
-→ {다음 스킬/에이전트} 호출
+[PM Router] 모드: {운영/구축} | 프로젝트: {이름} | 기존 산출물: {n건} | ID 시작: FR-{###}
+→ {다음 오케스트레이터} 호출
 ```
+
+오케스트레이터가 내장 PM Direction (Step 0)으로 상세 컨텍스트를 처리합니다.
+PM Router는 **라우팅까지만** 담당하고, 상세 기획/디자인/퍼블리싱/QA는 각 오케스트레이터에 위임합니다.
 
 ---
 
@@ -189,4 +228,33 @@ PROJECT.md 또는 .claude/CLAUDE.md가 없으면 자동 생성합니다.
 1. **사용자에게 모드를 묻지 않는다** — 스캔 결과로 자동 판별. 판별 불가 시에만 1회 질문
 2. **한번에 모아서 묻는다** — init 시 빠진 정보를 개별로 묻지 않고 한 질문으로
 3. **이미 세팅된 프로젝트는 init 스킵** — PROJECT.md + output/ 있으면 바로 Phase 4
-4. **단계별 확인 원칙은 유지** — PM Router가 자동 판별해도, 각 스킬 내부 Gate는 그대로 작동
+4. **오케스트레이터 간 핸드오프는 자동** — 각 오케스트레이터 완료 시 다음 단계 제안 (사용자 확인 후 진행)
+5. **단계별 확인 원칙은 유지** — PM Router가 자동 판별해도, 각 오케스트레이터 내부 Gate는 그대로 작동
+
+## 품질 체크 (Self-Check)
+
+| # | 검증 항목 | 판정 기준 |
+|---|----------|----------|
+| 1 | 모드 판별 정확 | 운영/구축/전환/질의 중 1개 자동 판별 + 근거 명시 |
+| 2 | 프로젝트 식별 | PROJECT.md 스캔 또는 사용자 입력에서 프로젝트 확정 |
+| 3 | 기존 산출물 스캔 | output/ 디렉토리에서 REQ/FN/IA/WBS 존재 여부 확인 |
+| 4 | ID 연속성 | 기존 산출물의 마지막 ID 확인 → 신규 ID 시작점 설정 |
+| 5 | 라우팅 정확 | 판별 결과에 맞는 오케스트레이터/스킬로 전달 |
+
+### PM Devil's Advocate
+| DA1 | 운영으로 판별했지만 실제로는 구축 규모가 아닌가 |
+| DA2 | 기존 산출물을 충분히 스캔했는가 (누락 우려) |
+| DA3 | 사용자 의도와 자동 판별 결과가 일치하는가 |
+
+## Gotchas
+- 운영/구축 모드 오판 시 전체 파이프라인이 잘못된 경로로 진행. Step 0에서 명시적 확인 필수
+- PROJECT.md 없이 진행하면 프로젝트명/경로가 세션마다 달라져 산출물이 흩어짐
+- 레퍼런스 존재 여부를 확인하지 않고 스킵하면 PM Direction Gate 위반
+
+## 응답 제약
+
+| # | 제약 | 사유 |
+|---|------|------|
+| 1 | 라우팅 외 작업 직접 실행 금지 | 역할 경계 위반 |
+| 2 | orchestrator 선택을 사용자 미확인 상태에서 결정 금지 | 잘못된 파이프라인 진입 |
+| 3 | 입력 데이터 임의 변환/해석 금지 | 원본 요청 왜곡 |
