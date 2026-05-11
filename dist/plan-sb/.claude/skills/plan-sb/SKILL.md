@@ -1179,6 +1179,78 @@ node .claude/skills/plan-sb/scripts/split-html-by-slide.js \
 
 연계 모드: fnRef 빈 배열이면 verify.js WARN 발생 / 독립 모드: fnRef:[] → fnRef 섹션 생략
 
+## items[] category 필드 — 기능 동작 의미 분류 (2026-05-11 신설)
+
+`descriptions[].items[]` 항목은 기존 자유 텍스트(`text`)에 더해 **`category` 키** 7종으로 의미 분류한다. CTA/액션 요소/조건 분기의 작성 누락을 자동 감지 가능.
+
+### 7종 enum
+
+| # | category | 용도 | 작성 예시 |
+|---|---|---|---|
+| 1 | `trigger` | 발동 조건 (디바이스별 트리거 차이 포함) | "Click (PC) / Tap (Mobile) / Enter 키" |
+| 2 | `enable_cond` | 활성/비활성 조건 | "필수 필드 입력 + 약관 동의 시 활성, 그 외 disabled" |
+| 3 | `action` | 실행 동작 (API 호출/이동/모달) | "POST /api/order/checkout 호출 → 응답 대기" |
+| 4 | `success` | 성공 처리 | "/order/complete 이동 + 토스트 '결제 완료'" |
+| 5 | `failure` | 실패 처리 (4xx/5xx/network) | "4xx → 인라인 에러 / 5xx → 재시도 모달 / 401 → /login?return_url= 이동" |
+| 6 | `state` | 수량/조건 상태 분기 | "1개일 때 화살표 미노출 / 2개+ 노출 + autoplay 5s" |
+| 7 | `permission` | 권한 분기 | "비로그인 → 로그인 페이지 / 일반 → 구매 / VIP → 특가 뱃지" |
+
+> 픽셀값/그리드/spacing/색상 등 **시각 표현은 plan-sb 책임 X** — design-layout / publish-style 영역.
+
+### 책임 경계 (영역 매트릭스)
+
+| 표현 | plan-sb (description) | design-layout | publish-style |
+|---|---|---|---|
+| 기능 동작/조건/분기 | ✅ items[].category | — | — |
+| 데이터 출처 + Fallback | ✅ items[].text | — | — |
+| 레이아웃 (M/T/D 그리드, 컬럼) | ❌ | ✅ | — |
+| 픽셀 값 (1920×600, padding 24px) | ❌ | ❌ | ✅ CSS 토큰 |
+| 색상/폰트 토큰 | ❌ | — | ✅ design-knowledge |
+| 컴포넌트 시각 스펙 (반응형 크기) | ❌ | — | ✅ design-ui |
+
+### 작성 형식
+
+기존 items[] 구조에 `category` 키 추가. `text`는 그대로 유지.
+
+```json
+{
+  "marker": 3,
+  "label": "결제하기 CTA 버튼",
+  "items": [
+    { "category": "trigger",     "text": "Click (PC) / Tap (Mobile) / Enter 키" },
+    { "category": "enable_cond", "text": "필수 필드 전체 입력 + 약관 동의 시 활성, 그 외 disabled" },
+    { "category": "action",      "text": "POST /api/order/checkout (cart_id, payment_method) — 응답 대기 중 spinner + 버튼 disabled (2회 클릭 방지)" },
+    { "category": "success",     "text": "200 OK → /order/complete?id={orderId} 이동 + 토스트 '결제가 완료되었습니다'" },
+    { "category": "failure",     "text": "4xx → 인라인 에러 메시지 (필드별) / 5xx → 재시도 모달 / 401 비로그인 → /login?return_url=/cart" },
+    { "category": "permission",  "text": "VIP 등급 → 5% 즉시 할인 적용 후 결제 / 일반 → 표준 결제" }
+  ]
+}
+```
+
+### category 필수 적용 영역
+
+다음 영역은 `category` 키 작성 **의무**. 미작성 시 verify.js WARN:
+
+- CTA 버튼 (구매/결제/가입/문의/예약 등 동작 의도가 분명한 버튼)
+- 폼 제출 버튼
+- 네비게이션 링크 (특히 이동 후 권한 체크 필요한 것)
+- 외부 링크 (새 탭/같은 탭 행위 명시 필요)
+- 토글/스위치 (즉시 적용 vs 저장 필요)
+- 조건부 표시 UI (수량/권한/상태에 따라 노출 변동)
+
+### 금지 패턴
+
+- (X) "결제하기 버튼" — category 없이 라벨만 작성 → 동작 미상
+- (X) `category: action` 만 작성 + success/failure 누락 → 에러 처리 불명확
+- (X) `category: device_behavior` 또는 `device` — **시각 영역**, plan-sb 책임 아님 (해당 enum 부재)
+- (X) `text`에 "padding 24px", "1920×600", "#FFB800" 같은 토큰값 작성 → publish-style 영역
+- (O) trigger + action + success + failure 최소 4종 묶음 작성 (CTA의 경우)
+
+### 호환성
+
+- `category` 키 없는 기존 items[] 항목은 **그대로 호환** (자유 텍스트로 처리)
+- 점진적 도입: 신규 작성 SB부터 적용. 기존 산출물 마이그레이션 불필요.
+
 ## 품질 기준
 
 | 항목 | 기준 |

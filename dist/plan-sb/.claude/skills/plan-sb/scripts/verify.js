@@ -20,6 +20,63 @@ const { ELEMENT_TYPES } = require('./lib/element-types');
 const VALID_TYPES = new Set(ELEMENT_TYPES.map(e => e.type));
 
 /**
+ * items[] category 필드 커버리지 검증 (Phase 3.3 — 2026-05-11)
+ * 액션 키워드(버튼/CTA/링크/제출 등)가 label에 있는 description에서
+ * items[]에 category 키 있는 항목이 0건이면 WARN.
+ * @param {Array} screens - data.json의 screens 배열
+ * @returns {string[]} 경고 메시지 배열
+ */
+function checkItemsCategoryCoverage(screens) {
+  const warnings = [];
+  const VALID_CATEGORIES = new Set([
+    'trigger', 'enable_cond', 'action', 'success', 'failure', 'state', 'permission'
+  ]);
+  // 액션 키워드 — description.label에 등장 시 category 작성 의무
+  const ACTION_KW = /(버튼|btn|CTA|결제|로그인|로그아웃|회원가입|가입|신청|예약|문의|확인|취소|검색|선택|제출|전송|구매|주문|등록|저장|삭제|수정|편집|발송|업로드|다운로드|공유|좋아요|찜|즐겨찾기|북마크|구독|팔로우|토글|스위치|체크박스|드롭다운|탭|페이지네이션|페이징|더보기|infinite|페이지\s*전환|이동|링크)/i;
+
+  screens.forEach((screen, si) => {
+    if (!['design', 'msgCase', 'component'].includes(screen.screenType || 'design')) return;
+    if (!Array.isArray(screen.descriptions)) return;
+
+    screen.descriptions.forEach((d, di) => {
+      const label = d.label || '';
+      const items = Array.isArray(d.items) ? d.items : [];
+      if (items.length === 0) return;
+
+      const isActionable = ACTION_KW.test(label);
+      const categorizedItems = items.filter(it => it && VALID_CATEGORIES.has(it.category));
+      const invalidCategoryItems = items.filter(it => it && it.category && !VALID_CATEGORIES.has(it.category));
+
+      // 무효 category enum (오타/잘못된 값) → WARN
+      invalidCategoryItems.forEach(it => {
+        warnings.push(
+          `[WARN-PRE] Screen ${si + 1} marker ${d.marker} "${label}" — 무효 category: "${it.category}" (유효: trigger/enable_cond/action/success/failure/state/permission)`
+        );
+      });
+
+      // 액션 키워드 있는데 category 0건 → WARN (category 작성 의무 영역)
+      if (isActionable && categorizedItems.length === 0) {
+        warnings.push(
+          `[WARN-PRE] Screen ${si + 1} marker ${d.marker} "${label}" — 액션 요소이나 items[].category 0건 (CTA/액션 요소는 category 필수: trigger + action + success + failure 최소 4종 권장)`
+        );
+      }
+
+      // 액션 키워드 있고 category 일부만 있는데 핵심 4종(trigger/action/success/failure) 중 누락 → INFO 수준 WARN
+      if (isActionable && categorizedItems.length > 0) {
+        const cats = new Set(categorizedItems.map(it => it.category));
+        const missing = ['trigger', 'action', 'success', 'failure'].filter(c => !cats.has(c));
+        if (missing.length > 0) {
+          warnings.push(
+            `[WARN-PRE] Screen ${si + 1} marker ${d.marker} "${label}" — category 일부 누락: ${missing.join('/')} (CTA 표준 4종: trigger+action+success+failure)`
+          );
+        }
+      }
+    });
+  });
+  return warnings;
+}
+
+/**
  * wireframe[] JSON에서 미등록 타입 사전 검증 (HTML 렌더링 전)
  * @param {Array} screens - data.json의 screens 배열
  * @returns {string[]} 경고 메시지 배열
@@ -109,7 +166,7 @@ async function main() {
     isLinkedMode = fs.existsSync(contextFn);
   }
 
-  // ─── [사전 검증] wireframe[] 타입 유효성 ────────────────────────────────
+  // ─── [사전 검증] wireframe[] 타입 유효성 + items[] category 누락 ──────
   const preWarns = [];
   if (flags.dataFile) {
     const dataPath = path.resolve(flags.dataFile);
@@ -119,6 +176,9 @@ async function main() {
         if (data.screens) {
           const typeWarns = checkWireframeTypes(data.screens);
           preWarns.push(...typeWarns);
+          // ⑨ items[] category 누락 자동 감지 (Phase 3.3 — 2026-05-11 추가)
+          const catWarns = checkItemsCategoryCoverage(data.screens);
+          preWarns.push(...catWarns);
         }
       } catch (e) {
         preWarns.push(`[WARN-PRE] data-file 파싱 실패: ${e.message}`);
